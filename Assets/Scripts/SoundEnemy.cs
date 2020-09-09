@@ -26,7 +26,7 @@ public class SoundEnemy : MonoBehaviour
             //要怎麼判斷角色有無飛行
             if(PlayerCtroller.currentState == PlayerCtroller.PlayerState.AirDash||PlayerCtroller.currentState == PlayerCtroller.PlayerState.BugFly)
                 {
-                    print("FUCK");
+                    print("shit");
                     yellowDetectTime += Time.deltaTime;
                     if(yellowDetectTime >=3)
                     {
