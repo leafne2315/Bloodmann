@@ -14,11 +14,10 @@ public class ViewDetect : MonoBehaviour
     [Range(1, 50)]public float accuracy;
     [SerializeField]private float Ray_RotatePerSecond;
     private float currentAngle;
-    private PlayerCtroller PlayerCtroller; 
     public LayerMask ignoreYourself;
     void Start()
     {
-        PlayerCtroller = GameObject.Find("Player").GetComponent<PlayerCtroller>();
+        
     }
 
     // Update is called once per frame
@@ -28,7 +27,7 @@ public class ViewDetect : MonoBehaviour
         float subAngle = DetectAngle / accuracy;
         for(int i=0;i<accuracy;i++)
         {
-            RayDir = new Vector2(1,0);
+            RayDir = transform.right;
             RayDir = Quaternion.AngleAxis(-DetectAngle/2 + Mathf.Repeat(Ray_RotatePerSecond*Time.time + i*subAngle,DetectAngle),Vector3.back)*RayDir;
             RaycastHit2D hit = Physics2D.Raycast(OriginPos.position,RayDir,RayLength, ~ignoreYourself);
             
