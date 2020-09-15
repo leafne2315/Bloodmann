@@ -8,13 +8,19 @@ public class ViewDetect : MonoBehaviour
     public Transform OriginPos;
     private Vector2 RayDir;
     private Vector2 RayDir_02;
-    public float RayLength = 100;
+    [SerializeField]private Color RayColor = Color.yellow;
+    [SerializeField]private float RayLength = 20;
+    public float YellowRange;
+    public float RedRange;
     public LayerMask TargetLayer;
     public float DetectAngle;
     [Range(1, 50)]public float accuracy;
     [SerializeField]private float Ray_RotatePerSecond;
     private float currentAngle;
     public LayerMask ignoreYourself;
+    public LayerMask ignoreLayer01;
+    public bool Warning;
+    public Vector3 PlayerLastPos;
     void Start()
     {
         
@@ -29,24 +35,55 @@ public class ViewDetect : MonoBehaviour
         {
             RayDir = transform.right;
             RayDir = Quaternion.AngleAxis(-DetectAngle/2 + Mathf.Repeat(Ray_RotatePerSecond*Time.time + i*subAngle,DetectAngle),Vector3.back)*RayDir;
-            RaycastHit2D hit = Physics2D.Raycast(OriginPos.position,RayDir,RayLength, ~ignoreYourself);
-            
-            
-            if(hit.collider)
+            RaycastHit2D hit = Physics2D.Raycast(OriginPos.position,RayDir,RayLength, ~(ignoreYourself|ignoreLayer01));
+            if(hit)
             {
-                Debug.DrawLine(OriginPos.position,hit.point,Color.red);
+                
+                if(hit.collider)
+                {
+                    Debug.DrawLine(OriginPos.position,hit.point,RayColor);
+                }
+
+                if(hit.collider.CompareTag("Player"))
+                {
+                    Warning = true;
+                    PlayerLastPos = hit.collider.transform.position;
+                    break;
+                }
+                else
+                {
+                    Warning = false;
+                }
                 //Debug.Log(hit.collider.name);
             }
             else
             {
-                Debug.DrawLine(OriginPos.position,OriginPos.position+new Vector3(RayDir.x,RayDir.y,0)*RayLength,Color.red);
+                Debug.DrawLine(OriginPos.position,OriginPos.position+new Vector3(RayDir.x,RayDir.y,0)*RayLength,RayColor);
             }
         }
-        //currentAngle += Ray_RotatePerSecond*Time.deltaTime;
+        currentAngle += Ray_RotatePerSecond*Time.deltaTime;
         
         
 
         
     }
-    
+    public void SwitchDetectMode(string color)
+    {   
+        switch(color)
+        {
+            case "Yellow":
+                RayLength = YellowRange;
+                RayColor = Color.yellow;
+            break;
+
+            case "Red":
+                RayLength = RedRange;
+                RayColor = Color.red;
+            break;
+
+            default:
+                RayColor = Color.gray;
+            break;
+        }
+    }
 }

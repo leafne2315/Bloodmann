@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Sea
   - Bush
+  - A*points
+  - Ground
   layers:
   - Default
   - TransparentFX
