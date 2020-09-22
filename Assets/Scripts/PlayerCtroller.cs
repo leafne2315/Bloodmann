@@ -180,7 +180,15 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 				if(Input.GetButtonDown("PS4-x"))
 				{
-
+					if(!facingRight)
+					{
+						rb.velocity = Vector2.one.normalized*20;
+					}
+					else
+					{
+						rb.velocity = new Vector2(-1,1).normalized*20;
+					}
+					currentState = PlayerState.Normal;
 				}
 
 			break;
