@@ -31,13 +31,14 @@ public class PlayerCtroller : MonoBehaviour {
 	public int extraJumpValue;
 	private float JumpTimer;
 	public float JumpTime;
-	private bool isJumping;
+	[SerializeField]private bool isJumping;
 	//
 	//飛行
 	public float flyPw;
     public float acel;
+	public float flySpeed;
     public float MaxFSpeed;
-    [SerializeField]private float flySpeed;
+    [SerializeField]private float showflySpeed;
 	//
 	//空中衝刺
 	public float AirDashTime;
@@ -101,7 +102,7 @@ public class PlayerCtroller : MonoBehaviour {
 				
 				CheckStability();
 				rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
-				flySpeed = rb.velocity.y;
+				showflySpeed = rb.velocity.y;
 				checkGravity();
 				AccelControll();
 				LimitGSpeed();
@@ -119,7 +120,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.Space)||Input.GetButtonDown("PS4-x") && isGrounded == true)
 				{
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
-				}	
+				}
 				
 				if(isAttachWall&&!isGrounded)
 				{
@@ -177,6 +178,10 @@ public class PlayerCtroller : MonoBehaviour {
 					currentState = PlayerState.BugFly;
 					FlyDir = rb.velocity.normalized;
 				}
+				if(Input.GetButtonDown("PS4-x"))
+				{
+
+				}
 
 			break;
 
@@ -224,7 +229,7 @@ public class PlayerCtroller : MonoBehaviour {
 					GasUse(40);
 					if(dashSpeed<Max_dashSpeed)
 					{
-						dashSpeed+=1.0f;
+						dashSpeed+=50*Time.deltaTime;
 					}
 					else
 					{
@@ -431,11 +436,10 @@ public class PlayerCtroller : MonoBehaviour {
     }
 	private void OnDrawGizmos()
 	{
-		Gizmos.DrawWireSphere(GroundCheck.position,checkRadius);
+		//Gizmos.DrawWireSphere(GroundCheck.position,checkRadius);
 	}
 	private void CheckStability()
 	{
-		
 		if(isGrounded)
 		{
 			StableValue = 0.9f;
@@ -505,12 +509,12 @@ public class PlayerCtroller : MonoBehaviour {
 		FlyDir = Vector2.Lerp(FlyDir,new Vector2(moveInput_X,moveInput_Y),0.05f);
 		if(Input.GetButton("PS4-R2"))
 		{
-			rb.velocity = FlyDir*30;
+			rb.velocity = FlyDir*40;
 			GasUse(15);
 		}
 		else
 		{
-			rb.velocity = FlyDir*20;
+			rb.velocity = FlyDir*flySpeed;
 			GasUse(5);
 		}
 		
