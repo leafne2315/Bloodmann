@@ -17,6 +17,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//偵測
 	private bool isGrounded;
 	private bool isAttachWall;
+	private bool isAttachOnTop;
 	public float checkRadius;
 	public Transform GroundCheck;
 	public Transform FrontCheck;
@@ -93,9 +94,8 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
-		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
 		
+
 		switch(currentState)
 		{
 			case PlayerState.Normal:
@@ -121,14 +121,16 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
 				}
+				// if(isGrounded)
+				// {
+				// 	RestoreGas();
+				// }
 				
 				if(isAttachWall&&!isGrounded)
 				{
-
 					currentState = PlayerState.Attach;
 					rb.gravityScale = 0;
 					rb.velocity = Vector2.zero;
-	
 				}
 
 				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle")&&!Out_Of_Gas&&(isAttachWall||isGrounded))//->Dash
@@ -180,13 +182,20 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 				if(Input.GetButtonDown("PS4-x"))
 				{
-					if(!facingRight)
+					if(!isAttachOnTop)
 					{
-						rb.velocity = Vector2.one.normalized*20;
+						if(!facingRight)
+						{
+							rb.velocity = Vector2.one.normalized*20;
+						}
+						else
+						{
+							rb.velocity = new Vector2(-1,1).normalized*20;
+						}
 					}
 					else
 					{
-						rb.velocity = new Vector2(-1,1).normalized*20;
+						rb.velocity = Vector2.down*10;
 					}
 					currentState = PlayerState.Normal;
 				}
@@ -334,6 +343,10 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Update()
 	{
+		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
+		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
+		isAttachOnTop = Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
+
 		CheckStability();
 		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
 		moveInput_Y = Input.GetAxis("PS4-L-Vertical");
@@ -344,7 +357,7 @@ public class PlayerCtroller : MonoBehaviour {
 			extraJumps = extraJumpValue;
 			JumpTimer = JumpTime;
 
-			if(currentState!=PlayerState.Dash)
+			if(currentState!=PlayerState.Dash&&currentState!=PlayerState.BugFly)
 			{	
 				RestoreGas();
 			}
