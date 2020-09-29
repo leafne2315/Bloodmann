@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SoundEnemy : MonoBehaviour
 {
-     public Transform redDetection;
+    public Transform redDetection;
     public Transform yellowDetection;
     public LayerMask whatIsPlayer;
     public float yellowDetectionRadius;
     public float redDetectionRadius;
-    private Collider2D yellowWarning;
-    private Collider2D redWarning;
+    private Collider2D playerInYellow;
+    private Collider2D playerInRed;
     //public float yellowDetectTime;
     public float redDetectTime;
     private Rigidbody2D rb;
@@ -20,8 +21,9 @@ public class SoundEnemy : MonoBehaviour
     private Vector2 playerDir;
     public float yellowSpeed;
     private Vector3 soundenemyStartPos;
-    public float soundenemyDangerIncreasePS;
-    public float soundenemyDangerDecreasePs;
+    public float soundEnemyDangerIncreasePS;
+    public float soundEnemyDangerDecreasePs;
+    public Image AwareUI;
     //public float redSpeed;
     void Start()
     {
@@ -33,10 +35,13 @@ public class SoundEnemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        yellowWarning = Physics2D.OverlapCircle(yellowDetection.position,yellowDetectionRadius,whatIsPlayer);
-        if(yellowWarning)
+        AwareUI.fillAmount = redDetectTime/100;
+        playerInYellow = Physics2D.OverlapCircle(yellowDetection.position,yellowDetectionRadius,whatIsPlayer);
+        playerInRed = Physics2D.OverlapCircle(redDetection.position,redDetectionRadius,whatIsPlayer);
+
+        if(playerInYellow)
         {    //判斷角色有無飛行
-            if(PlayerCtroller.currentState == PlayerCtroller.PlayerState.AirDash||PlayerCtroller.currentState == PlayerCtroller.PlayerState.BugFly)
+            if(PlayerCtroller.isFlying)
             {    
                 PlayerLastPos = PlayerCtroller.transform.position;
                 playerDir = (PlayerLastPos - rb.transform.position);
@@ -49,34 +54,31 @@ public class SoundEnemy : MonoBehaviour
             yellowSpeed = 0;
             rb.velocity = playerDir * yellowSpeed;
         }
-        redWarning = Physics2D.OverlapCircle(redDetection.position,redDetectionRadius,whatIsPlayer);
-        if(redWarning)
-        {
-            if(PlayerCtroller.currentState == PlayerCtroller.PlayerState.AirDash||PlayerCtroller.currentState == PlayerCtroller.PlayerState.BugFly)
-            {    
-                if(redDetectTime <=100)
-                {
-                    redDetectTime += soundenemyDangerIncreasePS*Time.deltaTime;
-                }
-                else
-                {   
-                    redDetectTime = 100;  
-                    //player死亡重置位置        
-                    Die_temp.transform.position = Die_temp.StartPos;
-                    Die_temp.rb.velocity = Vector2.zero;
-                    PlayerCtroller.currentGas = 100;
-                    PlayerCtroller.Out_Of_Gas = false;
-                    //敵人重置位置
-                    transform.position = soundenemyStartPos;
-                    redDetectTime = 0;
-                }           
+        
+        if(playerInRed && PlayerCtroller.isFlying)
+        {          
+            if(redDetectTime <=100)
+            {
+                redDetectTime += soundEnemyDangerIncreasePS*Time.deltaTime;
             }
+            else
+            {   
+                redDetectTime = 100;  
+                //player死亡重置位置        
+                PlayerCtroller.transform.position = Die_temp.StartPos;
+                Die_temp.rb.velocity = Vector2.zero;
+                PlayerCtroller.currentGas = 100;
+                PlayerCtroller.Out_Of_Gas = false;
+                //敵人重置位置
+                transform.position = soundenemyStartPos;
+                redDetectTime = 0;
+            }           
         }
         else
         {
             if(redDetectTime >0)
             {
-                redDetectTime -= soundenemyDangerDecreasePs*Time.deltaTime;
+                redDetectTime -= soundEnemyDangerDecreasePs*Time.deltaTime;
             }
             else
             {
@@ -92,3 +94,4 @@ public class SoundEnemy : MonoBehaviour
         Gizmos.DrawWireSphere(redDetection.position, redDetectionRadius);
     }
 }
+

@@ -35,6 +35,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[SerializeField]private bool isJumping;
 	//
 	//飛行
+	public bool isFlying; 
 	public float flyPw;
     public float acel;
 	public float flySpeed;
@@ -346,6 +347,8 @@ public class PlayerCtroller : MonoBehaviour {
 		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
 		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
 		isAttachOnTop = Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
+		
+		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
 
 		CheckStability();
 		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
