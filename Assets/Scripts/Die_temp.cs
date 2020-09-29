@@ -5,8 +5,8 @@ using UnityEngine;
 public class Die_temp : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Vector3 StartPos;
-    private Rigidbody2D rb;
+    public Vector3 StartPos;
+    public Rigidbody2D rb;
     void Start()
     {
         StartPos = transform.position;
