@@ -57,7 +57,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float dashTime;
 	public float dashCD;
 	public float holdingTime = 0.2f;
-	[SerializeField]private bool isDash;
+	public bool isDash;
 	private bool canDash;
 	[SerializeField]private float dashSpeed;
 	public float Max_dashSpeed;

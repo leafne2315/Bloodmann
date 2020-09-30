@@ -20,14 +20,14 @@ public class EnemyAI : MonoBehaviour
     public Transform[] PatrolPoint;
     public int PatrolNum;
     public enum EnemyState{Patrol,Scan,Alert,Chase,Attack}
-    private EnemyState currentState;
+    public EnemyState currentState;
     //public Vector3 MoveDir;
     private float ScanTimer;
     public float ScanTime;
     public float ScanAngle;
     public float RotatePersecond;
     //Alert
-    [SerializeField]private float AlertValue;
+    [SerializeField]public float AlertValue;
     public float AlertIncreasePS;  
     public float AlertDecreasePS;
     //Chase
