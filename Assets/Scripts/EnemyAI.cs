@@ -47,7 +47,8 @@ public class EnemyAI : MonoBehaviour
     public float AttackRange_Max;
     public float AttackRange_Min;
     public float AttackCD;
-    private bool canAttack = true; 
+    private bool canAttack = true;
+    public float SlowDownTime; 
     //UI
     public Image AwareUI;
     void Start()
@@ -214,6 +215,7 @@ public class EnemyAI : MonoBehaviour
                     AttackTimer = 0;
                     StartCoroutine(AttackCD_Count());
                     StateIn_Chase();
+                    StartCoroutine(SlowDown());
                 }
             break;
 
@@ -281,6 +283,16 @@ public class EnemyAI : MonoBehaviour
 			yield return 0;
 		}
 		canAttack = true;
+	}
+    IEnumerator SlowDown()
+	{
+        ChasingSpeed = 10;
+		for(float i =0 ; i<=SlowDownTime; i+=Time.deltaTime)
+		{
+
+			yield return 0;
+		}
+		ChasingSpeed = 20;
 	}
     private void OnTriggerExit2D(Collider2D other)
     {

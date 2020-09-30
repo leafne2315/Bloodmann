@@ -8,6 +8,7 @@ TagManager:
   - Bush
   - A*points
   - Ground
+  - Enemy
   layers:
   - Default
   - TransparentFX
