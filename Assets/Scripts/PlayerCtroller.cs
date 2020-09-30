@@ -174,7 +174,7 @@ public class PlayerCtroller : MonoBehaviour {
 					rb.velocity = Vector2.zero;
 					//StartCoroutine(dashCD_Count());
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;	
+					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
 				}
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
 				{
