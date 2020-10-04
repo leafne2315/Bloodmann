@@ -40,7 +40,7 @@ public class SoundEnemy : MonoBehaviour
         playerInRed = Physics2D.OverlapCircle(redDetection.position,redDetectionRadius,whatIsPlayer);
         if(playerInYellow)
         {    //判斷角色有無飛行
-            if(PlayerCtroller.isFlying)
+            if(PlayerCtroller.isDash)
             {    
                 PlayerLastPos = PlayerCtroller.transform.position;
                 playerDir = (PlayerLastPos - rb.transform.position).normalized;
@@ -51,7 +51,7 @@ public class SoundEnemy : MonoBehaviour
         {
             rb.velocity = playerDir * 0;
         }
-        if(playerInRed && PlayerCtroller.isFlying)
+        if(playerInRed && PlayerCtroller.isDash)
         {          
             if(redDetectTime <=100)
             {
@@ -80,7 +80,7 @@ public class SoundEnemy : MonoBehaviour
             }
         }
     }
-    private void OnDrawGizmosSelected() 
+    private void OnDrawGizmos() 
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(yellowDetection.position, yellowDetectionRadius);
