@@ -12,7 +12,7 @@ public class UIFollow : MonoBehaviour
     {
         
     }
-    void Update()
+    void LateUpdate()
     {
         if(target!=null)
         {
