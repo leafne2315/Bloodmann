@@ -5,6 +5,9 @@ using System;
 
 
 public class PlayerCtroller : MonoBehaviour {
+	public GameObject GM;
+	private GameManager GameManager;
+	private Vector3 StartPos;
 	public GameObject Arrow;
 	public Vector2 FlyDir;
 	public float hp;
@@ -68,7 +71,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isGhost = false;
 	//
 	//狀態控制
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash};
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Idle};
 	public PlayerState currentState;
 	//
 	private float OriginGravity;
@@ -81,11 +84,14 @@ public class PlayerCtroller : MonoBehaviour {
 	private bool RestoreGas_isOver = true;
 	void Awake()
 	{
+		GameManager = GM.GetComponent<GameManager>();
 		rb = GetComponent<Rigidbody2D>();
 		OriginGravity = rb.gravityScale;
 	}
 	void Start()
-	{		
+	{
+		StartPos = transform.position;
+
 		KnockTimer = 0;
 		extraJumps = extraJumpValue;
 		JumpTimer = JumpTime;
@@ -99,6 +105,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 		switch(currentState)
 		{
+			case PlayerState.Idle:
+
+			break;
+
 			case PlayerState.Normal:
 				
 				CheckStability();
@@ -247,7 +257,7 @@ public class PlayerCtroller : MonoBehaviour {
 					GasUse(40);
 					if(dashSpeed<Max_dashSpeed)
 					{
-						dashSpeed+=50*Time.deltaTime;
+						dashSpeed+=75*Time.deltaTime;
 					}
 					else
 					{
@@ -338,6 +348,8 @@ public class PlayerCtroller : MonoBehaviour {
 					KnockBack(20.0f,0.1f,new Vector2(Mathf.Cos(30*Mathf.Deg2Rad),Mathf.Sin(30*Mathf.Deg2Rad)));
 				}
 
+			break;
+			default:
 			break;
 		}	
 		
@@ -541,6 +553,75 @@ public class PlayerCtroller : MonoBehaviour {
 			rb.velocity = FlyDir*flySpeed;
 			GasUse(5);
 		}
-		
+	}
+	// private void OnTriggerEnter2D(Collider2D other)
+	// {
+	// 	if(other.CompareTag("VisionEnemy"))
+	// 	{
+	// 		if(isDash)
+	// 		{
+	// 			other.GetComponent<EnemyAI>().Die();
+	// 		}
+	// 		else
+	// 		{
+	// 			Die();
+	// 		}	
+	// 	}
+
+	// 	if(other.CompareTag("SoundEnemy"))
+	// 	{
+	// 		if(isDash)
+	// 		{
+	// 			other.GetComponent<SoundEnemy>().Die();
+	// 		}
+	// 		else
+	// 		{
+	// 			Die();
+	// 		}
+	// 	}
+	// }
+	private void OnCollisionEnter2D(Collision2D other)
+	{
+		if(other.collider.CompareTag("VisionEnemy"))
+		{
+			if(isDash)
+			{
+				other.collider.GetComponent<EnemyAI>().Die();
+			}
+			else
+			{
+				Die();
+			}	
+		}
+
+		if(other.collider.CompareTag("SoundEnemy"))
+		{
+			if(isDash)
+			{
+				other.collider.GetComponent<SoundEnemy>().Die();
+			}
+			else
+			{
+				Die();
+			}
+		}
+	}
+	void Resurrect()
+	{
+		gameObject.SetActive(true);
+		currentState = PlayerState.Normal;
+	}
+	public void Die()
+	{
+		GameManager.ReloadScene();
+
+		// gameObject.SetActive(false);
+		// rb.velocity = Vector2.zero;
+		// currentGas = 100;
+		// Out_Of_Gas = false;
+		// transform.position = StartPos;
+		// currentState = PlayerState.Idle;
+
+		// Invoke("Resurrect",1.0f);
 	}
 }

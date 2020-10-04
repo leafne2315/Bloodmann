@@ -14,9 +14,18 @@ public class UIFollow : MonoBehaviour
     }
     void Update()
     {
-        Vector2 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
-        rectTransform.position = screenPos + new Vector2(offset.x, offset.y);
+        if(target!=null)
+        {
+            Vector2 screenPos = Camera.main.WorldToScreenPoint(target.transform.position);
+            rectTransform.position = screenPos + new Vector2(offset.x, offset.y);
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+        
 
+        
         // if (screenPos.x > Screen.width || screenPos.x < 0 || screenPos.y > Screen.height || screenPos.y < 0) 
         //     rectTransform.gameObject.SetActive(false);
         // else 

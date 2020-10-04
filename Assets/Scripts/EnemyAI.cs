@@ -19,7 +19,7 @@ public class EnemyAI : MonoBehaviour
     private ViewDetect EnemyView;
     public Transform[] PatrolPoint;
     public int PatrolNum;
-    public enum EnemyState{Patrol,Scan,Alert,Chase,Attack}
+    public enum EnemyState{Patrol,Scan,Alert,Chase,Attack,AfterAttack,MoveBack}
     private EnemyState currentState;
     //public Vector3 MoveDir;
     private float ScanTimer;
@@ -47,7 +47,11 @@ public class EnemyAI : MonoBehaviour
     public float AttackRange_Max;
     public float AttackRange_Min;
     public float AttackCD;
-    private bool canAttack = true; 
+    private bool canAttack = true;
+    //AfterAttack
+    public float holdingTime;
+    private float holdingTimer = 0;
+    public float RebounceSpeed;
     //UI
     public Image AwareUI;
     void Start()
@@ -62,6 +66,8 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        
+
         switch(currentState)
         {
             case EnemyState.Patrol:
@@ -165,9 +171,12 @@ public class EnemyAI : MonoBehaviour
             break;
 */
             case EnemyState.Chase:
-                
-                
+
                 aiPathfind();
+                
+                
+                rb.velocity = transform.right*ChasingSpeed;
+
                 if(Vector2.Distance(transform.position,Target.transform.position)<Random.Range(AttackRange_Min,AttackRange_Max))
                 {
                     if(canAttack)
@@ -177,6 +186,14 @@ public class EnemyAI : MonoBehaviour
                     }
                     
                 }
+                if(Vector2.Distance(transform.position,Target.transform.position)>30.0f)
+                {
+                    currentState = EnemyState.MoveBack;
+                    AlertValue = 0;
+
+                    seeker.StartPath(rb.position,PatrolPoint[0].position,OnPathComplete);
+                    StateLeave_Chase();
+                }                                                                                                                     
                 //rb.velocity = transform.right*10;
                 //transform.right = Vector3.Lerp(transform.right,(EnemyView.PlayerLastPos-transform.position).normalized,0.8f);
                 // if(Vector3.Distance(EnemyView.PlayerLastPos,transform.position)<0.5f && !EnemyView.Warning)
@@ -187,6 +204,7 @@ public class EnemyAI : MonoBehaviour
             break;
 
             case EnemyState.Attack:
+
                 AttackTimer+=Time.deltaTime;
                 if(AttackTimer<preActionTime)
                 {
@@ -200,11 +218,14 @@ public class EnemyAI : MonoBehaviour
                     
                     if(isContactPlayer)
                     {
-                        GetComponent<BoxCollider2D>().isTrigger = true;
+                        
                     }
                     if(isContactGround)
                     {
                         rb.velocity = Vector2.zero;
+                        // currentState = EnemyState.AfterAttack;
+                        // rb.velocity = -AttackDir*RebounceSpeed;
+                        // print("hit ground");
                     }
                 }
                 else
@@ -213,11 +234,72 @@ public class EnemyAI : MonoBehaviour
                     
                     AttackTimer = 0;
                     StartCoroutine(AttackCD_Count());
-                    StateIn_Chase();
+                    currentState = EnemyState.AfterAttack;
+
+                    UpdatePath();
                 }
             break;
 
+            case EnemyState.AfterAttack:
+
+                
+                
+                if(holdingTimer<holdingTime)
+                {
+                    holdingTimer += Time.deltaTime;
+                    rb.velocity = Vector2.Lerp(rb.velocity,Vector2.zero,0.2f);
+                    aiPathfind();
+                }
+                else
+                {
+                    holdingTimer = 0;
+                    StateIn_Chase();
+                }
+                
+
+            break;
+
+            case EnemyState.MoveBack:
+                
+                aiPathfind();
+                rb.velocity = transform.right*speed;
+
+                if(Vector2.Distance(transform.position,PatrolPoint[0].position)<2.0f)
+                {
+                    currentState = EnemyState.Patrol;
+                }
+
+                if(EnemyView.Warning)
+                {
+                    if(AlertValue<100)
+                        AlertValue += AlertIncreasePS*Time.deltaTime;
+                    else
+                    {
+                        AlertValue = 100;
+                        StateIn_Chase();
+                        //EnemyView.SwitchDetectMode("Red");
+                    }
+                }
+                else
+                {
+                    if(AlertValue>0)
+                        AlertValue -= AlertDecreasePS*Time.deltaTime;
+                    else
+                    {
+                        AlertValue = 0;
+                    } 
+                }
+
+                if(EnemyView.RedWarning)
+                {
+                    AlertValue = 100;
+                    StateIn_Chase();
+                }
+
+            break;
+
             default:
+
             break;
         }
         AwareUI.fillAmount = AlertValue/100;
@@ -251,16 +333,23 @@ public class EnemyAI : MonoBehaviour
         {
             reachEndOfPath = false;
         }
-
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint]-rb.position).normalized;
-        transform.right = Vector3.Lerp(transform.right,(Vector3)direction,0.1f);
-        rb.velocity = transform.right*ChasingSpeed;
+        if(isContactGround)
+        {
+            transform.right = Vector3.Lerp(transform.right,(Vector3)direction,0.1f);
+        }
+        else
+        {
+            transform.right = Vector3.Lerp(transform.right,(Vector3)direction,0.1f);
+        }
         
+
         float distance = Vector2.Distance(rb.position,path.vectorPath[currentWaypoint]);
         if(distance<nextWaypointDistance)
         {
             currentWaypoint++;
         }
+
     }
     void StateIn_Chase()
     {
@@ -284,10 +373,14 @@ public class EnemyAI : MonoBehaviour
 	}
     private void OnTriggerExit2D(Collider2D other)
     {
-        GetComponent<BoxCollider2D>().isTrigger = false;
+       
     }
     private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
 	}
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -8,6 +8,8 @@ TagManager:
   - Bush
   - A*points
   - Ground
+  - SoundEnemy
+  - VisionEnemy
   layers:
   - Default
   - TransparentFX
