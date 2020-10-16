@@ -12,10 +12,10 @@ public class PlayerCtroller : MonoBehaviour {
 	public Vector2 FlyDir;
 	public float hp;
 	public float speed;
-	private float moveInput_X;
+	public float moveInput_X;
 	private float moveInput_Y;
 	private float JumpInput;
-	private Rigidbody2D rb;
+	public Rigidbody2D rb;
 	private bool facingRight = true;
 	//偵測
 	private bool isGrounded;
@@ -47,7 +47,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	//空中衝刺
 	public float AirDashTime;
-	[SerializeField]private bool isAirDash;
+	public bool isAirDash;
 	public float AirDashSpeed;
 	public float AirDashCD;
 	[SerializeField]private bool canAirDash = true;
@@ -71,7 +71,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isGhost = false;
 	//
 	//狀態控制
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Idle};
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Idle};
 	public PlayerState currentState;
 	//
 	private float OriginGravity;
@@ -82,6 +82,16 @@ public class PlayerCtroller : MonoBehaviour {
 	public float Gas_MaxValue;
 	public bool Out_Of_Gas;
 	private bool RestoreGas_isOver = true;
+	//
+	//攻擊
+	public bool canAttack = true;
+	public float AttackAniTime = 0.5f;
+	float AttackTimeCount = 0;
+	public float AttackCD = 0.8f;
+	public Transform hitPos;
+	public LayerMask EnemyLayer;
+	Vector3 HitBox_size = new Vector3(0.8f,1.0f,0f);
+	private PlayerState LastState;
 	void Awake()
 	{
 		GameManager = GM.GetComponent<GameManager>();
@@ -101,8 +111,6 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		
-
 		switch(currentState)
 		{
 			case PlayerState.Idle:
@@ -175,6 +183,7 @@ public class PlayerCtroller : MonoBehaviour {
 					ResetGravity();
 					currentState = PlayerState.Normal;
 				}
+
 				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
 				{	
 				
@@ -186,11 +195,13 @@ public class PlayerCtroller : MonoBehaviour {
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;	
 				}
+
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
 				{
 					currentState = PlayerState.BugFly;
 					FlyDir = rb.velocity.normalized;
 				}
+
 				if(Input.GetButtonDown("PS4-x"))
 				{
 					if(!isAttachOnTop)
@@ -349,6 +360,38 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 
 			break;
+
+			case PlayerState.Attack:
+
+				if(isFlying)
+				{
+					FlyDir = new Vector2(moveInput_X,moveInput_Y);
+					rb.velocity = FlyDir *(flySpeed-5);
+					if(AttackTimeCount<AttackAniTime)
+					{
+						AttackTimeCount+=Time.deltaTime;
+					}
+					else
+					{
+						currentState = LastState;
+						AttackTimeCount = 0;
+					}
+				}
+				else
+				{
+					if(AttackTimeCount<AttackAniTime+0.3f)
+					{
+						AttackTimeCount+=Time.deltaTime;
+					}
+					else
+					{
+						currentState = LastState;
+						AttackTimeCount = 0;
+					}
+				}
+
+			break;
+
 			default:
 			break;
 		}	
@@ -395,6 +438,30 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 
+		if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+		{
+			if(canAttack)
+			{
+				canAttack = false;
+				LastState = currentState;
+
+				currentState = PlayerState.Attack;
+				rb.velocity = Vector2.zero;
+
+				StartCoroutine(AttackCD_Count());
+				
+				Collider2D[] hitObjs = Physics2D.OverlapBoxAll((Vector2)hitPos.position,(Vector2)HitBox_size,0.0f,EnemyLayer);
+				if(hitObjs.Length==0)
+				{
+					print("Miss");
+				}
+				foreach(Collider2D c in hitObjs)
+				{
+					print("Hit"+c.name+"!!!!");
+					c.GetComponent<tempGetHit>().isHit = true;
+				}
+			}
+		}
 	}
 	void Flip()
 	{
@@ -429,6 +496,14 @@ public class PlayerCtroller : MonoBehaviour {
 			yield return 0;
 		}
 		canAirDash = true;
+	}
+	IEnumerator AttackCD_Count()
+	{
+		for(float i =0 ; i<=AttackCD ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		canAttack = true;
 	}
 	/*
 	IEnumerator dashCD_Count()
@@ -473,6 +548,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private void OnDrawGizmos()
 	{
 		//Gizmos.DrawWireSphere(GroundCheck.position,checkRadius);
+		Gizmos.DrawWireCube(hitPos.position,HitBox_size);
 	}
 	private void CheckStability()
 	{
@@ -493,6 +569,10 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			Out_Of_Gas = true;
 		}
+	}
+	private void OnTriggerEnter2D(Collider2D other)
+	{
+		print("0");
 	}
 	/*IEnumerator GasRestore()
 	{
@@ -551,7 +631,7 @@ public class PlayerCtroller : MonoBehaviour {
 		else
 		{
 			rb.velocity = FlyDir*flySpeed;
-			GasUse(5);
+			GasUse(30);
 		}
 	}
 	// private void OnTriggerEnter2D(Collider2D other)

@@ -9,8 +9,10 @@ public class camera : MonoBehaviour
 	private Transform target;
 	public BoxCollider2D limitBox;
 	private float offsetX = 1.0f;
-	private float offsetY =2.0f; 
+	private float offsetY =5.0f; 
 
+	public float DistX;
+	public float DistY;
 	private float top;
 	private float btm;
 	private float left;
@@ -46,6 +48,7 @@ public class camera : MonoBehaviour
 			transform.position = new Vector3(target.position.x+offsetX,transform.position.y,transform.position.z);
 		}
 
+		
 		//transform.position = new Vector3(Mathf.Clamp(transform.position.x,left +100,right-100),Mathf.Clamp(transform.position.y,btm+100,top-100),transform.position.z);
 	}
 
