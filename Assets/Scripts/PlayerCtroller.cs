@@ -208,11 +208,11 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						if(!facingRight)
 						{
-							rb.velocity = Vector2.one.normalized*20;
+							rb.velocity = Vector2.one.normalized*JumpForce;
 						}
 						else
 						{
-							rb.velocity = new Vector2(-1,1).normalized*20;
+							rb.velocity = new Vector2(-1,1).normalized*JumpForce;
 						}
 					}
 					else

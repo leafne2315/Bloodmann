@@ -8,9 +8,8 @@ public class camera : MonoBehaviour
 	public Transform player;
 	private Transform target;
 	public BoxCollider2D limitBox;
-	private float offsetX = 1.0f;
-	private float offsetY =5.0f; 
-
+	public float AreaX;
+	public float AreaY; 
 	public float DistX;
 	public float DistY;
 	private float top;
@@ -22,7 +21,7 @@ public class camera : MonoBehaviour
 	{
 		target = player;
 		thisCamera = Camera.main;
-		getLimitDetail();
+		//getLimitDetail();
 	}
 	void Update()
 	{
@@ -31,21 +30,21 @@ public class camera : MonoBehaviour
 	// Update is called once per frame
 	void LateUpdate () 
 	{
-		if(target.position.y-transform.position.y >offsetY)
+		if(target.position.y-transform.position.y >AreaY)
 		{
-			transform.position = new Vector3(transform.position.x,target.position.y-offsetY,transform.position.z);			
+			transform.position = new Vector3(transform.position.x,target.position.y-AreaY,transform.position.z);			
 		}
-		if(target.position.y-transform.position.y <-offsetY)
+		if(target.position.y-transform.position.y <-AreaY)
 		{
-			transform.position = new Vector3(transform.position.x,target.position.y+offsetY,transform.position.z);
+			transform.position = new Vector3(transform.position.x,target.position.y+AreaY,transform.position.z);
 		}
-		if(target.position.x-transform.position.x >offsetX)
+		if(target.position.x-transform.position.x >AreaX)
 		{
-			transform.position = new Vector3(target.position.x-offsetX,transform.position.y,transform.position.z);
+			transform.position = new Vector3(target.position.x-AreaX,transform.position.y,transform.position.z);
 		}
-		if(target.position.x-transform.position.x <-offsetX)
+		if(target.position.x-transform.position.x <-AreaX)
 		{
-			transform.position = new Vector3(target.position.x+offsetX,transform.position.y,transform.position.z);
+			transform.position = new Vector3(target.position.x+AreaX,transform.position.y,transform.position.z);
 		}
 
 		
@@ -59,5 +58,13 @@ public class camera : MonoBehaviour
     	left = limitBox.offset.x - (limitBox.size.x / 2f);
     	right = limitBox.offset.x + (limitBox.size.x /2f);
 	}
-	
+
+	private void OnDrawGizmos()
+	{
+		Vector3 movingArea = new Vector3(2*AreaX,2*AreaY,0.0f);
+		Gizmos.color = Color.cyan;
+		Gizmos.DrawWireCube(transform.position,movingArea);
+		
+	}
+		
 }
