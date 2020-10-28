@@ -4,79 +4,87 @@ using UnityEngine;
 
 public class FloatPhysic : MonoBehaviour
 {
-    float SurfaceHeight;
-    float floatingLine;
+    [SerializeField]float SurfaceHeight;
+    [SerializeField]float OriginHeight;
+    public float noiseScale;
     float floatSpeed;
-    float FlowSpeed;
-    float floatingRange;
-    float Energy;
-    public float Vy_0;
-    private float Ek;
-    private float Eu = 0;
     public GameObject Water;
     Rigidbody2D rb;
-    float BounceDistance;
-    bool sinking;
-    bool canStartCal = false;
+    private float GForce;
+    private float Buoyancy;
+    public float FloatParameter;
+    [SerializeField]private float RisistForce;
+    public float WaterRisistForce;
+    public float MixRisistForce;
+    [Range(0.0f,1.0f)]public float density;
+    [SerializeField]private float OwnSizeHeight;
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
     void Awake()
     {
         SurfaceHeight = Water.transform.GetChild(0).transform.position.y;
+        OriginHeight = SurfaceHeight;
         rb = GetComponent<Rigidbody2D>();
+        OwnSizeHeight = GetComponent<Collider2D>().bounds.size.y;
     }
     void Start()
     {
-        sinking = false;
-        transform.position = new Vector2(transform.position.x,Water.transform.GetChild(0).transform.position.y);
-        StartCoroutine(Waiting());
-        Ek = 0.5f*Mathf.Pow(Vy_0,2); 
-        Energy = Ek;
+        GForce = OwnSizeHeight*density*FloatParameter;
     }
     void FixedUpdate()
     {
-        
+        rb.AddForce(Vector2.down*GForce);
+        rb.AddForce(Vector2.up*Buoyancy);
     }
-    // Update is called once per frame
     void Update()
     {
-        BounceDistanceCal();
-        VelocityCal();
-        print(sinking);
-    }
-    void VelocityCal()
-    {
-
-        float Vy = Mathf.Sqrt((2*(Energy-Eu)));
-        print((2*(Energy-Eu)));
-        //print((2*Energy-Mathf.Pow(BounceDistance,2)));
-        print(Vy);
+        BuoyancyChange();
+        AddRisistance();
+        print("GForce"+GForce);
+        print("Buoyancy"+Buoyancy);
+        Wave();
         
-        if(sinking&&rb.velocity.y>-0.1f)
+        rb.velocity = new Vector2(-2.0f,rb.velocity.y);
+    }
+    
+    void BuoyancyChange()
+    {
+        float SinkDist = SurfaceHeight-(transform.position.y-OwnSizeHeight/2);
+        
+        Buoyancy = Mathf.Clamp(SinkDist,0.0f,OwnSizeHeight)*FloatParameter;
+        
+    }
+    void AddRisistance()
+    {
+        float SinkDist = SurfaceHeight-(transform.position.y-OwnSizeHeight/2);
+
+        if(SinkDist>0)
         {
-            rb.velocity = new Vector2(rb.velocity.x,Vy);
-            sinking =false;
+            if(rb.velocity.y<0)
+            {
+                rb.AddForce(Vector2.up*RisistForce);
+            }
+            else
+            {
+                rb.AddForce(Vector2.down*RisistForce);
+            }
         }
-        else if(!sinking&&rb.velocity.y<0.1f)
+
+        if(SinkDist<OwnSizeHeight && SinkDist>0)
         {
-            sinking = true;
-            rb.velocity = new Vector2(rb.velocity.x,Vy);
+            RisistForce = WaterRisistForce*(SinkDist/OwnSizeHeight);
+        }
+        else
+        {
+            RisistForce = WaterRisistForce;
         }
         
     }
-
-    void BounceDistanceCal()
+    void Wave()
     {
-        float tempDis = transform.position.y-SurfaceHeight;
-
-        BounceDistance = Mathf.Abs(tempDis);
-
-        Eu = 0.5f*Mathf.Pow(BounceDistance,2);
-        print(Eu);
-        
-        
-    }
-    IEnumerator Waiting()
-    {
-        yield return 0;
-        canStartCal = true;
+        SurfaceHeight = OriginHeight + noiseScale * (Mathf.PerlinNoise(Time.time,0.0f)-0.5f);
     }
 }
+   
