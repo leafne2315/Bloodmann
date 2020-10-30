@@ -6,10 +6,11 @@ public class WaveForm : MonoBehaviour
 {
     // Start is called before the first frame update
     float heightScale = 10.0f;
-    float xScale = 1.0f;
+    float xScale = 20.0f;
+    float originHeight;
     void Start()
     {
-        
+        originHeight = transform.position.y;
     }
 
     // Update is called once per frame
@@ -17,7 +18,7 @@ public class WaveForm : MonoBehaviour
     {
         
         Vector3 pos = transform.position;
-        pos.y = heightScale * Mathf.PerlinNoise(Time.time * xScale, 0.0f);
+        pos.y = originHeight * Mathf.Sin(Time.time);
         transform.position = pos;
     }
 }

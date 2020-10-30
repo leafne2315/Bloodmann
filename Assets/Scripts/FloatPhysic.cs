@@ -46,7 +46,7 @@ public class FloatPhysic : MonoBehaviour
         print("Buoyancy"+Buoyancy);
         Wave();
         
-        rb.velocity = new Vector2(-2.0f,rb.velocity.y);
+        // rb.velocity = new Vector2(-2.0f,rb.velocity.y);
     }
     
     void BuoyancyChange()
