@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1589,7 +1589,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 187349186}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 54.8, y: -70.3, z: 0}
+  m_LocalPosition: {x: 54.8, y: -67.2, z: 0}
   m_LocalScale: {x: 1.0079125, y: 1.6447767, z: 1}
   m_Children:
   - {fileID: 2018550194}
@@ -3275,8 +3275,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 386919029}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.85, y: -88.8, z: 0}
-  m_LocalScale: {x: 89.592094, y: 8.3201065, z: 6.035169}
+  m_LocalPosition: {x: 17.55, y: -88.8, z: -1.89}
+  m_LocalScale: {x: 116.46972, y: 8.3201065, z: 9.819746}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 39
@@ -3791,8 +3791,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 444462237}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30.85, y: -37.67, z: 0}
-  m_LocalScale: {x: 89.592094, y: 67.559265, z: 6.035169}
+  m_LocalPosition: {x: 31.241, y: -36.07, z: 0}
+  m_LocalScale: {x: 89.592094, y: 64.1813, z: 6.035169}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 40
@@ -4610,8 +4610,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 538135865}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 15.9, y: -83.43, z: -0.7890625}
-  m_LocalScale: {x: 61.172993, y: 3.5805, z: 1}
+  m_LocalPosition: {x: 19.574, y: -83.43, z: -1.192}
+  m_LocalScale: {x: 111.74969, y: 3.5805, z: 6.620736}
   m_Children:
   - {fileID: 59645478}
   m_Father: {fileID: 0}
@@ -9945,6 +9945,7 @@ GameObject:
   - component: {fileID: 1231507685}
   - component: {fileID: 1231507690}
   - component: {fileID: 1231507686}
+  - component: {fileID: 1231507691}
   m_Layer: 15
   m_Name: Box
   m_TagString: FloatingBox
@@ -10080,6 +10081,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1231507691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1231507684}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d8182f6bfebd4d42957ce48ac48ee5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1246012647
 GameObject:
   m_ObjectHideFlags: 0
@@ -14678,6 +14691,7 @@ MonoBehaviour:
   speed: 10
   moveInput_X: 0
   rb: {fileID: 1903274940}
+  RealMovement: {x: 0, y: 0}
   checkRadius: 0.05
   GroundCheck: {fileID: 445198256}
   FrontCheck: {fileID: 105405310}

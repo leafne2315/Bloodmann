@@ -17,8 +17,8 @@ public class AnimationController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerAni.SetFloat("MoveX",Mathf.Abs(playerCtroller.rb.velocity.x));
-        PlayerAni.SetFloat("MoveY",playerCtroller.rb.velocity.y);
+        PlayerAni.SetFloat("MoveX",Mathf.Abs(playerCtroller.RealMovement.x));
+        PlayerAni.SetFloat("MoveY",playerCtroller.RealMovement.y);
         PlayerAni.SetBool("isFly",playerCtroller.isFlying);
         PlayerAni.SetBool("isDash",playerCtroller.isAirDash);
         if(Mathf.Abs(playerCtroller.rb.velocity.y)>0.5f||Mathf.Abs(playerCtroller.rb.velocity.x)>0.5f)

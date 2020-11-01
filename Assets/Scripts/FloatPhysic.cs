@@ -45,8 +45,6 @@ public class FloatPhysic : MonoBehaviour
         // print("GForce"+GForce);
         // print("Buoyancy"+Buoyancy);
         Wave();
-        
-        rb.velocity = new Vector2(-2.0f,rb.velocity.y);
     }
     
     void BuoyancyChange()

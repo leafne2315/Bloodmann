@@ -16,6 +16,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private float moveInput_Y;
 	private float JumpInput;
 	public Rigidbody2D rb;
+	public Vector2 RealMovement;
 	private bool facingRight = true;
 	//偵測
 	[Header("Detect Settings")]
@@ -103,11 +104,14 @@ public class PlayerCtroller : MonoBehaviour {
 	public LayerMask EnemyLayer;
 	Vector3 HitBox_size = new Vector3(0.8f,1.0f,0f);
 	
+	private ExternalForce Ef;
+
 	void Awake()
 	{
 		GameManager = GM.GetComponent<GameManager>();
 		rb = GetComponent<Rigidbody2D>();
 		OriginGravity = rb.gravityScale;
+		Ef = GetComponent<ExternalForce>();
 	}
 	void Start()
 	{
@@ -136,7 +140,8 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.Normal:
 				
 				CheckStability();
-				rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
+				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
+				rb.velocity = RealMovement + Ef.OtherForce;
 				showflySpeed = rb.velocity.y;
 				checkGravity();
 				AccelControll();
@@ -185,7 +190,15 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.BugFly;
-					FlyDir = rb.velocity.normalized;
+					if(isGrounded)
+					{
+
+						FlyDir = new Vector2(moveInput_X,moveInput_Y).normalized;
+					}
+					else
+					{
+						FlyDir = rb.velocity.normalized;
+					}
 				}
 			break;
 

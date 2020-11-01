@@ -22,7 +22,7 @@ public class PoisonController : MonoBehaviour
         else
         {
             isfall = true;
-            rb.gravityScale = 1.0f;
+            rb.gravityScale = 5.0f;
         }
     }
 
