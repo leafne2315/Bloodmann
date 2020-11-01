@@ -111,6 +111,11 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
+		
+		
+	}
+	void Update()
+	{
 		switch(currentState)
 		{
 			case PlayerState.Idle:
@@ -395,10 +400,6 @@ public class PlayerCtroller : MonoBehaviour {
 			default:
 			break;
 		}	
-		
-	}
-	void Update()
-	{
 		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
 		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
 		isAttachOnTop = Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
@@ -631,7 +632,7 @@ public class PlayerCtroller : MonoBehaviour {
 		else
 		{
 			rb.velocity = FlyDir*flySpeed;
-			GasUse(30);
+			GasUse(40);
 		}
 	}
 	// private void OnTriggerEnter2D(Collider2D other)

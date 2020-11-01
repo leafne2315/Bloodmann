@@ -16,6 +16,8 @@ public class camera : MonoBehaviour
 	private float btm;
 	private float left;
 	private float right;
+	private float cameraInput_Y;
+	private float speed = 10f;
 	// Use this for initialization
 	void Start () 
 	{
@@ -25,8 +27,15 @@ public class camera : MonoBehaviour
 	}
 	void Update()
 	{
-
+		cameraInput_Y = Input.GetAxis("PS4-R-Vertical");
+		transform.position = transform.position + new Vector3(0,cameraInput_Y * speed * Time.deltaTime,0);
+		
+		if(cameraInput_Y == 0)
+		{
+			transform.position = new Vector3(target.position.x, target.position.y, -60f);
+		}
 	}
+
 	// Update is called once per frame
 	void LateUpdate () 
 	{
@@ -64,7 +73,6 @@ public class camera : MonoBehaviour
 		Vector3 movingArea = new Vector3(2*AreaX,2*AreaY,0.0f);
 		Gizmos.color = Color.cyan;
 		Gizmos.DrawWireCube(transform.position,movingArea);
-		
 	}
 		
 }
