@@ -30,10 +30,10 @@ public class camera : MonoBehaviour
 		cameraInput_Y = Input.GetAxis("PS4-R-Vertical");
 		transform.position = transform.position + new Vector3(0,cameraInput_Y * speed * Time.deltaTime,0);
 		
-		if(cameraInput_Y == 0)
-		{
-			transform.position = new Vector3(target.position.x, target.position.y, -60f);
-		}
+		// if(cameraInput_Y == 0)
+		// {
+		// 	transform.position = new Vector3(target.position.x, target.position.y, -60f);
+		// }
 	}
 
 	// Update is called once per frame
