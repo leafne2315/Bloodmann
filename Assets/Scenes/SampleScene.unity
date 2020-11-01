@@ -1790,7 +1790,7 @@ GameObject:
   - component: {fileID: 522714584}
   - component: {fileID: 522714583}
   - component: {fileID: 522714582}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1919,7 +1919,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 522714581}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 27.1, y: -2.4, z: -0.28320312}
+  m_LocalPosition: {x: 55, y: -2.4, z: -0.28320312}
   m_LocalScale: {x: 2.4184, y: 2.4184, z: 2.4184}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7353,6 +7353,7 @@ GameObject:
   - component: {fileID: 1903274938}
   - component: {fileID: 1903274937}
   - component: {fileID: 1903274940}
+  - component: {fileID: 1903274944}
   - component: {fileID: 1903274941}
   - component: {fileID: 1903274942}
   - component: {fileID: 1903274943}
@@ -7466,7 +7467,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.2
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 7
@@ -7497,7 +7498,7 @@ MonoBehaviour:
   UpCheck: {fileID: 205272064}
   WhatIsGround:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 8704
   WhatIsWall:
     serializedVersion: 2
     m_Bits: 512
@@ -7565,6 +7566,24 @@ MonoBehaviour:
   rb: {fileID: 0}
   GeneratePos: {fileID: 1976685123}
   EnemyPrefab: {fileID: 0}
+--- !u!114 &1903274944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1903274936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e58bb50fba67f4499cd06004746573e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MovingGround:
+    serializedVersion: 2
+    m_Bits: 8192
+  GroundCheck: {fileID: 445198256}
+  checkRadius: 0.2
+  OtherForce: {x: 0, y: 0}
 --- !u!1 &1913762060
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,8 @@ public class PlayerCtroller : MonoBehaviour {
 	private Rigidbody2D rb;
 	private bool facingRight = true;
 	//偵測
-	private bool isGrounded;
+	[Header("Detect Factor")]
+	private Collider2D isGrounded;
 	private bool isAttachWall;
 	private bool isAttachOnTop;
 	public float checkRadius;
@@ -26,6 +27,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public LayerMask WhatIsWall;
 	//
 	//跳躍
+	[Header("Jump Settings")]
 	public float JumpForce;
 	public float DoubleJumpForce;
 	public int extraJumps;
@@ -35,6 +37,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[SerializeField]private bool isJumping;
 	//
 	//飛行
+	[Header("Flying Settings")]
 	public bool isFlying; 
 	public float flyPw;
     public float acel;
@@ -43,6 +46,7 @@ public class PlayerCtroller : MonoBehaviour {
     [SerializeField]private float showflySpeed;
 	//
 	//空中衝刺
+	[Header("Air Dash Settings")]
 	public float AirDashTime;
 	[SerializeField]private bool isAirDash;
 	public float AirDashSpeed;
@@ -50,6 +54,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[SerializeField]private bool canAirDash = true;
 	//
 	//衝刺
+	[Header("Dash Settings")]
 	[SerializeField]private Vector2 DashDir;
 	public float Charge_MaxTime;
 	public float Dash_PreTime;
@@ -63,26 +68,33 @@ public class PlayerCtroller : MonoBehaviour {
 	public float Max_dashSpeed;
 	//
 	//被攻擊
+	[Header("UnderAttack Settings")]
 	public float KnockTimer;
 	public bool isHit;
 	public bool isGhost = false;
 	//
 	//狀態控制
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash};
+	[Header("Statement Control")]
 	public PlayerState currentState;
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash};
 	//
 	private float OriginGravity;
 	private float StableValue;
 	//
 	//燃料
+	[Header("Gas Settings")]
 	public float currentGas;
 	public float Gas_MaxValue;
 	public bool Out_Of_Gas;
 	private bool RestoreGas_isOver = true;
+	//
+	//額外的力
+	private Externalforce Ef;
 	void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		OriginGravity = rb.gravityScale;
+		Ef = GetComponent<Externalforce>();
 	}
 	void Start()
 	{		
@@ -102,7 +114,7 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.Normal:
 				
 				CheckStability();
-				rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
+				rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y) + Ef.OtherForce;
 				showflySpeed = rb.velocity.y;
 				checkGravity();
 				AccelControll();
@@ -151,7 +163,19 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.BugFly;
-					FlyDir = rb.velocity.normalized;
+					if(isGrounded)
+					{
+
+						FlyDir = new Vector2(moveInput_X,moveInput_Y).normalized;
+					}
+					else
+					{
+						FlyDir = rb.velocity.normalized;
+					}
+					
+					
+					print(FlyDir);
+					
 				}
 			break;
 
@@ -464,7 +488,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	private void CheckStability()
 	{
-		if(isGrounded)
+		if(!isFlying)
 		{
 			StableValue = 0.9f;
 		}
@@ -530,6 +554,7 @@ public class PlayerCtroller : MonoBehaviour {
 	void FlyMovement()
 	{
 		rb.gravityScale = 0;
+		
 		FlyDir = Vector2.Lerp(FlyDir,new Vector2(moveInput_X,moveInput_Y),0.05f);
 		if(Input.GetButton("PS4-R2"))
 		{

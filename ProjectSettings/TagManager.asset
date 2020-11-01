@@ -9,6 +9,7 @@ TagManager:
   - A*points
   - Ground
   - Enemy
+  - FloatingBox
   layers:
   - Default
   - TransparentFX
@@ -23,7 +24,7 @@ TagManager:
   - Wall
   - Player
   - ViewEnemy
-  - 
+  - FloatingObj
   - 
   - 
   - 
