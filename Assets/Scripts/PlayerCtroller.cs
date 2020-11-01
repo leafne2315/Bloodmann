@@ -18,6 +18,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public Rigidbody2D rb;
 	private bool facingRight = true;
 	//偵測
+	[Header("Detect Settings")]
 	private bool isGrounded;
 	private bool isAttachWall;
 	private bool isAttachOnTop;
@@ -29,6 +30,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public LayerMask WhatIsWall;
 	//
 	//跳躍
+	[Header("Jump Settings")]
 	public float JumpForce;
 	public float DoubleJumpForce;
 	public int extraJumps;
@@ -38,6 +40,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[SerializeField]private bool isJumping;
 	//
 	//飛行
+	[Header("Flying Settings")]
 	public bool isFlying; 
 	public float flyPw;
     public float acel;
@@ -46,6 +49,7 @@ public class PlayerCtroller : MonoBehaviour {
     [SerializeField]private float showflySpeed;
 	//
 	//空中衝刺
+	[Header("AirDash Settings")]
 	public float AirDashTime;
 	public bool isAirDash;
 	public float AirDashSpeed;
@@ -53,6 +57,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[SerializeField]private bool canAirDash = true;
 	//
 	//衝刺
+	[Header("Dash Settings")]
 	[SerializeField]private Vector2 DashDir;
 	public float Charge_MaxTime;
 	public float Dash_PreTime;
@@ -66,24 +71,30 @@ public class PlayerCtroller : MonoBehaviour {
 	public float Max_dashSpeed;
 	//
 	//被攻擊
+	[Header("UnderAttack Settings")]
 	public float KnockTimer;
 	public bool isHit;
 	public bool isGhost = false;
 	//
 	//狀態控制
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Idle};
+	[Header("Statement Settings")]
 	public PlayerState currentState;
+	private PlayerState LastState;
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Idle};
 	//
+	[Header("??? Settings")]
 	private float OriginGravity;
 	private float StableValue;
 	//
 	//燃料
+	[Header("Gas Settings")]
 	public float currentGas;
 	public float Gas_MaxValue;
 	public bool Out_Of_Gas;
 	private bool RestoreGas_isOver = true;
 	//
 	//攻擊
+	[Header("Attack Settings")]
 	public bool canAttack = true;
 	public float AttackAniTime = 0.5f;
 	float AttackTimeCount = 0;
@@ -91,7 +102,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public Transform hitPos;
 	public LayerMask EnemyLayer;
 	Vector3 HitBox_size = new Vector3(0.8f,1.0f,0f);
-	private PlayerState LastState;
+	
 	void Awake()
 	{
 		GameManager = GM.GetComponent<GameManager>();
@@ -399,7 +410,8 @@ public class PlayerCtroller : MonoBehaviour {
 
 			default:
 			break;
-		}	
+		}
+
 		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
 		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
 		isAttachOnTop = Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
@@ -548,7 +560,7 @@ public class PlayerCtroller : MonoBehaviour {
     }
 	private void OnDrawGizmos()
 	{
-		//Gizmos.DrawWireSphere(GroundCheck.position,checkRadius);
+		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
 		Gizmos.DrawWireCube(hitPos.position,HitBox_size);
 	}
 	private void CheckStability()
@@ -570,10 +582,6 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			Out_Of_Gas = true;
 		}
-	}
-	private void OnTriggerEnter2D(Collider2D other)
-	{
-		print("0");
 	}
 	/*IEnumerator GasRestore()
 	{

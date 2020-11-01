@@ -6,14 +6,24 @@ public class PoisonGenerator : MonoBehaviour
 {
     public Transform GeneratePos;
     public GameObject Poison;
+    private GameObject newPoison;
+    private bool generateNext;
+
     void Start()
     {
-        InvokeRepeating("Launch", 0f , 0.8f);
+        InvokeRepeating("Launch",0.5f,3.5f);
     }
+    void Update()
+    {
+    
 
+        
+    }
     // Update is called once per frame
     void Launch()
     {
-        Instantiate(Poison, GeneratePos.transform.position, Quaternion.identity);
+        newPoison = Instantiate(Poison, GeneratePos.transform.position, Quaternion.identity);
     }
+   
+    
 }

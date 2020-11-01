@@ -4,20 +4,26 @@ using UnityEngine;
 
 public class PoisonController : MonoBehaviour
 {
-     void Start()
-     {
-   
-     }
-     void Update()
-     {
-   
-     }
-
-    void OnCollisionEnter2D(Collision2D other)
+    public float stayTime = 2.0f;
+    private float Timer = 0;
+    public bool isfall;
+    private Rigidbody2D rb;
+    void Start()
     {
-        if (other.collider.CompareTag("Ground"))
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0;
+    }
+    void Update()
+    {
+        if(Timer<stayTime)
         {
-            Destroy(gameObject);
+            Timer += Time.deltaTime;
+        }
+        else
+        {
+            isfall = true;
+            rb.gravityScale = 1.0f;
         }
     }
+
 }

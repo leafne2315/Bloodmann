@@ -65,7 +65,7 @@ public class camera : MonoBehaviour
 
 			case CameraState.Look:
 
-				float distToTargetY = Mathf.Abs(transform.position.y-target.transform.position.y);
+				float distToTargetY = Mathf.Abs(transform.position.y-OriginPos.y);
 				if(distToTargetY<WatchingAreaY)
 				{
 					transform.position += new Vector3(0,cameraInput_Y * speed * Time.deltaTime,0);
