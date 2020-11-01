@@ -8,7 +8,7 @@ public class PoisonGenerator : MonoBehaviour
     public GameObject Poison;
     void Start()
     {
-        InvokeRepeating("Launch", 0, 0.8f);
+        InvokeRepeating("Launch", 0f , 0.8f);
     }
 
     // Update is called once per frame
