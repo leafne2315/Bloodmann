@@ -4026,9 +4026,13 @@ MonoBehaviour:
   player: {fileID: 1903274939}
   limitBox: {fileID: 1114431494}
   AreaX: 2
-  AreaY: 10
+  AreaY: 5
   DistX: 0
   DistY: 4
+  speed: 20
+  BackSpeed: 40
+  WatchingAreaY: 10
+  currentState: 0
 --- !u!114 &534669907
 MonoBehaviour:
   m_ObjectHideFlags: 0
