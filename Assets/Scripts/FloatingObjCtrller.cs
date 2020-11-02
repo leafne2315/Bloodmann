@@ -6,6 +6,7 @@ public class FloatingObjCtrller : MonoBehaviour
 {
     // Start is called before the first frame update
     private Rigidbody2D rb;
+    public float speed;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -14,7 +15,7 @@ public class FloatingObjCtrller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = new Vector2(-2,rb.velocity.y);
+        rb.velocity = new Vector2(-speed,rb.velocity.y);
     }
     
     // void OnCollisionEnter2D(Collision2D other)
