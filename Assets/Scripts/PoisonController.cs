@@ -25,5 +25,12 @@ public class PoisonController : MonoBehaviour
             rb.gravityScale = 5.0f;
         }
     }
-
+    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("Water"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

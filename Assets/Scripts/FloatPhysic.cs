@@ -24,6 +24,7 @@ public class FloatPhysic : MonoBehaviour
     /// </summary>
     void Awake()
     {
+        Water = GameObject.Find("Water");
         SurfaceHeight = Water.transform.GetChild(0).transform.position.y;
         OriginHeight = SurfaceHeight;
         rb = GetComponent<Rigidbody2D>();

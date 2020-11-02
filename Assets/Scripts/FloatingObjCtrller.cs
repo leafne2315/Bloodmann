@@ -16,4 +16,20 @@ public class FloatingObjCtrller : MonoBehaviour
     {
         rb.velocity = new Vector2(-2,rb.velocity.y);
     }
+    
+    // void OnCollisionEnter2D(Collision2D other)
+    // {
+    //     if(other.collider.CompareTag("Ground"))
+    //     {
+    //         Destroy(gameObject,0.2f);
+    //     }
+    // }
+    
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.CompareTag("BoxDestroy"))
+        {
+            Destroy(gameObject,0.2f);
+        }
+    }
 }

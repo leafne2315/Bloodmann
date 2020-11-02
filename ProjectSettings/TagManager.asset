@@ -4,13 +4,14 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Sea
   - Bush
   - A*points
   - Ground
   - SoundEnemy
   - VisionEnemy
   - FloatingBox
+  - Water
+  - BoxDestroy
   layers:
   - Default
   - TransparentFX
