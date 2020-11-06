@@ -17,7 +17,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private float JumpInput;
 	public Rigidbody2D rb;
 	public Vector2 RealMovement;
-	private bool facingRight = true;
+	public bool facingRight = true;
 	//偵測
 	[Header("Detect Settings")]
 	private bool isGrounded;
