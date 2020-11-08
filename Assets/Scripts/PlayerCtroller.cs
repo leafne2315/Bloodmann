@@ -41,8 +41,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[SerializeField]private bool isJumping;
 	//
 	//飛行
-	[Header("Flying Settings")]
-	public bool isFlying; 
+	[Header("Flying Settings")] 
 	public float flyPw;
     public float acel;
 	public float flySpeed;
@@ -80,9 +79,11 @@ public class PlayerCtroller : MonoBehaviour {
 	//狀態控制
 	[Header("Statement Settings")]
 	public PlayerState currentState;
-	private PlayerState LastState;
+	public PlayerState LastState;
 	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Idle};
 	private bool canAttach = true;
+	public bool isFlying;
+	public bool isStill;
 	[Range(0.0f,0.5f)]public float Attach_IntervalTime;
 	//
 	[Header("??? Settings")]
@@ -435,6 +436,7 @@ public class PlayerCtroller : MonoBehaviour {
 		isAttachOnTop = Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
 		
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
+		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
 
 		CheckStability();
 		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
@@ -457,7 +459,7 @@ public class PlayerCtroller : MonoBehaviour {
 			// }
 		}
 
-		if(!isAttachWall)
+		if(!isAttachWall && currentState!=PlayerState.Idle)
 		{
 			if(facingRight==false&&moveInput_X>0)
 			{
