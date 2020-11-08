@@ -18528,6 +18528,7 @@ MonoBehaviour:
   isHit: 0
   isGhost: 0
   currentState: 0
+  Attach_IntervalTime: 0.02
   currentGas: 100
   Gas_MaxValue: 100
   Out_Of_Gas: 0

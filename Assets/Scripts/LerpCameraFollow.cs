@@ -27,7 +27,10 @@ public class LerpCameraFollow : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        transform.position = Vector3.SmoothDamp(transform.position, Target.position + offset , ref cameraVelocity, SmoothTime);
+        float positionX = Mathf.SmoothDamp(transform.position.x,Target.position.x+offset.x,ref cameraVelocity.x,SmoothTime);
+        float positionY = Mathf.SmoothDamp(transform.position.y,Target.position.y+offset.y,ref cameraVelocity.y,0.2f);
+        transform.position = new Vector3(positionX,positionY,offset.z);
+        //transform.position = Vector3.SmoothDamp(transform.position, Target.position + offset , ref cameraVelocity, SmoothTime);
     }
     void Update()
     {

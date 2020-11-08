@@ -82,6 +82,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public PlayerState currentState;
 	private PlayerState LastState;
 	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Idle};
+	private bool canAttach = true;
+	[Range(0.0f,0.5f)]public float Attach_IntervalTime;
 	//
 	[Header("??? Settings")]
 	private float OriginGravity;
@@ -166,7 +168,7 @@ public class PlayerCtroller : MonoBehaviour {
 				// 	RestoreGas();
 				// }
 				
-				if(isAttachWall&&!isGrounded)
+				if(isAttachWall&&!isGrounded&&canAttach)
 				{
 					currentState = PlayerState.Attach;
 					rb.gravityScale = 0;
@@ -211,6 +213,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					ResetGravity();
 					currentState = PlayerState.Normal;
+					StartCoroutine(IntervalTime_Count());
 				}
 
 				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
@@ -228,6 +231,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
 				{
 					currentState = PlayerState.BugFly;
+					StartCoroutine(IntervalTime_Count());
 					FlyDir = rb.velocity.normalized;
 				}
 
@@ -249,6 +253,7 @@ public class PlayerCtroller : MonoBehaviour {
 						rb.velocity = Vector2.down*10;
 					}
 					currentState = PlayerState.Normal;
+					StartCoroutine(IntervalTime_Count());
 				}
 
 			break;
@@ -531,6 +536,15 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		canAttack = true;
 	}
+	IEnumerator IntervalTime_Count()
+	{
+		canAttach = false;
+		for(float i =0 ; i<=Attach_IntervalTime ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		canAttach = true;
+	}
 	/*
 	IEnumerator dashCD_Count()
 	{
@@ -596,24 +610,7 @@ public class PlayerCtroller : MonoBehaviour {
 			Out_Of_Gas = true;
 		}
 	}
-	/*IEnumerator GasRestore()
-	{
-		yield return new WaitForSeconds(0.1f);
-
-		if(currentGas<Gas_MaxValue)
-		{
-			currentGas+=20*0.1f;
-
-			if(Out_Of_Gas)
-				Out_Of_Gas = false;	
-		}
-		else
-		{
-			currentGas = Gas_MaxValue;
-		}
-		RestoreGas_isOver = true;
-		
-	}*/
+	
 	void RestoreGas()
 	{
 		if(currentGas<Gas_MaxValue)
