@@ -19,6 +19,4 @@ public class GasGasGas : MonoBehaviour
     {
         GasBar.fillAmount = playerCtrScript.currentGas/playerCtrScript.Gas_MaxValue;
     }
-
-    // Update is called once per frame
 }

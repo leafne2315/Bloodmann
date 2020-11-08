@@ -16,7 +16,7 @@ public class SoundEnemy : MonoBehaviour
     public float redDetectTime;
     private Rigidbody2D rb;
     private PlayerCtroller PlayerCtroller; 
-    private Die_temp Die_temp;
+    //private Die_temp Die_temp;
     public Vector3 PlayerLastPos;
     private Vector2 playerDir;
     public float speed;
@@ -28,7 +28,7 @@ public class SoundEnemy : MonoBehaviour
     void Start()
     {
         PlayerCtroller = GameObject.Find("Player").GetComponent<PlayerCtroller>();
-        Die_temp = GameObject.Find("Player").GetComponent<Die_temp>();
+        //Die_temp = GameObject.Find("Player").GetComponent<Die_temp>();
         rb = GetComponent<Rigidbody2D>();
         soundenemyStartPos = transform.position;
     }

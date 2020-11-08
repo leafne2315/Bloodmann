@@ -18,7 +18,7 @@ public class BetterJump : MonoBehaviour {
 		{
 			rb.velocity += Vector2.up*Physics2D.gravity.y*(fallMultiplier-1)*Time.deltaTime;
 		}
-		else if(rb.velocity.y>0&&!Input.GetKey(KeyCode.Space))
+		else if(rb.velocity.y>0&&!Input.GetButton("PS4-x"))
 		{
 			rb.velocity+=Vector2.up*Physics2D.gravity.y*(lowJumpMultuplier-1)*Time.deltaTime;
 		}
