@@ -80,7 +80,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Idle};
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Throw,Idle};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -383,6 +383,10 @@ public class PlayerCtroller : MonoBehaviour {
 						ResetGravity();			
 					}
 				}
+			break;
+
+			case PlayerState.Throw:
+				
 			break;
 
 			case PlayerState.GetHit:

@@ -44,6 +44,7 @@ public class LerpCameraFollow : MonoBehaviour
             case CameraState.Normal:
 
                 CameraMainMove();
+
                 if(isMovingCamera&&PlayerScript.isStill)
 				{
 					OriginPos = transform.position;
@@ -114,7 +115,7 @@ public class LerpCameraFollow : MonoBehaviour
     void CameraMainMove()
     {
         float positionX = Mathf.SmoothDamp(transform.position.x,Target.position.x+offset.x,ref cameraVelocity.x,SmoothTime);
-        float positionY = Mathf.SmoothDamp(transform.position.y,Target.position.y+offset.y,ref cameraVelocity.y,0.2f);
+        float positionY = Mathf.SmoothDamp(transform.position.y,Target.position.y+offset.y,ref cameraVelocity.y,0.1f);
         transform.position = new Vector3(positionX,positionY,offset.z);
     }
     void DoublePivot()
