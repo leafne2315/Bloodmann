@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThrowTest : MonoBehaviour
+public class ThrowingCurve : MonoBehaviour
 {
     // Start is called before the first frame update
     LineRenderer Lr;
@@ -15,7 +15,6 @@ public class ThrowTest : MonoBehaviour
     void Awake()
     {
         Lr = GetComponent<LineRenderer>();
-
     }
     void Start()
     {
@@ -24,7 +23,6 @@ public class ThrowTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         RenderCurve();
     }
     void RenderCurve()
@@ -67,9 +65,9 @@ public class ThrowTest : MonoBehaviour
         float y = x * Mathf.Tan(radianAngle)-((g*x*x)/(2*Tveclocity*Tveclocity*Mathf.Cos(radianAngle)*Mathf.Cos(radianAngle)));
 
         return new Vector3(x,y) + transform.position;
-    } 
-    void AngleChange()
+    }
+    public void ThwAngleChange(float tempAg)
     {
-        
+        angle = tempAg;
     }
 }

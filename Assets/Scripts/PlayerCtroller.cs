@@ -324,7 +324,7 @@ public class PlayerCtroller : MonoBehaviour {
 							isDash = true;
 						
 							//Mouse_DirCache();
-							Joysticks_DirCache();
+							GetDashDir();
 						}
 
 						dashTimer = 0;
@@ -434,6 +434,7 @@ public class PlayerCtroller : MonoBehaviour {
 			default:
 			break;
 		}
+
 
 		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
 		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
@@ -631,9 +632,15 @@ public class PlayerCtroller : MonoBehaviour {
 			currentGas = Gas_MaxValue;
 		}
 	}
-	void Joysticks_DirCache()
+	Vector3 Joysticks_Dir()
 	{
-		//Vector3 L_Joy = new Vector3(Input.GetAxis("PS4-L-Horizontal"),Input.GetAxis("PS4-L-Vertical"),0.0f);
+		Vector3 L_Joy = new Vector3(Input.GetAxis("PS4-L-Horizontal"),Input.GetAxis("PS4-L-Vertical"),0.0f);
+		L_Joy = L_Joy.normalized;
+
+		return L_Joy;
+	}
+	void GetDashDir()
+	{
 		DashDir = Arrow.GetComponent<ArrowShow>().LastDir;
 	}
 	void Mouse_DirCache()

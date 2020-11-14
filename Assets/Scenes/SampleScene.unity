@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.4507439, g: 0.50068533, b: 0.5748293, a: 1}
+  m_IndirectSpecularColor: {r: 0.45074368, g: 0.5006841, b: 0.5748282, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12473,7 +12473,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1224599932}
-  - component: {fileID: 1224599931}
+  - component: {fileID: 1224599934}
   - component: {fileID: 1224599933}
   m_Layer: 0
   m_Name: CurveRenderer
@@ -12482,25 +12482,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1224599931
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1224599930}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ae37f2fb25a5a44a9d7ca8c5d690d1c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Tveclocity: 15
-  angle: 45
-  resolution: 30
-  g: 10
-  WhatIsObstacle:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!4 &1224599932
 Transform:
   m_ObjectHideFlags: 0
@@ -12608,6 +12589,25 @@ LineRenderer:
     generateLightingData: 0
   m_UseWorldSpace: 1
   m_Loop: 0
+--- !u!114 &1224599934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1224599930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 374d357cd36325a4b9e52f833f0f7f7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Tveclocity: 15
+  angle: 45
+  resolution: 30
+  g: 10
+  WhatIsObstacle:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &1224995805
 GameObject:
   m_ObjectHideFlags: 0
