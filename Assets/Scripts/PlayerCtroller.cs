@@ -86,10 +86,6 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isStill;
 	[Range(0.0f,0.5f)]public float Attach_IntervalTime;
 	//
-	[Header("??? Settings")]
-	private float OriginGravity;
-	private float StableValue;
-	//
 	//燃料
 	[Header("Gas Settings")]
 	public float currentGas;
@@ -106,7 +102,17 @@ public class PlayerCtroller : MonoBehaviour {
 	public Transform hitPos;
 	public LayerMask EnemyLayer;
 	Vector3 HitBox_size = new Vector3(0.8f,1.0f,0f);
-	
+	//
+	[Header("Throwing Settings")]
+	public ThrowingCurve ThrowScript;
+	private Vector3 ThrowDir;
+	public Vector3 Default_ThrowDir;
+	private Vector3 RotateAngleSpeed;
+	public float smoothTime = 0.05f;
+	//
+	[Header("??? Settings")]
+	private float OriginGravity;
+	private float StableValue;
 	private ExternalForce Ef;
 
 	void Awake()
@@ -144,6 +150,7 @@ public class PlayerCtroller : MonoBehaviour {
 				
 				CheckStability();
 				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
+				RealMovementFix();
 				rb.velocity = RealMovement + Ef.OtherForce;
 				showflySpeed = rb.velocity.y;
 				checkGravity();
@@ -387,6 +394,15 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.Throw:
 				
+				getThrowDir();
+				float ThrowAngle = Vector3.SignedAngle(ThrowDir,Vector3.right,Vector3.back);
+				ThrowScript.ThwAngleChange(ThrowAngle);
+
+				if(Input.GetButtonUp("PS4-L2"))
+				{
+					currentState = LastState;
+				}
+
 			break;
 
 			case PlayerState.GetHit:
@@ -500,6 +516,15 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 			}
 		}
+
+		if(Input.GetButtonDown("PS4-L2"))//從任何階段進入Throw階段
+		{
+			LastState = currentState;
+			ThrowDir = Default_ThrowDir;
+
+			currentState = PlayerState.Throw;
+		}
+
 	}
 	void Flip()
 	{
@@ -507,6 +532,13 @@ public class PlayerCtroller : MonoBehaviour {
 		Vector3 Scaler = transform.localScale;
 		Scaler.x*=-1;
 		transform.localScale = Scaler;
+	}
+	void RealMovementFix()
+	{
+		if(Mathf.Abs(RealMovement.x)<1.0f)
+		{
+			RealMovement.x = 0.0f;
+		}
 	}
 	public void KnockBack(float KnockPwr,float KnockDur,Vector2 KnockDir)
 	{
@@ -726,6 +758,16 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		gameObject.SetActive(true);
 		currentState = PlayerState.Normal;
+	}
+	void getThrowDir()
+	{
+		Vector3 LJoyinput = Joysticks_Dir();
+
+		if(LJoyinput!=Vector3.zero)
+		{
+			ThrowDir = Vector3.SmoothDamp(ThrowDir,LJoyinput,ref RotateAngleSpeed,smoothTime);
+		}
+		
 	}
 	public void Die()
 	{
