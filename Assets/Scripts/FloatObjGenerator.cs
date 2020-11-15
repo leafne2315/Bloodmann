@@ -25,14 +25,14 @@ public class FloatObjGenerator : MonoBehaviour
     void LaunchBox()
     {
         int RandomNum = Random.Range(0,FloatObj.Length);
-        print(RandomNum);
+        // print(RandomNum);
 
         Instantiate(FloatObj[RandomNum],GeneratePos.position,Quaternion.identity);
         canGenerate = false;
 
         int RandomValue = Random.Range(-3,6);
         GenerateFrequency = 6.0f + 0.5f * RandomValue;
-        print(GenerateFrequency+"sec");
+        // print(GenerateFrequency+"sec");
         StartCoroutine(Generate_Count());
     }
 

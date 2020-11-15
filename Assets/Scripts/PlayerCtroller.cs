@@ -106,9 +106,13 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
 	private Vector3 ThrowDir;
-	public Vector3 Default_ThrowDir;
 	private Vector3 RotateAngleSpeed;
-	public float smoothTime = 0.05f;
+	private bool StartThrow;
+	private float ThrowTimer;
+	public float ThrowWaitingTime = 0.03f;
+	public float AimSmoothTime = 0.05f;
+	public GameObject StonePref;
+	public Transform ThrowPos;
 	//
 	[Header("??? Settings")]
 	private float OriginGravity;
@@ -400,7 +404,13 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetButtonUp("PS4-L2"))
 				{
+					GameObject stone = Instantiate(StonePref,ThrowPos.position,Quaternion.identity);
+					stone.GetComponent<StoneController>().getDir(ThrowDir);
+					StopCoroutine(ThrowTime_Count());
 					currentState = LastState;
+
+					LineRenderer Lr = ThrowScript.GetComponent<LineRenderer>();
+					Lr.enabled = false;
 				}
 
 			break;
@@ -520,11 +530,27 @@ public class PlayerCtroller : MonoBehaviour {
 		if(Input.GetButtonDown("PS4-L2"))//從任何階段進入Throw階段
 		{
 			LastState = currentState;
-			ThrowDir = Default_ThrowDir;
+			ThrowDir = Default_ThrowDir();
+			// print(ThrowDir);
 
+			StartCoroutine(ThrowTime_Count());
 			currentState = PlayerState.Throw;
 		}
 
+	}
+	Vector3 Default_ThrowDir()
+	{
+		Vector3 dir;
+		if(facingRight)
+		{
+			dir = new Vector3(1.0f,1.0f,0).normalized;
+		}
+		else
+		{
+			dir = new Vector3(-1.0f,1.0f,0).normalized;
+		}
+
+		return dir;
 	}
 	void Flip()
 	{
@@ -583,6 +609,18 @@ public class PlayerCtroller : MonoBehaviour {
 			yield return 0;
 		}
 		canAttach = true;
+	}
+	IEnumerator ThrowTime_Count()
+	{
+		StartThrow = false;
+		for(float i =0 ; i<=ThrowWaitingTime ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		StartThrow = true;
+
+		LineRenderer Lr = ThrowScript.GetComponent<LineRenderer>();
+		Lr.enabled = true;
 	}
 	/*
 	IEnumerator dashCD_Count()
@@ -765,7 +803,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 		if(LJoyinput!=Vector3.zero)
 		{
-			ThrowDir = Vector3.SmoothDamp(ThrowDir,LJoyinput,ref RotateAngleSpeed,smoothTime);
+			ThrowDir = Vector3.SmoothDamp(ThrowDir,LJoyinput,ref RotateAngleSpeed,AimSmoothTime);
 		}
 		
 	}
