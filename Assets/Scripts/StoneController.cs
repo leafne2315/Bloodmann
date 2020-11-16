@@ -15,14 +15,13 @@ public class StoneController : MonoBehaviour
     }
     void Start()
     {
-        
+        rb.velocity = Dir*Speed;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         ZA_Gravity();
-        
     }
     public void getDir(Vector3 throwDir)
     {
@@ -30,6 +29,6 @@ public class StoneController : MonoBehaviour
     }
     void ZA_Gravity()
     {
-        rb.AddForce(Vector2.down*gravity);
+        rb.AddForce(Vector2.down*rb.mass*gravity);
     }
 }

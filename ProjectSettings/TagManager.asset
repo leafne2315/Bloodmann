@@ -12,6 +12,7 @@ TagManager:
   - FloatingBox
   - Water
   - BoxDestroy
+  - Sea
   layers:
   - Default
   - TransparentFX
@@ -29,7 +30,7 @@ TagManager:
   - NoMove(Player)
   - NoMove(Enemy)
   - FloatingObj
-  - 
+  - ThrowingObj
   - 
   - 
   - 

@@ -113,6 +113,10 @@ public class PlayerCtroller : MonoBehaviour {
 	public float AimSmoothTime = 0.05f;
 	public GameObject StonePref;
 	public Transform ThrowPos;
+	public float ThrowEndTime;
+	public float ThrowCD;
+	private bool canThrow = true;
+	private bool isThrowing = false;
 	//
 	[Header("??? Settings")]
 	private float OriginGravity;
@@ -402,15 +406,30 @@ public class PlayerCtroller : MonoBehaviour {
 				float ThrowAngle = Vector3.SignedAngle(ThrowDir,Vector3.right,Vector3.back);
 				ThrowScript.ThwAngleChange(ThrowAngle);
 
-				if(Input.GetButtonUp("PS4-L2"))
+				if(Input.GetButtonUp("PS4-O")&&!isThrowing)
 				{
-					GameObject stone = Instantiate(StonePref,ThrowPos.position,Quaternion.identity);
-					stone.GetComponent<StoneController>().getDir(ThrowDir);
-					StopCoroutine(ThrowTime_Count());
-					currentState = LastState;
+					isThrowing = true;
+					ThrowObj();
 
+					StartCoroutine(ThrowCD_Count());
+	
 					LineRenderer Lr = ThrowScript.GetComponent<LineRenderer>();
 					Lr.enabled = false;
+				}
+
+				if(isThrowing)
+				{
+					if(ThrowTimer<ThrowEndTime)
+					{
+						ThrowTimer+=Time.deltaTime;
+						//執行投擲動畫
+					}
+					else
+					{
+						ThrowTimer = 0;
+						currentState = LastState;
+						isThrowing = false;
+					}
 				}
 
 			break;
@@ -527,14 +546,18 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 
-		if(Input.GetButtonDown("PS4-L2"))//從任何階段進入Throw階段
+		if(Input.GetButtonDown("PS4-O"))//從任何階段進入Throw階段
 		{
-			LastState = currentState;
-			ThrowDir = Default_ThrowDir();
-			// print(ThrowDir);
+			if(canThrow)
+			{
+				LastState = currentState;
+				ThrowDir = Default_ThrowDir();
+				// print(ThrowDir);
 
-			StartCoroutine(ThrowTime_Count());
-			currentState = PlayerState.Throw;
+				StartCoroutine(ThrowTime_Count());
+				currentState = PlayerState.Throw;
+			}
+			
 		}
 
 	}
@@ -610,6 +633,15 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		canAttach = true;
 	}
+	IEnumerator ThrowCD_Count()
+	{
+		canThrow = false;
+		for(float i =0 ; i<=ThrowCD ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		canThrow = true;
+	}
 	IEnumerator ThrowTime_Count()
 	{
 		StartThrow = false;
@@ -621,6 +653,12 @@ public class PlayerCtroller : MonoBehaviour {
 
 		LineRenderer Lr = ThrowScript.GetComponent<LineRenderer>();
 		Lr.enabled = true;
+	}
+	void ThrowObj()
+	{
+		GameObject stone = Instantiate(StonePref,ThrowPos.position,Quaternion.identity);
+		stone.GetComponent<StoneController>().getDir(ThrowDir);
+		StopCoroutine(ThrowTime_Count());
 	}
 	/*
 	IEnumerator dashCD_Count()
@@ -662,11 +700,6 @@ public class PlayerCtroller : MonoBehaviour {
             acel = 1.2f;
         }
     }
-	private void OnDrawGizmos()
-	{
-		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
-		Gizmos.DrawWireCube(hitPos.position,HitBox_size);
-	}
 	private void CheckStability()
 	{
 		if(isGrounded)
@@ -705,6 +738,11 @@ public class PlayerCtroller : MonoBehaviour {
 	Vector3 Joysticks_Dir()
 	{
 		Vector3 L_Joy = new Vector3(Input.GetAxis("PS4-L-Horizontal"),Input.GetAxis("PS4-L-Vertical"),0.0f);
+		if(Vector3.Magnitude(L_Joy)<0.2f)
+		{
+			L_Joy = Vector3.zero;
+		}
+
 		L_Joy = L_Joy.normalized;
 
 		return L_Joy;
@@ -735,6 +773,11 @@ public class PlayerCtroller : MonoBehaviour {
 			rb.velocity = FlyDir*flySpeed;
 			GasUse(40);
 		}
+	}
+	private void OnDrawGizmos()
+	{
+		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
+		Gizmos.DrawWireCube(hitPos.position,HitBox_size);
 	}
 	// private void OnTriggerEnter2D(Collider2D other)
 	// {

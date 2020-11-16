@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.4507439, g: 0.50068533, b: 0.5748293, a: 1}
+  m_IndirectSpecularColor: {r: 0.45074368, g: 0.5006841, b: 0.5748282, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -18854,6 +18854,8 @@ MonoBehaviour:
   StonePref: {fileID: 4469414407509857159, guid: 3139595cb819594438f83f223176f348,
     type: 3}
   ThrowPos: {fileID: 105405310}
+  ThrowEndTime: 0.7
+  ThrowCD: 1.2
 --- !u!114 &1903274942
 MonoBehaviour:
   m_ObjectHideFlags: 0
