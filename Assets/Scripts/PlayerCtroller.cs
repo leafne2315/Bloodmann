@@ -429,6 +429,7 @@ public class PlayerCtroller : MonoBehaviour {
 						ThrowTimer = 0;
 						currentState = LastState;
 						isThrowing = false;
+						//ThrowDir = Default_ThrowDir();//重置回預設方向
 					}
 				}
 
@@ -554,8 +555,12 @@ public class PlayerCtroller : MonoBehaviour {
 				ThrowDir = Default_ThrowDir();
 				// print(ThrowDir);
 
-				StartCoroutine(ThrowTime_Count());
+				StartCoroutine(showLine_afterFrame());
+				// LineRenderer Lr = ThrowScript.GetComponent<LineRenderer>();
+				// Lr.enabled = true;
+
 				currentState = PlayerState.Throw;
+				canThrow = false;
 			}
 			
 		}
@@ -642,23 +647,22 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		canThrow = true;
 	}
-	IEnumerator ThrowTime_Count()
+	IEnumerator showLine_afterFrame()
 	{
-		StartThrow = false;
-		for(float i =0 ; i<=ThrowWaitingTime ; i+=Time.deltaTime)
+		for(int i = 0;i<2;i++)
 		{
-			yield return 0;
+			yield return 0 ;
 		}
-		StartThrow = true;
+		
 
 		LineRenderer Lr = ThrowScript.GetComponent<LineRenderer>();
 		Lr.enabled = true;
 	}
+	
 	void ThrowObj()
 	{
 		GameObject stone = Instantiate(StonePref,ThrowPos.position,Quaternion.identity);
 		stone.GetComponent<StoneController>().getDir(ThrowDir);
-		StopCoroutine(ThrowTime_Count());
 	}
 	/*
 	IEnumerator dashCD_Count()
@@ -846,7 +850,13 @@ public class PlayerCtroller : MonoBehaviour {
 
 		if(LJoyinput!=Vector3.zero)
 		{
-			ThrowDir = Vector3.SmoothDamp(ThrowDir,LJoyinput,ref RotateAngleSpeed,AimSmoothTime);
+			if(Vector3.Angle(ThrowDir,LJoyinput)<1.5f)
+			{}
+			else
+			{
+				ThrowDir = Vector3.SmoothDamp(ThrowDir,LJoyinput,ref RotateAngleSpeed,AimSmoothTime);
+			}
+			
 		}
 		
 	}

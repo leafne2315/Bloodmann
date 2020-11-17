@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.45074368, g: 0.5006841, b: 0.5748282, a: 1}
+  m_IndirectSpecularColor: {r: 0.4507439, g: 0.50068533, b: 0.5748293, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12601,10 +12601,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 374d357cd36325a4b9e52f833f0f7f7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Tveclocity: 15
+  Tveclocity: 20
   angle: 45
-  resolution: 30
-  g: 10
+  resolution: 25
+  g: 15
   WhatIsObstacle:
     serializedVersion: 2
     m_Bits: 512
@@ -18849,8 +18849,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4096
   ThrowScript: {fileID: 1224599934}
-  ThrowWaitingTime: 0.1
-  AimSmoothTime: 0.05
+  ThrowWaitingTime: 0.5
+  AimSmoothTime: 0.1
   StonePref: {fileID: 4469414407509857159, guid: 3139595cb819594438f83f223176f348,
     type: 3}
   ThrowPos: {fileID: 105405310}
