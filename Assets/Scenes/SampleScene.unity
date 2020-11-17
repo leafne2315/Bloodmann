@@ -18843,7 +18843,7 @@ MonoBehaviour:
   Out_Of_Gas: 0
   canAttack: 1
   AttackAniTime: 0.2
-  AttackCD: 0.8
+  AttackCD: 0.5
   hitPos: {fileID: 2016841659}
   EnemyLayer:
     serializedVersion: 2
