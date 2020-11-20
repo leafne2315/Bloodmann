@@ -10,7 +10,7 @@ public class ExternalForce : MonoBehaviour
     public LayerMask MovingGround;
     public Transform GroundCheck;
     public float checkRadius;
-    public bool isNull;
+    public bool onMovingObj;
     public Vector2 OtherForce;
 
     
@@ -21,7 +21,7 @@ public class ExternalForce : MonoBehaviour
     }
     void Start()
     {
-        isNull = true;
+        
     }
 
     // Update is called once per frame
@@ -30,19 +30,29 @@ public class ExternalForce : MonoBehaviour
         Collider[] MovingObj = Physics.OverlapSphere(GroundCheck.position,checkRadius,MovingGround);
         foreach(Collider obj in MovingObj)
         {
-            isNull = false;
+            onMovingObj = true;
 
-            if(!PlayerCtroller.isFlying&&!isNull)
+            if(!PlayerCtroller.isFlying&&onMovingObj)
             { 
                 OtherForce = new Vector2(obj.GetComponent<Rigidbody>().velocity.x,0);
             }
             else
             {
+                onMovingObj = false;
                 OtherForce = Vector2.zero;
-                isNull = true;
             }
+        }
+              
+        if(MovingObj.Length ==0)
+        {
+            onMovingObj = false;
+            OtherForce = Vector2.zero;
         }
 
         
+    }
+
+    void OnDrawGizmos() 
+    {    
     }
 }
