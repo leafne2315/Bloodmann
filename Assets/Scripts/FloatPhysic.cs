@@ -9,7 +9,7 @@ public class FloatPhysic : MonoBehaviour
     public float noiseScale;
     float floatSpeed;
     public GameObject Water;
-    Rigidbody2D rb;
+    Rigidbody rb;
     private float GForce;
     private float Buoyancy;
     public float FloatParameter;
@@ -27,8 +27,8 @@ public class FloatPhysic : MonoBehaviour
         Water = GameObject.Find("Water");
         SurfaceHeight = Water.transform.GetChild(0).transform.position.y;
         OriginHeight = SurfaceHeight;
-        rb = GetComponent<Rigidbody2D>();
-        OwnSizeHeight = GetComponent<Collider2D>().bounds.size.y;
+        rb = GetComponent<Rigidbody>();
+        OwnSizeHeight = GetComponent<Collider>().bounds.size.y;
     }
     void Start()
     {

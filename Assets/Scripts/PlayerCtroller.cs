@@ -15,7 +15,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float moveInput_X;
 	private float moveInput_Y;
 	private float JumpInput;
-	public Rigidbody2D rb;
+	public Rigidbody rb;
 	public Vector2 RealMovement;
 	public bool facingRight = true;
 	//偵測
@@ -101,7 +101,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float AttackCD = 0.8f;
 	public Transform hitPos;
 	public LayerMask EnemyLayer;
-	Vector3 HitBox_size = new Vector3(0.8f,1.0f,0f);
+	Vector3 HitBox_size = new Vector3(0.8f,1.0f,1.0f);
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -119,15 +119,15 @@ public class PlayerCtroller : MonoBehaviour {
 	private bool isThrowing = false;
 	//
 	[Header("??? Settings")]
-	private float OriginGravity;
+	//private float OriginGravity;
 	private float StableValue;
 	private ExternalForce Ef;
 
 	void Awake()
 	{
 		GameManager = GM.GetComponent<GameManager>();
-		rb = GetComponent<Rigidbody2D>();
-		OriginGravity = rb.gravityScale;
+		rb = GetComponent<Rigidbody>();
+		//OriginGravity = rb.gravityScale;
 		Ef = GetComponent<ExternalForce>();
 	}
 	void Start()
@@ -187,7 +187,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(isAttachWall&&!isGrounded&&canAttach)
 				{
 					currentState = PlayerState.Attach;
-					rb.gravityScale = 0;
+					rb.useGravity = false;
 					rb.velocity = Vector2.zero;
 				}
 
@@ -288,7 +288,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.V)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.Normal;
-					rb.gravityScale = OriginGravity;
+					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
 				if(Out_Of_Gas)
@@ -482,9 +482,9 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 
 
-		isGrounded = Physics2D.OverlapCircle(GroundCheck.position,checkRadius,WhatIsGround);
-		isAttachWall = Physics2D.OverlapCircle(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
-		isAttachOnTop = Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
+		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
+		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
+		isAttachOnTop = Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
 		
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
 		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
@@ -534,12 +534,12 @@ public class PlayerCtroller : MonoBehaviour {
 
 				StartCoroutine(AttackCD_Count());
 				
-				Collider2D[] hitObjs = Physics2D.OverlapBoxAll((Vector2)hitPos.position,(Vector2)HitBox_size,0.0f,EnemyLayer);
+				Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
 				if(hitObjs.Length==0)
 				{
 					print("Miss");
 				}
-				foreach(Collider2D c in hitObjs)
+				foreach(Collider c in hitObjs)
 				{
 					print("Hit"+c.name+"!!!!");
 					c.GetComponent<tempGetHit>().isHit = true;
@@ -677,14 +677,19 @@ public class PlayerCtroller : MonoBehaviour {
 	*/
 	private void checkGravity()
 	{
-		if(rb.gravityScale!=OriginGravity)
+		// if(rb.gravityScale!=OriginGravity)
+		// {
+		// 	rb.gravityScale = OriginGravity;
+		// }
+
+		if(rb.useGravity != true)
 		{
-			rb.gravityScale = OriginGravity;
+			rb.useGravity = true;
 		}
 	}
 	private void ResetGravity()
 	{
-		rb.gravityScale = OriginGravity;
+		rb.useGravity = true;
 	}
 	private void LimitGSpeed()
     {
@@ -765,7 +770,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FlyMovement()
 	{
-		rb.gravityScale = 0;
+		rb.useGravity = false;
 		FlyDir = Vector2.Lerp(FlyDir,new Vector2(moveInput_X,moveInput_Y),0.05f);
 		if(Input.GetButton("PS4-R2"))
 		{

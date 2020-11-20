@@ -9,7 +9,7 @@ public class AirEnemy : MonoBehaviour
     public float shootDetectRadius;
     public float speed;
     public int health;
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     public LayerMask whatIsPlayer;
     public Vector3 PlayerLastPos;
     public EnemyState currentState;
@@ -21,17 +21,17 @@ public class AirEnemy : MonoBehaviour
     }
     public Transform GeneratePos;
     public GameObject AttackPf;
-    private GameObject newEnemyAttack;
+    //private GameObject newEnemyAttack;
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
         //attackTimer = 3;
     }
 
     
     void Update()
     {
-        Collider2D shootDetection = Physics2D.OverlapCircle(transform.position,shootDetectRadius,whatIsPlayer);
+        Collider[] shootDetections = Physics.OverlapSphere(transform.position,shootDetectRadius, whatIsPlayer);
         //Collider2D playerDetection = Physics2D.OverlapCircle(playerDetect.position,playerDetectRadius,whatIsPlayer);
         
         switch (currentState)
@@ -48,7 +48,7 @@ public class AirEnemy : MonoBehaviour
                 // {
                 //     currentState = EnemyState.Move;
                 // }   
-                if(shootDetection)
+                foreach(var shootDetection in shootDetections)
                 {
                     currentState = EnemyState.Attack;    
                 }
@@ -57,13 +57,13 @@ public class AirEnemy : MonoBehaviour
             break;
             case EnemyState.Attack:
                 
-                if(shootDetection)
+                foreach(var shootDetection in shootDetections)
                 {
-                    PlayerLastPos = shootDetection.transform.position;
+                    currentState = EnemyState.Attack;    
                 }
                 
                 Launch();
-                if(!shootDetection)
+                if(shootDetections == null)
                 {
                     currentState = EnemyState.Normal;
                 }   
@@ -85,7 +85,8 @@ public class AirEnemy : MonoBehaviour
     {
         if(attackTimer >= attackTime)
         {
-            newEnemyAttack = Instantiate(AttackPf, GeneratePos.transform.position, Quaternion.identity);
+            GameObject newEnemyAttack = Instantiate(AttackPf, GeneratePos.transform.position, Quaternion.identity);
+            newEnemyAttack.GetComponent<AirEnemyAttack>().attackDir = (PlayerLastPos-transform.position).normalized;
             attackTimer = 0;
         }
         

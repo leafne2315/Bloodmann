@@ -7,11 +7,11 @@ public class PoisonController : MonoBehaviour
     public float stayTime = 2.0f;
     private float Timer = 0;
     public bool isfall;
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = 0;
+        rb = GetComponent<Rigidbody>();
+        rb.useGravity = false;
     }
     void Update()
     {
@@ -22,11 +22,11 @@ public class PoisonController : MonoBehaviour
         else
         {
             isfall = true;
-            rb.gravityScale = 5.0f;
+            rb.useGravity = true;
         }
     }
     
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Water"))
         {

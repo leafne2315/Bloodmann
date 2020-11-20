@@ -5,13 +5,13 @@ using UnityEngine;
 public class StoneController : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     private Vector3 Dir ;
     public float gravity = 10.0f;
     public float Speed = 15.0f;
     void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
     }
     void Start()
     {

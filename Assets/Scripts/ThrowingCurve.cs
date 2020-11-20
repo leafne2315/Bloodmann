@@ -44,10 +44,11 @@ public class ThrowingCurve : MonoBehaviour
 
             if(i>0)
             {
-                Vector2 rayDir = (curveArray[i]-curveArray[i-1]).normalized;
+                Vector3 rayDir = (curveArray[i]-curveArray[i-1]).normalized;
                 float PtoP_Dist = Vector3.Distance(curveArray[i],curveArray[i-1]);
-                RaycastHit2D hit = Physics2D.Raycast(curveArray[i-1],rayDir,PtoP_Dist,WhatIsObstacle);
-                if(hit)
+
+                RaycastHit hit;
+                if(Physics.Raycast(curveArray[i-1],rayDir,out hit,PtoP_Dist,WhatIsObstacle))
                 {
                     curveArray[i] = hit.point;
                     Lr.positionCount = i;

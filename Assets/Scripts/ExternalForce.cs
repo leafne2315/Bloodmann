@@ -5,7 +5,7 @@ using UnityEngine;
 public class ExternalForce : MonoBehaviour
 {
     private PlayerCtroller PlayerCtroller;
-    private Rigidbody2D playerRb;
+    private Rigidbody playerRb;
     private Collider2D MovingObj;
     public LayerMask MovingGround;
     public Transform GroundCheck;
@@ -17,7 +17,7 @@ public class ExternalForce : MonoBehaviour
     void Awake()
     {
         PlayerCtroller = GetComponent<PlayerCtroller>();
-        playerRb = GetComponent<Rigidbody2D>();
+        playerRb = GetComponent<Rigidbody>();
     }
     void Start()
     {
@@ -31,7 +31,7 @@ public class ExternalForce : MonoBehaviour
 
         if(!PlayerCtroller.isFlying&&MovingObj)
         { 
-            OtherForce = new Vector2(MovingObj.GetComponent<Rigidbody2D>().velocity.x,0);
+            OtherForce = new Vector2(MovingObj.GetComponent<Rigidbody>().velocity.x,0);
         }
         else
         {

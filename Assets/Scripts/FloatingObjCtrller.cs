@@ -5,11 +5,11 @@ using UnityEngine;
 public class FloatingObjCtrller : MonoBehaviour
 {
     // Start is called before the first frame update
-    private Rigidbody2D rb;
+    private Rigidbody rb;
     public float speed;
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -26,7 +26,7 @@ public class FloatingObjCtrller : MonoBehaviour
     //     }
     // }
     
-    void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("BoxDestroy"))
         {
