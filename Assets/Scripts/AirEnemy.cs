@@ -15,6 +15,7 @@ public class AirEnemy : MonoBehaviour
     public EnemyState currentState;
     public float attackTime;
     public float attackTimer;
+    public bool isNull;
     public enum EnemyState
     {
         Normal, Attack, Dead 
@@ -32,7 +33,12 @@ public class AirEnemy : MonoBehaviour
     void Update()
     {
         Collider[] shootDetections = Physics.OverlapSphere(transform.position,shootDetectRadius, whatIsPlayer);
+        isNull = true;
         //Collider2D playerDetection = Physics2D.OverlapCircle(playerDetect.position,playerDetectRadius,whatIsPlayer);
+        foreach(var shootDetection in shootDetections)
+        {
+            isNull = false;
+        }
         
         switch (currentState)
         {
@@ -48,22 +54,21 @@ public class AirEnemy : MonoBehaviour
                 // {
                 //     currentState = EnemyState.Move;
                 // }   
-                foreach(var shootDetection in shootDetections)
-                {
-                    currentState = EnemyState.Attack;    
-                }
 
+                if(!isNull)
+                currentState = EnemyState.Attack;
                 
             break;
             case EnemyState.Attack:
                 
                 foreach(var shootDetection in shootDetections)
                 {
-                    currentState = EnemyState.Attack;    
+                    PlayerLastPos = shootDetection.transform.position;  
                 }
                 
                 Launch();
-                if(shootDetections == null)
+                
+                if(isNull)
                 {
                     currentState = EnemyState.Normal;
                 }   

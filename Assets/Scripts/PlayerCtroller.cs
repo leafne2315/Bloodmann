@@ -483,7 +483,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 
 		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
-		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||Physics2D.OverlapCircle(UpCheck.position,0.05f,WhatIsWall);
+		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
 		isAttachOnTop = Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
 		
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
@@ -814,7 +814,7 @@ public class PlayerCtroller : MonoBehaviour {
 	// 		}
 	// 	}
 	// }
-	private void OnCollisionEnter2D(Collision2D other)
+	private void OnCollisionEnter(Collision other)
 	{
 		if(other.collider.CompareTag("VisionEnemy"))
 		{
