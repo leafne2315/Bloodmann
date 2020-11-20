@@ -21,7 +21,7 @@ public class ExternalForce : MonoBehaviour
     }
     void Start()
     {
-        
+        isNull = true;
     }
 
     // Update is called once per frame
@@ -34,7 +34,6 @@ public class ExternalForce : MonoBehaviour
 
             if(!PlayerCtroller.isFlying&&!isNull)
             { 
-                print("a");
                 OtherForce = new Vector2(obj.GetComponent<Rigidbody>().velocity.x,0);
             }
             else
