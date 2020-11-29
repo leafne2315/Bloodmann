@@ -143,7 +143,14 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		
+		if(isFlying)
+		{
+
+		}
+		else
+		{
+			rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
+		}
 		
 	}
 	void Update()
@@ -161,7 +168,7 @@ public class PlayerCtroller : MonoBehaviour {
 				RealMovementFix();
 				rb.velocity = RealMovement + Ef.OtherForce;
 				showflySpeed = rb.velocity.y;
-				checkGravity();
+				
 				AccelControll();
 				LimitGSpeed();
 				/*
@@ -187,7 +194,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(isAttachWall&&!isGrounded&&canAttach)
 				{
 					currentState = PlayerState.Attach;
-					rb.useGravity = false;
+					
 					rb.velocity = Vector2.zero;
 				}
 
@@ -227,7 +234,6 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetKeyUp(KeyCode.Q)||Input.GetButtonUp("PS4-L2"))//->Normal
 				{
-					ResetGravity();
 					currentState = PlayerState.Normal;
 					StartCoroutine(IntervalTime_Count());
 				}
@@ -332,7 +338,7 @@ public class PlayerCtroller : MonoBehaviour {
 						if(dashTimer<Dash_PreTime)//->Normal
 						{
 							currentState = PlayerState.Normal;
-							ResetGravity();	
+								
 						}
 						else
 						{
@@ -370,7 +376,7 @@ public class PlayerCtroller : MonoBehaviour {
 							dashTimer = 0; //重置dash 時間
 							currentState = PlayerState.Normal;
 							isDash = false;
-							ResetGravity();
+							
 						}
 							
 					}
@@ -378,7 +384,7 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						dashTimer+=Time.deltaTime;
 						rb.velocity =Vector2.Lerp(rb.velocity,Vector2.zero,0.1f);
-						ResetGravity();
+						
 						if(isAttachWall)
 						{
 							rb.velocity = Vector2.zero;
@@ -386,7 +392,7 @@ public class PlayerCtroller : MonoBehaviour {
 							dashTimer = 0; //重置dash 時間
 							currentState = PlayerState.Normal;
 							isDash = false;
-							ResetGravity();
+							
 						}		
 					}
 					else
@@ -395,7 +401,7 @@ public class PlayerCtroller : MonoBehaviour {
 						currentState = PlayerState.Normal;
 						isDash = false;
 						
-						ResetGravity();			
+									
 					}
 				}
 			break;
@@ -593,6 +599,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			RealMovement.x = 0.0f;
 		}
+
 	}
 	public void KnockBack(float KnockPwr,float KnockDur,Vector2 KnockDir)
 	{
@@ -682,15 +689,9 @@ public class PlayerCtroller : MonoBehaviour {
 		// 	rb.gravityScale = OriginGravity;
 		// }
 
-		if(rb.useGravity != true)
-		{
-			rb.useGravity = true;
-		}
+		
 	}
-	private void ResetGravity()
-	{
-		rb.useGravity = true;
-	}
+	
 	private void LimitGSpeed()
     {
         if(rb.velocity.y<-60.0f)
@@ -770,7 +771,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FlyMovement()
 	{
-		rb.useGravity = false;
+		
 		FlyDir = Vector2.Lerp(FlyDir,new Vector2(moveInput_X,moveInput_Y),0.05f);
 		if(Input.GetButton("PS4-R2"))
 		{

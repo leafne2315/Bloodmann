@@ -5,22 +5,24 @@ using UnityEngine;
 public class BetterJump : MonoBehaviour {
 
 	public float fallMultiplier = 2.5f;
-	public float lowJumpMultuplier = 2f;
 
-	Rigidbody2D rb;
+	Rigidbody rb;
 	void Awake()
 	{
-		rb = GetComponent<Rigidbody2D>();	
+		rb = GetComponent<Rigidbody>();	
+	}
+	/// <summary>
+	/// This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
+	/// </summary>
+	void FixedUpdate()
+	{
+		if(rb.velocity.y>0&&!Input.GetButton("PS4-x"))
+		{
+			rb.AddForce(Physics.gravity*5.0f*(fallMultiplier-1),ForceMode.Acceleration);
+		}
 	}
 	void Update ()
 	{
-		if(rb.velocity.y<0)
-		{
-			rb.velocity += Vector2.up*Physics2D.gravity.y*(fallMultiplier-1)*Time.deltaTime;
-		}
-		else if(rb.velocity.y>0&&!Input.GetButton("PS4-x"))
-		{
-			rb.velocity+=Vector2.up*Physics2D.gravity.y*(lowJumpMultuplier-1)*Time.deltaTime;
-		}
+		
 	}
 }

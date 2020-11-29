@@ -15,7 +15,11 @@ public class FloatingObjCtrller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.velocity = new Vector2(-speed,rb.velocity.y);
+        if(rb.velocity.x!=0.0f)
+        {
+            rb.velocity = new Vector3(0.0f,rb.velocity.y,rb.velocity.z);
+        }
+        //rb.velocity = new Vector2(-speed,rb.velocity.y);
     }
     
     // void OnCollisionEnter2D(Collision2D other)
