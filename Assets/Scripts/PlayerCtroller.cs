@@ -143,7 +143,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		if(isFlying)
+		if(isFlying||isAttachWall)
 		{
 
 		}
