@@ -21,7 +21,7 @@ public class AnimationController : MonoBehaviour
         PlayerAni.SetFloat("MoveY",playerCtroller.RealMovement.y);
         PlayerAni.SetBool("isFly",playerCtroller.isFlying);
         PlayerAni.SetBool("isDash",playerCtroller.isAirDash);
-        if(Mathf.Abs(playerCtroller.rb.velocity.y)>0.5f||Mathf.Abs(playerCtroller.rb.velocity.x)>0.5f)
+        if(playerCtroller.isFlying||Mathf.Abs(playerCtroller.rb.velocity.x)>0.5f)
             PlayerAni.SetBool("isFlymove",true);
         else
             PlayerAni.SetBool("isFlymove",false);
