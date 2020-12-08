@@ -22,6 +22,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Detect Settings")]
 	private bool isGrounded;
 	private bool isAttachWall;
+	public Collider AttachingObj;
 	private bool isAttachOnTop;
 	public float checkRadius;
 	public Transform GroundCheck;
@@ -489,8 +490,27 @@ public class PlayerCtroller : MonoBehaviour {
 
 
 		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
-		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
 		isAttachOnTop = Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
+		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||isAttachOnTop;
+		
+		if(isAttachWall)
+		{
+			if(isAttachOnTop)
+			{
+				Collider[] c = Physics.OverlapSphere(UpCheck.position,0.05f,WhatIsWall);
+				AttachingObj = c[0];
+			}
+			else
+			{
+				Collider[] c = Physics.OverlapSphere(FrontCheck.position,0.05f,WhatIsWall);
+				AttachingObj = c[0];
+			}
+		}
+		else
+		{
+			AttachingObj = null;
+		}
+			
 		
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
 		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
@@ -866,6 +886,7 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		
 	}
+
 	public void Die()
 	{
 		GameManager.ReloadScene();
