@@ -34,7 +34,7 @@ public class ExternalForce : MonoBehaviour
 
             if(!PlayerCtroller.isFlying&&onMovingObj)
             { 
-                OtherForce = new Vector2(obj.GetComponent<Rigidbody>().velocity.x,0);
+                OtherForce = new Vector3(obj.GetComponent<Rigidbody>().velocity.x,0,0) ;
             }
             else
             {
@@ -54,5 +54,6 @@ public class ExternalForce : MonoBehaviour
 
     void OnDrawGizmos() 
     {    
+        
     }
 }

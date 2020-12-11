@@ -187,6 +187,15 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
 				}
+
+				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+				{
+					if(canAttack)
+					{
+						canAttack = false;
+						AttackMovement();
+					}
+				}
 				// if(isGrounded)
 				// {
 				// 	RestoreGas();
@@ -487,6 +496,7 @@ public class PlayerCtroller : MonoBehaviour {
 			default:
 			break;
 		}
+		
 
 
 		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
@@ -548,30 +558,7 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 
-		if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
-		{
-			if(canAttack)
-			{
-				canAttack = false;
-				LastState = currentState;
-
-				currentState = PlayerState.Attack;
-				rb.velocity = Vector2.zero;
-
-				StartCoroutine(AttackCD_Count());
-				
-				Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
-				if(hitObjs.Length==0)
-				{
-					print("Miss");
-				}
-				foreach(Collider c in hitObjs)
-				{
-					print("Hit"+c.name+"!!!!");
-					c.GetComponent<tempGetHit>().isHit = true;
-				}
-			}
-		}
+		
 
 		if(Input.GetButtonDown("PS4-O"))//從任何階段進入Throw階段
 		{
@@ -591,6 +578,22 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		}
 
+	}
+	void AttackMovement()
+	{
+
+		StartCoroutine(AttackCD_Count());
+		
+		Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
+		if(hitObjs.Length==0)
+		{
+			print("Miss");
+		}
+		foreach(Collider c in hitObjs)
+		{
+			print("Hit"+c.name+"!!!!");
+			c.GetComponent<tempGetHit>().isHit = true;
+		}
 	}
 	Vector3 Default_ThrowDir()
 	{
@@ -886,7 +889,7 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		
 	}
-
+	
 	public void Die()
 	{
 		GameManager.ReloadScene();
@@ -900,4 +903,5 @@ public class PlayerCtroller : MonoBehaviour {
 
 		// Invoke("Resurrect",1.0f);
 	}
+	
 }

@@ -66,8 +66,6 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        
-
         switch(currentState)
         {
             case EnemyState.Patrol:
