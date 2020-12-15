@@ -7,28 +7,41 @@ public class tempGetHit : MonoBehaviour
     // Start is called before the first frame update
     public float KnockTimer;
     public bool isHit;
-    Rigidbody2D rb;
+    Rigidbody rb;
+    public Vector3 KnockDir;
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if(isHit)
-        {
-            KnockBack(5.0f,new Vector2(Mathf.Cos(30*Mathf.Deg2Rad),Mathf.Sin(30*Mathf.Deg2Rad)));
-        }    
+        // if(isHit)
+        // {
+        //     KnockBack(20.0f,new Vector2(Mathf.Cos(30*Mathf.Deg2Rad),Mathf.Sin(30*Mathf.Deg2Rad)));
+        // }
+        // else
+        // {
+
+        // }
     }
     void Update()
     {  
         
-        
     }
     public void KnockBack(float KnockPwr,Vector2 KnockDir)
 	{
-        rb.AddForce(KnockDir*KnockPwr,ForceMode2D.Impulse);
+        
+        rb.AddForce(KnockDir*KnockPwr,ForceMode.VelocityChange);
 		isHit = false;
 	}
+    public IEnumerator HitTrigger(Vector3 HitDir)
+    {
+        isHit = true;
+        KnockDir = HitDir;
+		yield return 0;
+        isHit = false;
+    }
+    
 }

@@ -75,7 +75,10 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("UnderAttack Settings")]
 	public float KnockTimer;
 	public bool isHit;
-	public bool isGhost = false;
+	public float KnockDuration;
+	public float KnockPwr;
+	private Vector3 KnockDir;
+	private bool getHitByRight;
 	//
 	//狀態控制
 	[Header("Statement Settings")]
@@ -102,7 +105,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public float AttackCD = 0.8f;
 	public Transform hitPos;
 	public LayerMask EnemyLayer;
-	Vector3 HitBox_size = new Vector3(0.8f,1.0f,1.0f);
+	public float ReviveTime;
+	public Vector3 HitBox_size;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -121,6 +125,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	[Header("??? Settings")]
 	//private float OriginGravity;
+	public bool isInvincible = false;
 	private float StableValue;
 	private ExternalForce Ef;
 
@@ -452,13 +457,18 @@ public class PlayerCtroller : MonoBehaviour {
 			break;
 
 			case PlayerState.GetHit:
-
-				if(facingRight)
-					KnockBack(20.0f,0.1f,new Vector2(-Mathf.Cos(30*Mathf.Deg2Rad),Mathf.Sin(30*Mathf.Deg2Rad)));
+				
+				if(KnockTimer<KnockDuration)
+				{
+					KnockTimer+=Time.deltaTime;
+					rb.velocity = KnockDir*KnockPwr;
+				}
 				else
 				{
-					KnockBack(20.0f,0.1f,new Vector2(Mathf.Cos(30*Mathf.Deg2Rad),Mathf.Sin(30*Mathf.Deg2Rad)));
+					KnockTimer = 0;
+					currentState = PlayerState.Normal;
 				}
+				
 
 			break;
 
@@ -496,7 +506,6 @@ public class PlayerCtroller : MonoBehaviour {
 			default:
 			break;
 		}
-		
 
 
 		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
@@ -558,8 +567,6 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 
-		
-
 		if(Input.GetButtonDown("PS4-O"))//從任何階段進入Throw階段
 		{
 			if(canThrow)
@@ -592,7 +599,9 @@ public class PlayerCtroller : MonoBehaviour {
 		foreach(Collider c in hitObjs)
 		{
 			print("Hit"+c.name+"!!!!");
-			c.GetComponent<tempGetHit>().isHit = true;
+			
+			Vector3 AttackDir = new Vector3(c.transform.position.x-transform.position.x,0,0).normalized;
+			StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
 		}
 	}
 	Vector3 Default_ThrowDir()
@@ -618,24 +627,11 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void RealMovementFix()
 	{
-		if(Mathf.Abs(RealMovement.x)<1.0f)
+		if(Mathf.Abs(RealMovement.x)<0.5f)
 		{
 			RealMovement.x = 0.0f;
 		}
 
-	}
-	public void KnockBack(float KnockPwr,float KnockDur,Vector2 KnockDir)
-	{
-		if(KnockTimer<KnockDur)
-		{
-			KnockTimer+=Time.deltaTime;
-			rb.velocity = KnockDir*KnockPwr;
-		}
-		else
-		{
-			KnockTimer = 0;
-			currentState = PlayerState.Normal;
-		}		
 	}
 	IEnumerator AirDash_Count()
 	{
@@ -667,6 +663,14 @@ public class PlayerCtroller : MonoBehaviour {
 			yield return 0;
 		}
 		canAttach = true;
+	}
+	IEnumerator ReviveTime_Count()
+	{
+		for(float i =0 ; i<=ReviveTime ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		isInvincible = false;
 	}
 	IEnumerator ThrowCD_Count()
 	{
@@ -705,16 +709,6 @@ public class PlayerCtroller : MonoBehaviour {
 		canDash = true;
 	}
 	*/
-	private void checkGravity()
-	{
-		// if(rb.gravityScale!=OriginGravity)
-		// {
-		// 	rb.gravityScale = OriginGravity;
-		// }
-
-		
-	}
-	
 	private void LimitGSpeed()
     {
         if(rb.velocity.y<-60.0f)
@@ -807,6 +801,31 @@ public class PlayerCtroller : MonoBehaviour {
 			GasUse(40);
 		}
 	}
+	void OnTriggerEnter(Collider other)
+	{
+		if(other.CompareTag("Enemy"))
+		{
+			if(!isInvincible)
+			{
+				print(other.name);
+
+				if(other.transform.position.x>transform.position.x)
+				{
+					getHitByRight = true;
+				}
+				else
+				{
+					getHitByRight = false;
+				}
+				getKnockDir();
+				isInvincible = true;
+				StartCoroutine(ReviveTime_Count());
+				
+				currentState = PlayerState.GetHit;
+			}
+			
+		}
+	}
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
@@ -886,10 +905,20 @@ public class PlayerCtroller : MonoBehaviour {
 				ThrowDir = Vector3.SmoothDamp(ThrowDir,LJoyinput,ref RotateAngleSpeed,AimSmoothTime);
 			}
 			
-		}
-		
+		}	
 	}
-	
+	void getKnockDir()
+	{
+
+		if(getHitByRight)
+		{
+			KnockDir = new Vector3(-Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+		}
+		else
+		{
+			KnockDir = new Vector3(Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+		}
+	}
 	public void Die()
 	{
 		GameManager.ReloadScene();
