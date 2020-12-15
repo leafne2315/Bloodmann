@@ -4459,9 +4459,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Player: {fileID: 1903274936}
   health: 5
-  movingSpeed: 3
+  movingSpeed: 10
   gravityScale: 5
-  DetectPlayerlength: {x: 12, y: 2, z: 2.25}
+  DetectPlayerlength: {x: 18, y: 2, z: 2.25}
   WhatIsPlayer:
     serializedVersion: 2
     m_Bits: 2048
@@ -4474,15 +4474,15 @@ MonoBehaviour:
   PlayerInRange: 0
   canAttack: 1
   isAttacking: 0
-  AttackLength: 7
-  AttForce: 18
+  AttackLength: 10
+  AttForce: 25
   AttackCD: 2.5
   damage: 0
-  AttackAngle: 40
-  PreAttackTime: 0.4
-  AfterAttackWaitingTime: 0.7
-  RepelForce: 10
-  RepelTime: 0.2
+  AttackAngle: 30
+  PreAttackTime: 0.5
+  AfterAttackWaitingTime: 0.9
+  RepelForce: 5
+  RepelTime: 0.5
   isRepeling: 0
   currentState: 0
 --- !u!54 &324361077
@@ -4532,7 +4532,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 1202b31cb1a0c694c9ff317e54cf8b2d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

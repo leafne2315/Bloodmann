@@ -9,8 +9,10 @@ public class tempGetHit : MonoBehaviour
     public bool isHit;
     Rigidbody rb;
     public Vector3 KnockDir;
+    private Color OriginColor;
     void Start()
     {
+        OriginColor = GetComponent<Material>().color;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -40,8 +42,10 @@ public class tempGetHit : MonoBehaviour
     {
         isHit = true;
         KnockDir = HitDir;
+        GetComponent<Material>().color = Color.red;
 		yield return 0;
         isHit = false;
+        GetComponent<Material>().color = OriginColor;
     }
     
 }

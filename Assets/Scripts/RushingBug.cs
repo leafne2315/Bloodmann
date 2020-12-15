@@ -41,10 +41,18 @@ public class RushingBug : MonoBehaviour
     public bool isRepeling;
     [Header("Statement")]
     public EnemyState currentState;
-    public enum EnemyState{Idle,Patrol,Combat,Attack,Die,WaitForTrasfer,Repel}
-
+    public enum EnemyState{Idle,Patrol,Combat,Attack,Die,WaitForTransfer,Repel}
+    [Header("IEnumerator Settings")]
+    private IEnumerator StartAttackCoroutine;
+    private IEnumerator AfterAttackCoroutine;
+    private IEnumerator AttackCDCoroutine;
+    void Awake()
+    {
+        
+    }
     void Start()
     {
+        
         MovingDir = transform.forward;
         rb = GetComponent<Rigidbody>();
     }
@@ -69,7 +77,7 @@ public class RushingBug : MonoBehaviour
             case EnemyState.Idle:
                 
             break;
-            case EnemyState.WaitForTrasfer:
+            case EnemyState.WaitForTransfer:
             break;
             case EnemyState.Repel:
             break;
@@ -88,7 +96,7 @@ public class RushingBug : MonoBehaviour
         switch(currentState)
         {
             case EnemyState.Patrol:
-                
+
             break;
             case EnemyState.Combat:
                 
@@ -98,8 +106,9 @@ public class RushingBug : MonoBehaviour
                 AttackRangeDetect();
                 if(PlayerInRange&&canAttack)
                 {
-                    StartCoroutine(StartAttacking());
-                    currentState = EnemyState.WaitForTrasfer;
+                    StartAttackCoroutine = StartAttacking();
+                    StartCoroutine(StartAttackCoroutine);
+                    currentState = EnemyState.WaitForTransfer;
                 }
 
                 if(!PlayerDetect)
@@ -123,7 +132,8 @@ public class RushingBug : MonoBehaviour
                 }
                 else
                 {
-                    StartCoroutine(AfterAttack());
+                    AfterAttackCoroutine = AfterAttack();
+                    StartCoroutine(AfterAttackCoroutine);
                 }
 
             break;
@@ -132,7 +142,6 @@ public class RushingBug : MonoBehaviour
             break;
             case EnemyState.Idle:
 
-
                 if(PlayerDetect)
                 {
                     currentState = EnemyState.Combat;
@@ -140,12 +149,13 @@ public class RushingBug : MonoBehaviour
 
             break;
 
-            case EnemyState.WaitForTrasfer:
+            case EnemyState.WaitForTransfer:
                 //do nothing 
             break; 
             
             case EnemyState.Repel:
-
+                
+                print(Timer);
                 if(Timer<RepelTime*0.3f)
                 {
                     Timer += Time.deltaTime;
@@ -168,6 +178,7 @@ public class RushingBug : MonoBehaviour
             default:
             break;
         }
+        print(currentState);
     }
 
     Vector3 RepelDir()
@@ -259,7 +270,8 @@ public class RushingBug : MonoBehaviour
     {
         rb.velocity = AttackDir()*AttForce;
         canAttack = false;
-        StartCoroutine(AttackCD_Count());
+        AttackCDCoroutine = AttackCD_Count();
+        StartCoroutine(AttackCDCoroutine);
     }
 
     Vector3 AttackDir()
@@ -282,6 +294,7 @@ public class RushingBug : MonoBehaviour
         isAttacking = true;
         for(float i =0 ; i<=PreAttackTime ; i+=Time.deltaTime)
 		{
+            print("start att");
 			yield return 0;
 		}
 		JumpAttack();
@@ -291,9 +304,10 @@ public class RushingBug : MonoBehaviour
     {
         
         rb.velocity = Vector3.zero;
-        currentState = EnemyState.WaitForTrasfer;
+        currentState = EnemyState.WaitForTransfer;
         for(float i =0 ; i<=AfterAttackWaitingTime ; i+=Time.deltaTime)
 		{
+            print("counting after Attack");
 			yield return 0;
 		}
         currentState = EnemyState.Combat;
@@ -305,8 +319,8 @@ public class RushingBug : MonoBehaviour
         {
             if(!isAttacking)
             {
-                currentState = EnemyState.Repel;
                 StopCoroutinesExceptTiming();
+                currentState = EnemyState.Repel;
                 print("REPEL!!");
             }
             else
@@ -322,7 +336,9 @@ public class RushingBug : MonoBehaviour
     }
     void StopCoroutinesExceptTiming()
     {
-        StopCoroutine(AfterAttack());
-        StopCoroutine(StartAttacking());
+        if(AfterAttackCoroutine!=null)
+            StopCoroutine(AfterAttackCoroutine);
+        if(StartAttackCoroutine!=null)
+            StopCoroutine(StartAttackCoroutine);
     }
 }
