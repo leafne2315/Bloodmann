@@ -10,7 +10,7 @@ public class RushingBug : MonoBehaviour
     private Vector3 MovingDir;
     private bool isFacingRight = true;
     private float Timer;
-
+    public Animator RushBugAni;
     [Header("Basic Element")]
     public float health;
     public float movingSpeed;
@@ -137,9 +137,7 @@ public class RushingBug : MonoBehaviour
                 }
 
             break;
-            case EnemyState.Die:
-
-            break;
+    
             case EnemyState.Idle:
 
                 if(PlayerDetect)
@@ -171,10 +169,14 @@ public class RushingBug : MonoBehaviour
                 {
                     Timer = 0;
                     currentState = EnemyState.Combat;
+                    RushBugAni.Play("Spider_Moving");
                 }
 
             break;
-
+            case EnemyState.Die:
+                float moveInput_X = Input.GetAxis("PS4-L-Horizontal"); 
+                rb.velocity = new Vector3(moveInput_X*movingSpeed,rb.velocity.y,0);
+            break;
             default:
             break;
         }
@@ -266,9 +268,9 @@ public class RushingBug : MonoBehaviour
     {
         rb.AddForce(Physics.gravity*gravityScale,ForceMode.Acceleration);
     }
-    void JumpAttack()
+    void JumpAttack(Vector3 dir)
     {
-        rb.velocity = AttackDir()*AttForce;
+        rb.velocity = dir*AttForce;
         canAttack = false;
         AttackCDCoroutine = AttackCD_Count();
         StartCoroutine(AttackCDCoroutine);
@@ -292,12 +294,13 @@ public class RushingBug : MonoBehaviour
     {
         rb.velocity = Vector3.zero;
         isAttacking = true;
+        Vector3 attackdir = AttackDir();
         for(float i =0 ; i<=PreAttackTime ; i+=Time.deltaTime)
 		{
             print("start att");
 			yield return 0;
 		}
-		JumpAttack();
+		JumpAttack(attackdir);
         currentState = EnemyState.Attack;
     }
     IEnumerator AfterAttack()
