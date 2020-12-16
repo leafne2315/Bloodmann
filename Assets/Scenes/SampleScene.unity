@@ -4480,7 +4480,7 @@ MonoBehaviour:
   AttForce: 25
   AttackCD: 2.5
   damage: 0
-  AttackAngle: 25
+  AttackAngle: 30
   PreAttackTime: 0.5
   AfterAttackWaitingTime: 0.9
   RepelForce: 5
@@ -4571,7 +4571,7 @@ Transform:
   m_GameObject: {fileID: 324361075}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 109.04, y: 1.28, z: 0}
-  m_LocalScale: {x: 0.62359, y: 0.62359, z: 0.62359}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 496180152}
   - {fileID: 1144150757}
@@ -6389,7 +6389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80688d1d658dbbc4d8240ae22b3dfd05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Target: {fileID: 1903274939}
+  Target: {fileID: 324361081}
   SmoothTime: 0.8
   offset: {x: 0, y: 4, z: -40}
   LeftX_Pivot: 5
