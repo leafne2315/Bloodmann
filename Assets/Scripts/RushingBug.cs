@@ -18,6 +18,7 @@ public class RushingBug : MonoBehaviour
 
     [Header("Detect Settings")]
     public Vector3 DetectPlayerlength;
+    public float DetectPlayerRadius;
     public LayerMask WhatIsPlayer;
     public bool PlayerDetect;
     public Transform GroundCheck;
@@ -109,12 +110,14 @@ public class RushingBug : MonoBehaviour
                     StartAttackCoroutine = StartAttacking();
                     StartCoroutine(StartAttackCoroutine);
                     currentState = EnemyState.WaitForTransfer;
+                    RushBugAni.Play("Spider_Idle");
                 }
 
                 if(!PlayerDetect)
                 {
                     currentState = EnemyState.Idle;
                     rb.velocity = Vector3.zero;
+                    RushBugAni.Play("Spider_Idle");
                 }
 
             break;
@@ -143,6 +146,7 @@ public class RushingBug : MonoBehaviour
                 if(PlayerDetect)
                 {
                     currentState = EnemyState.Combat;
+                    RushBugAni.Play("Spider_Moving");
                 }
 
             break;
@@ -199,7 +203,7 @@ public class RushingBug : MonoBehaviour
     void DetectingPlayer()
     {
 
-        if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer))
+        if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
         {
             PlayerDetect = true;
         }
@@ -237,7 +241,7 @@ public class RushingBug : MonoBehaviour
     }
     void MoveTowardPlayer()
     {
-        if(Vector3.Distance(transform.position,Player.transform.position)<0.5f)
+        if(Mathf.Abs(transform.position.x-Player.transform.position.x)<0.5f)
         {
             rb.velocity = new Vector3(0,rb.velocity.y,0);
         }
@@ -314,7 +318,7 @@ public class RushingBug : MonoBehaviour
 			yield return 0;
 		}
         currentState = EnemyState.Combat;
-        
+        RushBugAni.Play("Spider_Moving");
     }
     void getHitCheck()
     {
@@ -336,6 +340,7 @@ public class RushingBug : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(transform.position,2*DetectPlayerlength);
+        Gizmos.DrawWireSphere(transform.position,DetectPlayerRadius);
     }
     void StopCoroutinesExceptTiming()
     {

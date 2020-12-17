@@ -719,7 +719,7 @@ ModelImporter:
     - serializedVersion: 16
       name: Armature|ArmatureAction
       takeName: Armature|ArmatureAction
-      firstFrame: 0
+      firstFrame: 1
       lastFrame: 48
       wrapMode: 0
       orientationOffsetY: 0

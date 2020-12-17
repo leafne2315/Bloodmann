@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f1ee44176324e714c9b571aec3f7c5df
+guid: ed18dd1c6d8aad041a4057236d0cdf1b
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -685,6 +685,7 @@ ModelImporter:
     400678: TGT_NECK
     2100000: initialShadingGroup.001
     4300000: spider.002
+    7400000: Armature|ArmatureAction
     9500000: //RootNode
     13700000: spider.002
   externalObjects: {}
@@ -714,7 +715,35 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Armature|ArmatureAction
+      takeName: Armature|ArmatureAction
+      firstFrame: 1
+      lastFrame: 16
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
