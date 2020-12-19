@@ -30,6 +30,8 @@ public class RushingBug : MonoBehaviour
     public bool canAttack;
     public bool isAttacking;
     public float AttackLength;
+    public Vector3 AttackRange;
+    public Transform AttackPos;
     public float AttForce;
     public float AttackCD;
     public float damage;
@@ -214,17 +216,14 @@ public class RushingBug : MonoBehaviour
     }
     void AttackRangeDetect()
     {
-        RaycastHit hit;
 
-        if(Physics.Raycast(transform.position,MovingDir,out hit,AttackLength,WhatIsPlayer))
+        if(Physics.CheckBox(AttackPos.position,AttackRange,Quaternion.identity,WhatIsPlayer))
         {
             PlayerInRange = true;
-            Debug.DrawLine(transform.position,hit.point,Color.red);
         }
         else
         {
             PlayerInRange = false;
-            Debug.DrawLine(transform.position,transform.position + MovingDir*AttackLength,Color.green);
         }
     }
     void FacingPlayer()
@@ -341,6 +340,16 @@ public class RushingBug : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(transform.position,2*DetectPlayerlength);
         Gizmos.DrawWireSphere(transform.position,DetectPlayerRadius);
+
+        if(PlayerInRange)
+        {
+            Gizmos.color = Color.red;
+        }
+        else
+        {
+            Gizmos.color = Color.green;
+        }
+        Gizmos.DrawWireCube(AttackPos.position,2*AttackRange);
     }
     void StopCoroutinesExceptTiming()
     {
