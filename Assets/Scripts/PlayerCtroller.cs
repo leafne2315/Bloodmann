@@ -829,7 +829,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
-		Gizmos.DrawWireCube(hitPos.position,HitBox_size);
+		Gizmos.DrawWireCube(hitPos.position,2*HitBox_size);
 	}
 	// private void OnTriggerEnter2D(Collider2D other)
 	// {
