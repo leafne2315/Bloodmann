@@ -142,7 +142,7 @@ MonoBehaviour:
   m_Name: HDRISky
   m_EditorClassIdentifier: 
   active: 1
-  m_AdvancedMode: 0
+  m_AdvancedMode: 1
   rotation:
     m_OverrideState: 1
     m_Value: 0
@@ -153,7 +153,7 @@ MonoBehaviour:
     m_Value: 0
   exposure:
     m_OverrideState: 1
-    m_Value: 17.71
+    m_Value: 10.08
   multiplier:
     m_OverrideState: 1
     m_Value: 1
@@ -183,7 +183,7 @@ MonoBehaviour:
     m_Value: {fileID: 8900000, guid: 1cde0e200e792cb4491204276a656490, type: 3}
   enableBackplate:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: 1
   backplateType:
     m_OverrideState: 1
     m_Value: 0
@@ -217,7 +217,7 @@ MonoBehaviour:
     max: 100
   shadowTint:
     m_OverrideState: 1
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    m_Value: {r: 0.3450634, g: 0.4055317, b: 0.5, a: 1}
     hdr: 0
     showAlpha: 1
     showEyeDropper: 1
