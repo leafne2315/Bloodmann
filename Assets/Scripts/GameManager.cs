@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
         {
             ReloadScene();
         }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     public void ReloadScene()

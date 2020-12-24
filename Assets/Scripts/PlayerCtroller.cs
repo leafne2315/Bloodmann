@@ -96,6 +96,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float Gas_MaxValue;
 	public bool Out_Of_Gas;
 	private bool RestoreGas_isOver = true;
+	public float GasUsingValue;
 	//
 	//攻擊
 	[Header("Attack Settings")]
@@ -798,7 +799,7 @@ public class PlayerCtroller : MonoBehaviour {
 		else
 		{
 			rb.velocity = FlyDir*flySpeed;
-			GasUse(40);
+			GasUse(GasUsingValue);
 		}
 	}
 	void OnTriggerEnter(Collider other)
