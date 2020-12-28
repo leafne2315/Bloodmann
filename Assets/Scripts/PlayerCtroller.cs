@@ -22,14 +22,15 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Detect Settings")]
 	private bool isGrounded;
 	private bool isAttachWall;
-	public Collider AttachingObj;
 	private bool isAttachOnTop;
+	private Collider AttachingObj;
 	public float checkRadius;
 	public Transform GroundCheck;
 	public Transform FrontCheck;
 	public Transform UpCheck;
 	public LayerMask WhatIsGround;
 	public LayerMask WhatIsWall;
+	public LayerMask WhatIsJar;
 	//
 	//跳躍
 	[Header("Jump Settings")]
@@ -150,11 +151,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		if(isFlying||isAttachWall)
-		{
-
-		}
-		else
+		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach)
 		{
 			rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
 		}
@@ -173,6 +170,8 @@ public class PlayerCtroller : MonoBehaviour {
 				CheckStability();
 				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
 				RealMovementFix();
+
+				
 				rb.velocity = RealMovement + Ef.OtherForce;
 				showflySpeed = rb.velocity.y;
 				
@@ -209,6 +208,17 @@ public class PlayerCtroller : MonoBehaviour {
 				
 				if(isAttachWall&&!isGrounded&&canAttach)
 				{
+					if(AttachingObj!=null)
+					{
+						if(AttachingObj.CompareTag("Jar"))
+						{
+							AttachingObj.GetComponent<JarCtroller>().isClimbing = true;
+							FixedJoint j = gameObject.AddComponent<FixedJoint>();
+							j.connectedBody = AttachingObj.attachedRigidbody;
+						}
+					}
+					
+
 					currentState = PlayerState.Attach;
 					
 					rb.velocity = Vector2.zero;
@@ -268,6 +278,12 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
 				{
+					if(AttachingObj!=null)
+					{
+						AttachingObj.GetComponent<JarCtroller>().isClimbing = false;
+						Destroy(GetComponent<FixedJoint>());
+					}
+
 					currentState = PlayerState.BugFly;
 					StartCoroutine(IntervalTime_Count());
 					FlyDir = rb.velocity.normalized;
@@ -290,6 +306,14 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						rb.velocity = Vector2.down*10;
 					}
+					
+					if(AttachingObj!=null)
+					{
+						AttachingObj.GetComponent<JarCtroller>().isClimbing = false;
+						Destroy(GetComponent<FixedJoint>());
+					}
+
+
 					currentState = PlayerState.Normal;
 					StartCoroutine(IntervalTime_Count());
 				}
@@ -517,13 +541,17 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(isAttachOnTop)
 			{
-				Collider[] c = Physics.OverlapSphere(UpCheck.position,0.05f,WhatIsWall);
-				AttachingObj = c[0];
+				Collider[] c = Physics.OverlapSphere(UpCheck.position,0.05f,WhatIsJar);
+				if(c.Length!=0)
+				{
+					AttachingObj = c[0];
+				}
 			}
 			else
 			{
-				Collider[] c = Physics.OverlapSphere(FrontCheck.position,0.05f,WhatIsWall);
-				AttachingObj = c[0];
+				Collider[] c = Physics.OverlapSphere(FrontCheck.position,0.05f,WhatIsJar);
+				if(c.Length!=0)
+					AttachingObj = c[0];
 			}
 		}
 		else
