@@ -847,9 +847,9 @@ public class PlayerCtroller : MonoBehaviour {
 					getHitByRight = false;
 				}
 				getKnockDir();
+
 				isInvincible = true;
 				StartCoroutine(ReviveTime_Count());
-				
 				currentState = PlayerState.GetHit;
 			}
 			
