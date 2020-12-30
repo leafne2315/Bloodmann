@@ -8,6 +8,7 @@ public class JarCtroller : MonoBehaviour
     public bool isClimbing;
     public float speed;
     Rigidbody rb;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -16,6 +17,8 @@ public class JarCtroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        isClimbing = GetComponent<OnAttached>().isAttached;
+
         if(isClimbing)
         {
             rb.velocity = Vector3.down*speed;

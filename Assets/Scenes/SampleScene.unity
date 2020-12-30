@@ -1258,6 +1258,7 @@ GameObject:
   - component: {fileID: 97388718}
   - component: {fileID: 97388722}
   - component: {fileID: 97388723}
+  - component: {fileID: 97388724}
   m_Layer: 17
   m_Name: MO
   m_TagString: Jar
@@ -1369,6 +1370,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
+--- !u!114 &97388724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97388717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0f0baef4907ec946a1f8634ffcd6700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAttached: 0
 --- !u!1 &105405309
 GameObject:
   m_ObjectHideFlags: 0
@@ -19010,9 +19024,10 @@ GameObject:
   - component: {fileID: 928835967}
   - component: {fileID: 928835971}
   - component: {fileID: 928835972}
-  m_Layer: 17
+  - component: {fileID: 928835973}
+  m_Layer: 18
   m_Name: Lift
-  m_TagString: Ground
+  m_TagString: Lift
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -19133,6 +19148,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 122
   m_CollisionDetection: 0
+--- !u!114 &928835973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 928835966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0f0baef4907ec946a1f8634ffcd6700, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isAttached: 0
 --- !u!1 &932925889
 GameObject:
   m_ObjectHideFlags: 0
@@ -33695,10 +33723,10 @@ MonoBehaviour:
     m_Bits: 164352
   WhatIsWall:
     serializedVersion: 2
-    m_Bits: 132608
+    m_Bits: 394752
   WhatIsJar:
     serializedVersion: 2
-    m_Bits: 131072
+    m_Bits: 393216
   JumpForce: 25
   DoubleJumpForce: 20
   extraJumps: 1

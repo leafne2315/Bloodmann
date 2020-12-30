@@ -23,7 +23,7 @@ public class LiftController : MonoBehaviour
     public LayerMask WhatIsGround;
     void Start()
     {
-        LiftDir = Vector3.down;
+        
         rb = GetComponent<Rigidbody>();
     }
 
@@ -40,6 +40,7 @@ public class LiftController : MonoBehaviour
 
                 if(isActivated)
                 {
+                    LiftDir = Vector3.down;
                     rb.velocity = LiftDir*speed;
                     currentState = LiftState.GoDown;
                 }

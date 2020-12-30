@@ -210,9 +210,9 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					if(AttachingObj!=null)
 					{
-						if(AttachingObj.CompareTag("Jar"))
+						if(AttachingObj.CompareTag("Jar")||AttachingObj.CompareTag("Lift"))
 						{
-							AttachingObj.GetComponent<JarCtroller>().isClimbing = true;
+							AttachingObj.GetComponent<OnAttached>().isAttached = true;
 							FixedJoint j = gameObject.AddComponent<FixedJoint>();
 							j.connectedBody = AttachingObj.attachedRigidbody;
 						}
@@ -280,7 +280,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					if(AttachingObj!=null)
 					{
-						AttachingObj.GetComponent<JarCtroller>().isClimbing = false;
+						AttachingObj.GetComponent<OnAttached>().isAttached = false;
 						Destroy(GetComponent<FixedJoint>());
 					}
 
@@ -309,7 +309,7 @@ public class PlayerCtroller : MonoBehaviour {
 					
 					if(AttachingObj!=null)
 					{
-						AttachingObj.GetComponent<JarCtroller>().isClimbing = false;
+						AttachingObj.GetComponent<OnAttached>().isAttached = false;
 						Destroy(GetComponent<FixedJoint>());
 					}
 
