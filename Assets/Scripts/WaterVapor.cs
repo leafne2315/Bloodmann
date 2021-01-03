@@ -27,15 +27,16 @@ public class WaterVapor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.rotation = Quaternion.Euler(0,0,Angle);
-        transform.localScale = VaporField*2;
+        // transform.rotation = Quaternion.Euler(0,0,Angle);
+        // transform.localScale = VaporField*2;
         
         switch(currentState)
         {
             case vaporState.On:
             
             onTimer -= Time.deltaTime;
-            if(Physics.CheckBox(transform.GetChild(0).position,VaporField,Quaternion.Euler(0,0,Angle),WhatIsPlayer))
+            transform.rotation = Quaternion.Euler(0,0,Angle);
+            if(Physics.CheckBox(transform.position+VaporField.x*transform.right,VaporField,Quaternion.Euler(0,0,Angle),WhatIsPlayer))
             {
                 vaporDamage = true;
             }
@@ -82,6 +83,6 @@ public class WaterVapor : MonoBehaviour
         if(vaporDamage && vapor)
             Gizmos.color = Color.red;
         
-        Gizmos.DrawWireCube(new Vector3(transform.position.x+VaporField.x, transform.position.y, transform.position.z),2*VaporField);
+        Gizmos.DrawWireCube(transform.position+VaporField.x*transform.right ,2*VaporField);
     }
 }
