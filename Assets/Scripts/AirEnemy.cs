@@ -5,73 +5,106 @@ using UnityEngine;
 public class AirEnemy : MonoBehaviour
 {
     // Start is called before the first frame update
-    public float playerDetectRadius;
-    public float shootDetectRadius;
-    public float speed;
-    public int health;
-    private Rigidbody rb;
-    public LayerMask whatIsPlayer;
-    public Vector3 PlayerLastPos;
-    public EnemyState currentState;
-    public float attackTime;
-    public float attackTimer;
-    public bool isNull;
-    public enum EnemyState
-    {
-        Normal, Attack, Dead 
-    }
     public Transform GeneratePos;
     public GameObject AttackPf;
+    public float attackTime;
+    private float Timer;
+    public int health;
+    private Rigidbody rb;
+    public Vector3 PlayerLastPos;
+    public GameObject Player;
+
+    [Header("Detect Settings")]
+    public bool SeePlayer;
+    public float playerDetectRadius;
+    public float AttackDetectRadius;
+    public LayerMask whatIsPlayer;
+    public LayerMask whatIsObstacle;
+
+    [Header("Patrol Settings")]
+    [SerializeField]private Vector3 PatrolDir; 
+    public float PatrolSpeed;
+    public float ChangeDirFreq;
+    [Header("Attack Settings")]
+    public float AttackRange;
+    public float TraceRange;
+    public bool canAttack;
+    public Vector3 MovingDir;
+    public float MovingSpeed;
+    public float accelration;
+
+    [Header("Statement Settings")]
+    public EnemyState currentState;
+    public enum EnemyState{Patrol, Attacking, Dead}
+    
     //private GameObject newEnemyAttack;
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        ChangePatrolDir();
         //attackTimer = 3;
     }
-
-    
     void Update()
     {
-        Collider[] shootDetections = Physics.OverlapSphere(transform.position,shootDetectRadius, whatIsPlayer);
-        isNull = true;
-        //Collider2D playerDetection = Physics2D.OverlapCircle(playerDetect.position,playerDetectRadius,whatIsPlayer);
-        foreach(var shootDetection in shootDetections)
-        {
-            isNull = false;
-        }
         
         switch (currentState)
         {
-            case EnemyState.Normal:
-                
-                
-                if(health <= 0)
-                {
-                    currentState = EnemyState.Dead;
-                }
-                
-                // if(playerDetection)
-                // {
-                //     currentState = EnemyState.Move;
-                // }   
+            case EnemyState.Patrol:
 
-                if(!isNull)
-                currentState = EnemyState.Attack;
-                
-            break;
-            case EnemyState.Attack:
-                
-                foreach(var shootDetection in shootDetections)
+                rb.velocity = PatrolDir*PatrolSpeed;
+                if(Physics.CheckSphere(transform.position,playerDetectRadius,whatIsPlayer))
                 {
-                    PlayerLastPos = shootDetection.transform.position;  
+                    CheckPlayerInSight();
+                }
+
+                if(SeePlayer)
+                {
+                    currentState = EnemyState.Attacking;
+                    MovingDir = (Player.transform.position-transform.position).normalized;
+                    ResetTimer();
+                }
+
+                if(Timer<ChangeDirFreq)
+                {
+                    Timer+=Time.deltaTime;
+                }
+                else
+                {
+                    ResetTimer();
+                    ChangePatrolDir();
+                }
+
+            break;
+
+            case EnemyState.Attacking:
+
+                CheckPlayerInSight();
+                
+                float distanceToPlayer = Vector3.Distance(transform.position,Player.transform.position);
+
+                rb.velocity = MovingDir*MovingSpeed;
+
+                if(distanceToPlayer<AttackRange)
+                {
+                    MovingSpeed-= accelration*Time.deltaTime;
+                }
+                else
+                {
+                    MovingSpeed+= accelration*Time.deltaTime;
                 }
                 
-                Launch();
-                
-                if(isNull)
+                if(SeePlayer)
                 {
-                    currentState = EnemyState.Normal;
-                }   
+                    if(canAttack)
+                    {
+                        //Attack!!
+                    }
+                }
+                else
+                {
+                    
+                }
+                
                 
             break;
             case EnemyState.Dead:
@@ -79,25 +112,48 @@ public class AirEnemy : MonoBehaviour
             break;
         }
     }
+    void ChangePatrolDir()
+    {
+        Vector3 randomDir = new Vector3(Random.Range(-1.0f,1.0f),Random.Range(-1.0f,1.0f),0).normalized;
+        PatrolDir = randomDir;
+    }
+    void CheckPlayerInSight()
+    {
+        Vector3 RayDir = Player.transform.position-transform.position;
+        RaycastHit hit;
+        
+        if(Physics.Raycast(transform.position,RayDir,out hit,Mathf.Infinity,whatIsObstacle))
+        {
+            if(hit.collider.CompareTag("Player"))
+            {
+                SeePlayer = true;
+            }
+            else
+            {
+                SeePlayer = false;
+            }
+        }   
+    }
+    void ResetTimer()
+    {
+        Timer = 0;
+    }
     private void OnDrawGizmos() 
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, playerDetectRadius);
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, shootDetectRadius);
+        
     }
     void Launch()
     {
-        if(attackTimer >= attackTime)
-        {
-            GameObject newEnemyAttack = Instantiate(AttackPf, GeneratePos.transform.position, Quaternion.identity);
-            newEnemyAttack.GetComponent<AirEnemyAttack>().attackDir = (PlayerLastPos-transform.position).normalized;
-            attackTimer = 0;
-        }
+        // if(attackTimer >= attackTime)
+        // {
+        //     GameObject newEnemyAttack = Instantiate(AttackPf, GeneratePos.transform.position, Quaternion.identity);
+        //     newEnemyAttack.GetComponent<AirEnemyAttack>().attackDir = (PlayerLastPos-transform.position).normalized;
+        //     attackTimer = 0;
+        // }
         
-        if(attackTimer < attackTime)
-        {
-            attackTimer+=Time.deltaTime; 
-        }
+        // if(attackTimer < attackTime)
+        // {
+        //     attackTimer+=Time.deltaTime; 
+        // }
     }
 }
