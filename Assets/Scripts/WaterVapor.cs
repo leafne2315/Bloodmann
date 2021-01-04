@@ -14,7 +14,7 @@ public class WaterVapor : MonoBehaviour
     public float offTime;
     private  float onTimer;
     private  float offTimer;
-    public float Angle;
+    //public float Angle;
 
     [Header("Statement")]
     public vaporState currentState;
@@ -35,8 +35,9 @@ public class WaterVapor : MonoBehaviour
             case vaporState.On:
             
             onTimer -= Time.deltaTime;
-            transform.rotation = Quaternion.Euler(0,0,Angle);
-            if(Physics.CheckBox(transform.position+VaporField.x*transform.right,VaporField,Quaternion.Euler(0,0,Angle),WhatIsPlayer))
+            //transform.rotation = Quaternion.Euler(0,0,Angle);
+            
+            if(Physics.CheckBox(transform.position+VaporField.x*transform.right,VaporField,Quaternion.Euler(0,0,transform.rotation.eulerAngles.z),WhatIsPlayer))
             {
                 vaporDamage = true;
             }
