@@ -14,6 +14,7 @@ public class WaterVapor : MonoBehaviour
     public float offTime;
     private  float onTimer;
     private  float offTimer;
+    public GameObject Player;
     //public float Angle;
 
     [Header("Statement")]
@@ -39,6 +40,7 @@ public class WaterVapor : MonoBehaviour
             
             if(Physics.CheckBox(transform.position+VaporField.x*transform.right,VaporField,Quaternion.Euler(0,0,transform.rotation.eulerAngles.z),WhatIsPlayer))
             {
+                Player.GetComponent<PlayerCtroller>().HitByOtherComponent();
                 vaporDamage = true;
             }
             else

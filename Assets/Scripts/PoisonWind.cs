@@ -9,6 +9,7 @@ public class PoisonWind : MonoBehaviour
     public LayerMask WhatIsPlayer;
     public bool poisonDamage;
     public RaycastHit hit;
+    public GameObject Player;
     void Start()
     {
         
@@ -21,12 +22,12 @@ public class PoisonWind : MonoBehaviour
         if (Physics.Raycast(transform.position, transform.right, out hit, Mathf.Infinity))
         {
             Debug.DrawRay(transform.position, transform.right * hit.distance, Color.yellow);
-            Debug.Log("Did Hit");
+            //Debug.Log("Did Hit");
         }
         else
         {
             Debug.DrawRay(transform.position, transform.right * 1000, Color.white);
-            Debug.Log("Did not Hit");
+            //Debug.Log("Did not Hit");
         }
 
         PoisonField.x = hit.distance/2;
@@ -34,6 +35,7 @@ public class PoisonWind : MonoBehaviour
         if(Physics.CheckBox(new Vector3((hit.point.x+transform.position.x)/2,hit.point.y, hit.point.z),PoisonField,Quaternion.identity,WhatIsPlayer))
         {
             poisonDamage = true;
+            Player.GetComponent<PlayerCtroller>().HitByOtherComponent();
         }
         else
         {

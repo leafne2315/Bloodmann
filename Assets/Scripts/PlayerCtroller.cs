@@ -827,6 +827,18 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		}
 	}
+
+	public void HitByOtherComponent()
+	{
+		if(!isInvincible)
+			{
+				//getKnockDir();
+				isInvincible = true;
+				StartCoroutine(ReviveTime_Count());
+				
+				currentState = PlayerState.GetHit;
+			}
+	}
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
