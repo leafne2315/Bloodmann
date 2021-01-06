@@ -5,7 +5,6 @@ using UnityEngine;
 public class AirEnemy : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Transform GeneratePos;
     public GameObject AttackPf;
     public float attackTime;
     private float Timer;
@@ -26,16 +25,24 @@ public class AirEnemy : MonoBehaviour
     public float PatrolSpeed;
     public float ChangeDirFreq;
     [Header("Attack Settings")]
+    public Transform GeneratePos;
     public float AttackRange;
     public float TraceRange;
     public bool canAttack;
     public Vector3 MovingDir;
     public float MovingSpeed;
     public float accelration;
-
+    public float MaxSpeed;
+    public float AttackCD;
+    public float PreAttackTime;
+    [Header("Search Settings")]
+    public float SearchingMoveSpeed;
+    public float SearchTime;
+    public float RandomSearchTime;
+    private bool randomSearch;
     [Header("Statement Settings")]
     public EnemyState currentState;
-    public enum EnemyState{Patrol, Attacking, Dead}
+    public enum EnemyState{Patrol, Attacking, search, Dead}
     
     //private GameObject newEnemyAttack;
     void Start()
@@ -72,6 +79,7 @@ public class AirEnemy : MonoBehaviour
                 {
                     ResetTimer();
                     ChangePatrolDir();
+                    MovingSpeed = 0;
                 }
 
             break;
@@ -81,36 +89,104 @@ public class AirEnemy : MonoBehaviour
                 CheckPlayerInSight();
                 
                 float distanceToPlayer = Vector3.Distance(transform.position,Player.transform.position);
-
-                rb.velocity = MovingDir*MovingSpeed;
-
-                if(distanceToPlayer<AttackRange)
+                if(canAttack)
                 {
-                    MovingSpeed-= accelration*Time.deltaTime;
-                }
-                else
-                {
-                    MovingSpeed+= accelration*Time.deltaTime;
+                    canAttack = false;
+                    StartCoroutine(AttackCD_Count());
+                    StartCoroutine(ShootAttack());
                 }
                 
                 if(SeePlayer)
                 {
-                    if(canAttack)
+                    MovingDir = (Player.transform.position-transform.position).normalized;
+                    if(distanceToPlayer<AttackRange)
                     {
-                        //Attack!!
+                        MovingSpeed -= accelration*Time.deltaTime;
+                    }
+                    else
+                    {
+                        MovingSpeed += accelration*Time.deltaTime;
+                    }
+                    MovingSpeed = Mathf.Clamp(MovingSpeed,-MaxSpeed,MaxSpeed);
+                    rb.velocity = MovingDir*MovingSpeed;
+                }
+                else
+                {
+                    if(transform.position.y>Player.transform.position.y)
+                    {
+                        MovingDir = (MovingDir+Vector3.down).normalized;
+                    }
+                    else
+                    {
+                        MovingDir = (MovingDir+Vector3.up).normalized;
+                    }
+                    currentState = EnemyState.search;
+                }
+                
+            break;
+            case EnemyState.search:
+
+                CheckPlayerInSight();
+                if(SeePlayer)
+                {
+                    currentState = EnemyState.Attacking;
+                    MovingDir = (Player.transform.position-transform.position).normalized;
+                    ResetTimer();
+                }
+
+                
+                if(!randomSearch)
+                {
+                    if(Timer<SearchTime)
+                    {
+                        Timer+=Time.deltaTime;
+                        rb.velocity = MovingDir*SearchingMoveSpeed;
+                    }
+                    else
+                    {
+                        Timer = 0;
+                        randomSearch = true;
+                        Vector3 randomDir = new Vector3(Random.Range(-1.0f,1.0f),Random.Range(-1.0f,1.0f),0).normalized;
+                        MovingDir = randomDir;
                     }
                 }
                 else
                 {
-                    
+                    if(Timer<RandomSearchTime)
+                    {
+                        Timer+=Time.deltaTime;
+                        rb.velocity = MovingDir*SearchingMoveSpeed;
+                    }
+                    else
+                    {
+                        ResetTimer();
+                        currentState = EnemyState.Patrol;
+                    }
                 }
-                
-                
+
             break;
             case EnemyState.Dead:
                 Destroy(gameObject);
             break;
         }
+    }
+    IEnumerator ShootAttack()
+    {
+        for(float i =0 ; i<= PreAttackTime; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+        GameObject AttackObj = Instantiate(AttackPf,GeneratePos.position,Quaternion.identity);
+        Vector3 ShootDir = (Player.transform.position-transform.position).normalized;
+        AttackObj.GetComponent<AirEnemyAttack>().attackDir = ShootDir;
+    }
+    IEnumerator AttackCD_Count()
+    {
+        for(float i =0 ; i<= AttackCD; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		canAttack = true;
     }
     void ChangePatrolDir()
     {
@@ -127,11 +203,16 @@ public class AirEnemy : MonoBehaviour
             if(hit.collider.CompareTag("Player"))
             {
                 SeePlayer = true;
+                PlayerLastPos = hit.point;
+                Debug.DrawLine(transform.position,hit.point,Color.red);
             }
             else
             {
                 SeePlayer = false;
+
+                Debug.DrawLine(transform.position,hit.point,Color.green);
             }
+            
         }   
     }
     void ResetTimer()
@@ -140,6 +221,8 @@ public class AirEnemy : MonoBehaviour
     }
     private void OnDrawGizmos() 
     {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position,playerDetectRadius);
         
     }
     void Launch()

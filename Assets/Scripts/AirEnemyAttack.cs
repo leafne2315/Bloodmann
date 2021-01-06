@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AirEnemyAttack : MonoBehaviour
 {
-    public Vector2 attackDir;
+    public Vector3 attackDir;
     private PlayerCtroller PlayerCtroller; 
     private AirEnemy AirEnemy;
     private Rigidbody rb;
@@ -12,8 +12,6 @@ public class AirEnemyAttack : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        PlayerCtroller = GameObject.Find("Player").GetComponent<PlayerCtroller>();
-        AirEnemy = GameObject.Find("AirEnemy").GetComponent<AirEnemy>();
         rb = GetComponent<Rigidbody>();
 
         //attackDir = (AirEnemy.PlayerLastPos-transform.position).normalized;

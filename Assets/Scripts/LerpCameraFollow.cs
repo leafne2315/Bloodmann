@@ -122,11 +122,25 @@ public class LerpCameraFollow : MonoBehaviour
     {
         if(PlayerScript.facingRight)
         {
-            offset = new Vector3(LeftX_Pivot,offset.y,offset.z);
+            if(PlayerScript.currentState == PlayerCtroller.PlayerState.Attach)
+            {
+                offset = new Vector3(RightX_Pivot,offset.y,offset.z);
+            }
+            else
+            {
+                offset = new Vector3(LeftX_Pivot,offset.y,offset.z);
+            }
         }
         else
         {
-            offset = new Vector3(RightX_Pivot,offset.y,offset.z);
+            if(PlayerScript.currentState == PlayerCtroller.PlayerState.Attach)
+            {
+                offset = new Vector3(LeftX_Pivot,offset.y,offset.z);
+            }
+            else
+            {
+                offset = new Vector3(RightX_Pivot,offset.y,offset.z);
+            }
         }
     }
     void FollowSpeed_Change()
