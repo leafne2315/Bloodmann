@@ -491,7 +491,14 @@ public class PlayerCtroller : MonoBehaviour {
 				else
 				{
 					KnockTimer = 0;
-					currentState = PlayerState.Normal;
+					if(LastState!=PlayerState.BugFly)
+					{
+						currentState = PlayerState.Normal;
+					}
+					else
+					{
+						currentState = PlayerState.BugFly;
+					}
 				}
 				
 
@@ -830,6 +837,24 @@ public class PlayerCtroller : MonoBehaviour {
 			GasUse(GasUsingValue);
 		}
 	}
+	IEnumerator HitTrigger()
+    {
+		Color OriginColor = GetComponent<Renderer>().material.color;
+        GetComponent<Renderer>().material.color = Color.red;
+		yield return 0;
+        GetComponent<Renderer>().material.color = OriginColor;
+    }
+	public void gettingHit()
+	{
+		if(!isInvincible)
+		{
+			isInvincible = true;
+			//StartCoroutine(HitTrigger());
+			StartCoroutine(ReviveTime_Count());
+			LastState = currentState;
+			currentState = PlayerState.GetHit;
+		}
+	} 
 	void OnTriggerEnter(Collider other)
 	{
 		if(other.CompareTag("Enemy"))
@@ -850,6 +875,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 				isInvincible = true;
 				StartCoroutine(ReviveTime_Count());
+				LastState = currentState;
 				currentState = PlayerState.GetHit;
 			}
 			
