@@ -1631,7 +1631,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125944373}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1541bd19ddc15044ea4852c3d08ecfa7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.37578574
@@ -1693,7 +1693,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125944373}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 347.5, y: -118, z: 0}
+  m_LocalPosition: {x: 347.5, y: -118.289, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 154577835}
@@ -1735,6 +1735,7 @@ MonoBehaviour:
   PlayerLastPos: {x: 0, y: 0, z: 0}
   Player: {fileID: 1903274936}
   isFacingRight: 0
+  gravityScale: 5
   FlyBugAni: {fileID: 125944381}
   FlyBugShoot: {fileID: 4781951162920444690, guid: a67d8d0df111b384b8d2f4991043b4d4,
     type: 3}
@@ -1767,8 +1768,8 @@ MonoBehaviour:
   getHit: 0
   repelTime: 0.15
   getHitDir: {x: 0, y: 0, z: 0}
-  getHitForce: 7
-  dyingTime: 0
+  getHitForce: 5
+  dyingTime: 4
 --- !u!114 &125944380
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1810,7 +1811,7 @@ SphereCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125944373}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 1541bd19ddc15044ea4852c3d08ecfa7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -35103,7 +35104,7 @@ MonoBehaviour:
   GasUsingValue: 0
   canAttack: 1
   AttackAniTime: 0.2
-  AttackCD: 0.15
+  AttackCD: 0.25
   AttackRange: 2
   hitPos: {fileID: 2016841659}
   EnemyLayer:

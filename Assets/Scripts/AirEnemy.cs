@@ -13,6 +13,7 @@ public class AirEnemy : MonoBehaviour
     public Vector3 PlayerLastPos;
     public GameObject Player;
     public bool isFacingRight;
+    public float gravityScale;
 
     [Header("Animation Settings")]
     public Animator FlyBugAni;
@@ -57,6 +58,8 @@ public class AirEnemy : MonoBehaviour
     public Vector3 getHitDir;
     public float getHitForce;
     [Header("Dying Set")]
+    private bool notDie = true;
+    private float dieTimer = 0;
     public float dyingTime;
     //private GameObject newEnemyAttack;
     void Start()
@@ -75,12 +78,25 @@ public class AirEnemy : MonoBehaviour
             health--;
             StartCoroutine(Repelling());
         }
+
+        if(currentState == EnemyState.Dead)
+        {
+            GravityInput();
+        }
+        
     }
     void Update()
     {
         if(health<=0)
         {
-            currentState = EnemyState.Dead;
+            if(notDie)
+            {   
+                notDie = false;
+                
+                currentState = EnemyState.Dead;
+                FlyBugAni.SetTrigger("Die");
+            }
+            
         }
         
 
@@ -201,9 +217,11 @@ public class AirEnemy : MonoBehaviour
             break;
             case EnemyState.Dead:
 
-                if(Timer<dyingTime)
+                rb.velocity = new Vector3(Mathf.Lerp(rb.velocity.x,0,0.9f),rb.velocity.y,0);
+                
+                if(dieTimer<dyingTime)
                 {
-                    Timer+=Time.deltaTime;
+                    dieTimer+=Time.deltaTime;
                 }
                 else
                 {
@@ -306,6 +324,10 @@ public class AirEnemy : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position,playerDetectRadius);
         
+    }
+    void GravityInput()
+    {
+        rb.AddForce(Physics.gravity*gravityScale,ForceMode.Acceleration);
     }
     void Launch()
     {
