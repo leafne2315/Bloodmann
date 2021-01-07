@@ -105,10 +105,13 @@ public class PlayerCtroller : MonoBehaviour {
 	public float AttackAniTime = 0.5f;
 	float AttackTimeCount = 0;
 	public float AttackCD = 0.8f;
+	public float AttackRange;
 	public Transform hitPos;
 	public LayerMask EnemyLayer;
 	public float ReviveTime;
 	public Vector3 HitBox_size;
+	public GameObject AttackFTX;
+	public GameObject AttackHitFTX;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -337,6 +340,16 @@ public class PlayerCtroller : MonoBehaviour {
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
+
+				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+				{
+					if(canAttack)
+					{
+						canAttack = false;
+						AttackMovement();
+					}
+				}
+
 				if(Out_Of_Gas)
 				{
 					currentState = PlayerState.Normal;
@@ -624,14 +637,36 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void AttackMovement()
 	{
-
 		StartCoroutine(AttackCD_Count());
 		
 		Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
+		if(facingRight)
+		{
+			GameObject Ftx = Instantiate(AttackFTX,hitPos.position,Quaternion.identity);
+			Ftx.transform.SetParent(transform);
+		}
+		else
+		{
+			GameObject Ftx = Instantiate(AttackFTX,hitPos.position,Quaternion.Euler(0,180,0));
+			Ftx.transform.SetParent(transform);
+		}
+		
 		if(hitObjs.Length==0)
 		{
 			print("Miss");
 		}
+		else
+		{
+			if(facingRight)
+			{
+				Instantiate(AttackHitFTX,hitPos.position,Quaternion.identity);
+			}
+			else
+			{
+				Instantiate(AttackHitFTX,hitPos.position,Quaternion.Euler(0,180,0));
+			}
+		}
+
 		foreach(Collider c in hitObjs)
 		{
 			print("Hit"+c.name+"!!!!");
@@ -667,7 +702,6 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			RealMovement.x = 0.0f;
 		}
-
 	}
 	IEnumerator AirDash_Count()
 	{
@@ -849,6 +883,7 @@ public class PlayerCtroller : MonoBehaviour {
 		if(!isInvincible)
 		{
 			isInvincible = true;
+			hp -= 15.0f;
 			//StartCoroutine(HitTrigger());
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
@@ -872,6 +907,7 @@ public class PlayerCtroller : MonoBehaviour {
 					getHitByRight = false;
 				}
 				getKnockDir();
+				hp -= 15.0f;
 
 				isInvincible = true;
 				StartCoroutine(ReviveTime_Count());

@@ -26,7 +26,9 @@ public class AirEnemyAttack : MonoBehaviour
 
         if(other.CompareTag("Player"))
         {
+            other.GetComponent<PlayerCtroller>().gettingHit();
             Destroy(gameObject);
+            
         }
     }
 }

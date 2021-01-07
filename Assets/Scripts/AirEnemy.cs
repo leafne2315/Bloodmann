@@ -5,13 +5,18 @@ using UnityEngine;
 public class AirEnemy : MonoBehaviour
 {
     // Start is called before the first frame update
+    private tempGetHit tempGetHit;
     public GameObject AttackPf;
-    public float attackTime;
     private float Timer;
     public int health;
     private Rigidbody rb;
     public Vector3 PlayerLastPos;
     public GameObject Player;
+    public bool isFacingRight;
+
+    [Header("Animation Settings")]
+    public Animator FlyBugAni;
+    public AnimationClip FlyBugShoot;
 
     [Header("Detect Settings")]
     public bool SeePlayer;
@@ -35,25 +40,50 @@ public class AirEnemy : MonoBehaviour
     public float MaxSpeed;
     public float AttackCD;
     public float PreAttackTime;
+
     [Header("Search Settings")]
     public float SearchingMoveSpeed;
     public float SearchTime;
     public float RandomSearchTime;
     private bool randomSearch;
+
     [Header("Statement Settings")]
     public EnemyState currentState;
     public enum EnemyState{Patrol, Attacking, search, Dead}
-    
+
+    [Header("Under Attack")]
+    public bool getHit;
+    public float repelTime;
+    public Vector3 getHitDir;
+    public float getHitForce;
+    [Header("Dying Set")]
+    public float dyingTime;
     //private GameObject newEnemyAttack;
     void Start()
     {
+        tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
         ChangePatrolDir();
         //attackTimer = 3;
     }
+    
+    void FixedUpdate()
+    {
+        if(tempGetHit.isHit)
+        {
+            print("repel!!");
+            health--;
+            StartCoroutine(Repelling());
+        }
+    }
     void Update()
     {
+        if(health<=0)
+        {
+            currentState = EnemyState.Dead;
+        }
         
+
         switch (currentState)
         {
             case EnemyState.Patrol:
@@ -67,6 +97,7 @@ public class AirEnemy : MonoBehaviour
                 if(SeePlayer)
                 {
                     currentState = EnemyState.Attacking;
+                    FlyBugAni.SetTrigger("StartMoving");
                     MovingDir = (Player.transform.position-transform.position).normalized;
                     ResetTimer();
                 }
@@ -87,12 +118,14 @@ public class AirEnemy : MonoBehaviour
             case EnemyState.Attacking:
 
                 CheckPlayerInSight();
-                
+
+                FacingPlayer();
+
                 float distanceToPlayer = Vector3.Distance(transform.position,Player.transform.position);
                 if(canAttack)
                 {
                     canAttack = false;
-                    StartCoroutine(AttackCD_Count());
+                    FlyBugAni.SetTrigger("Attack");
                     StartCoroutine(ShootAttack());
                 }
                 
@@ -161,14 +194,51 @@ public class AirEnemy : MonoBehaviour
                     {
                         ResetTimer();
                         currentState = EnemyState.Patrol;
+                        FlyBugAni.SetTrigger("BackToIdle");
                     }
                 }
 
             break;
             case EnemyState.Dead:
-                Destroy(gameObject);
+
+                if(Timer<dyingTime)
+                {
+                    Timer+=Time.deltaTime;
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
+                
             break;
         }
+    }
+    void FacingPlayer()
+    {
+        if(isFacingRight==false&&MovingDir.x<0)
+        {
+            Flip();
+        }
+        if(isFacingRight==true&&MovingDir.x>0)
+        {
+            Flip();
+        }
+    }
+    void Flip()
+    {
+        isFacingRight = !isFacingRight;
+        Vector3 Scaler = transform.localScale;
+		Scaler.x*=-1;
+		transform.localScale = Scaler;
+    }
+    IEnumerator Repelling()
+    {
+        getHitDir = tempGetHit.KnockDir;
+        for(float i =0 ; i <= repelTime; i+=Time.deltaTime)
+		{
+            rb.AddForce(getHitDir*getHitForce,ForceMode.VelocityChange);
+			yield return 0;
+		}
     }
     IEnumerator ShootAttack()
     {
@@ -177,8 +247,9 @@ public class AirEnemy : MonoBehaviour
 			yield return 0;
 		}
         GameObject AttackObj = Instantiate(AttackPf,GeneratePos.position,Quaternion.identity);
-        Vector3 ShootDir = (Player.transform.position-transform.position).normalized;
+        Vector3 ShootDir = (Player.transform.position-GeneratePos.position).normalized;
         AttackObj.GetComponent<AirEnemyAttack>().attackDir = ShootDir;
+        StartCoroutine(AttackCD_Count());
     }
     IEnumerator AttackCD_Count()
     {
@@ -214,6 +285,17 @@ public class AirEnemy : MonoBehaviour
             }
             
         }   
+    }
+    void getHitCheck()
+    {
+        if(tempGetHit.isHit)
+        {
+            getHit = true;
+        }
+        else
+        {
+            getHit = false;
+        }
     }
     void ResetTimer()
     {
