@@ -11,6 +11,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public GameObject Arrow;
 	public Vector2 FlyDir;
 	public float hp;
+	public float hp_Max = 100;
 	public float speed;
 	public float moveInput_X;
 	private float moveInput_Y;

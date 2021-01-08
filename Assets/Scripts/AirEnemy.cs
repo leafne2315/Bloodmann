@@ -9,6 +9,7 @@ public class AirEnemy : MonoBehaviour
     public GameObject AttackPf;
     private float Timer;
     public int health;
+    public int maxhealth = 5;
     private Rigidbody rb;
     public Vector3 PlayerLastPos;
     public GameObject Player;

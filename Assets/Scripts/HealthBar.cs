@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GasGasGas : MonoBehaviour
+public class HealthBar : MonoBehaviour
 {
-    // Start is called before the first frame update
     private PlayerCtroller playerCtrScript;
-    public Image GasBar;
+    public Image healthBar;
     //public GameObject GasUI;
     public GameObject Player;
     void Start()
     {
-        GasBar = GetComponent<Image>();
+        healthBar = GetComponent<Image>();
         playerCtrScript = Player.GetComponent<PlayerCtroller>();
     }
     
@@ -23,6 +22,6 @@ public class GasGasGas : MonoBehaviour
     }
     private void LateUpdate()
     {
-        GasBar.fillAmount = playerCtrScript.currentGas/playerCtrScript.Gas_MaxValue;
+        healthBar.fillAmount = playerCtrScript.hp/playerCtrScript.hp_Max;
     }
 }
