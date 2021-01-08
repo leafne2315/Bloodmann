@@ -134,6 +134,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isInvincible = false;
 	private float StableValue;
 	private ExternalForce Ef;
+	public Vector3 SavePointPos;
 
 	void Awake()
 	{
@@ -163,6 +164,11 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Update()
 	{
+		if(hp<=0)
+		{
+			Die();
+		}
+
 		switch(currentState)
 		{
 			case PlayerState.Idle:
@@ -978,6 +984,10 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			Die();
 		}
+		if(other.collider.CompareTag("Spike"))
+		{
+			gettingHit();
+		}
 	}
 	void Resurrect()
 	{
@@ -1013,7 +1023,9 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	public void Die()
 	{
-		GameManager.ReloadScene();
+		hp = hp_Max;
+		transform.position = SavePointPos;
+		//GameManager.ReloadScene();
 
 		// gameObject.SetActive(false);
 		// rb.velocity = Vector2.zero;
