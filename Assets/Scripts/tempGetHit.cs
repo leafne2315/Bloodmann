@@ -33,8 +33,7 @@ public class tempGetHit : MonoBehaviour
         
     }
     public void KnockBack(float KnockPwr,Vector2 KnockDir)
-	{
-        
+	{ 
         rb.AddForce(KnockDir*KnockPwr,ForceMode.VelocityChange);
 		isHit = false;
 	}

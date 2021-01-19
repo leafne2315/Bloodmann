@@ -762,7 +762,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		for(int i = 0;i<2;i++)
 		{
-			yield return 0 ;
+			yield return 0;
 		}
 		
 
@@ -903,7 +903,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(!isInvincible)
 			{
-				print(other.name);
+				//print(other.name);
 
 				if(other.transform.position.x>transform.position.x)
 				{

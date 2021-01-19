@@ -9,10 +9,11 @@ public class RushingBug : MonoBehaviour
     public GameObject Player;
     private Vector3 MovingDir;
     private bool isFacingRight = true;
-    private float Timer;
+    public float Timer;
+    public bool isOverFrame;
     public Animator RushBugAni;
     [Header("Basic Element")]
-    public float health;
+    public float hp;
     public float movingSpeed;
     public float gravityScale;
 
@@ -24,9 +25,10 @@ public class RushingBug : MonoBehaviour
     public Transform GroundCheck;
     public float GroundCheckRadius = 0.1f;
     public LayerMask WhatIsGround;
+    public bool GetHit;
 
     [Header("Attack Settings")]
-    public bool PlayerInRange;
+    public Vector3 AttackDir;
     public bool canAttack;
     public bool isAttacking;
     public float AttackLength;
@@ -39,12 +41,13 @@ public class RushingBug : MonoBehaviour
     public float PreAttackTime;
     public float AfterAttackWaitingTime;
     [Header("Repel Setting")]
+    public Vector3 RepelDir;
     public float RepelForce;
     public float RepelTime;
-    public bool isRepeling;
+
     [Header("Statement")]
     public EnemyState currentState;
-    public enum EnemyState{Idle,Patrol,Combat,Attack,Die,WaitForTransfer,Repel}
+    public enum EnemyState{Idle,Patrol,InCombat,PreAttack,Attacking,AfterAttack,Die,WaitForTransfer,Repel}
     [Header("IEnumerator Settings")]
     private IEnumerator StartAttackCoroutine;
     private IEnumerator AfterAttackCoroutine;
@@ -55,23 +58,23 @@ public class RushingBug : MonoBehaviour
     }
     void Start()
     {
-        
         MovingDir = transform.forward;
         rb = GetComponent<Rigidbody>();
     }
     void FixedUpdate()
     {
         GravityInput();
-
+        GetHitCheck();
+        
         switch(currentState)
         {
             case EnemyState.Patrol:
 
             break;
-            case EnemyState.Combat:
+            case EnemyState.InCombat:
                 
             break;
-            case EnemyState.Attack:
+            case EnemyState.PreAttack:
 
             break;
             case EnemyState.Die:
@@ -91,28 +94,41 @@ public class RushingBug : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DetectingPlayer();
+        
         FacingCheck();
-        getHitCheck();
-
+        print(rb.velocity);
 
         switch(currentState)
         {
+            case EnemyState.Idle:
+
+                DetectingPlayer();
+
+                if(PlayerDetect)
+                {
+                    currentState = EnemyState.InCombat;
+                    RushBugAni.Play("Spider_Moving");
+                }
+
+            break;
             case EnemyState.Patrol:
 
             break;
-            case EnemyState.Combat:
+            case EnemyState.InCombat:
                 
-                FacingPlayer();
+                GetMoveDir();
+                DetectingPlayer();
                 MoveTowardPlayer();
 
-                AttackRangeDetect();
-                if(PlayerInRange&&canAttack)
+                if(PlayerInRange()&&canAttack)
                 {
-                    StartAttackCoroutine = StartAttacking();
-                    StartCoroutine(StartAttackCoroutine);
-                    currentState = EnemyState.WaitForTransfer;
+
+                    currentState = EnemyState.PreAttack;
                     RushBugAni.Play("Spider_Idle");
+
+                    rb.velocity = Vector3.zero;
+                    isAttacking = true;
+                    get_AttackDir();
                 }
 
                 if(!PlayerDetect)
@@ -123,38 +139,58 @@ public class RushingBug : MonoBehaviour
                 }
 
             break;
-            case EnemyState.Attack:
+            case EnemyState.PreAttack:
 
-                
-                if(isAttacking)
+                if(Timer<PreAttackTime)
                 {
-                    bool isGrounded = Physics.CheckSphere(GroundCheck.position,GroundCheckRadius,WhatIsGround);
-                    if(isGrounded)
-                    {
-                        rb.velocity = Vector3.zero;
-                        isAttacking = false;
-                    }
+                    Timer+=Time.deltaTime;
+                    //waiting
                 }
                 else
                 {
-                    AfterAttackCoroutine = AfterAttack();
-                    StartCoroutine(AfterAttackCoroutine);
+                    Timer = 0;
+                    JumpAttack(AttackDir);
+                    currentState = EnemyState.Attacking;
+
+                    AttackCDCoroutine = AttackCD_Count();
+                    StartCoroutine(AttackCDCoroutine);
+                    StartCoroutine(AfterFrame(2));
                 }
 
             break;
-    
-            case EnemyState.Idle:
-
-                if(PlayerDetect)
+            case EnemyState.Attacking:
+                
+                bool isGrounded = Physics.CheckSphere(GroundCheck.position,GroundCheckRadius,WhatIsGround);
+                if(isGrounded&&isOverFrame)
                 {
-                    currentState = EnemyState.Combat;
-                    RushBugAni.Play("Spider_Moving");
+                    rb.velocity = Vector3.zero;
+                    isAttacking = false;
+                }
+                
+                if(!isAttacking)
+                {
+                    currentState = EnemyState.AfterAttack;
+                    rb.velocity = Vector3.zero;
                 }
 
+            break;
+
+            case EnemyState.AfterAttack:
+
+                if(Timer<AfterAttackWaitingTime)
+                {
+                    Timer+=Time.deltaTime;
+                }
+                else
+                {
+                    Timer = 0;
+                    currentState = EnemyState.InCombat;
+                    RushBugAni.Play("Spider_Moving");
+                }
             break;
 
             case EnemyState.WaitForTransfer:
-                //do nothing 
+                //do nothing
             break; 
             
             case EnemyState.Repel:
@@ -164,7 +200,7 @@ public class RushingBug : MonoBehaviour
                 {
                     Timer += Time.deltaTime;
 
-                    rb.velocity = RepelDir()*RepelForce;
+                    rb.velocity = RepelDir*RepelForce;
                 }
                 else if(Timer<RepelTime)
                 {
@@ -174,25 +210,40 @@ public class RushingBug : MonoBehaviour
                 else
                 {
                     Timer = 0;
-                    currentState = EnemyState.Combat;
+                    currentState = EnemyState.InCombat;
                     RushBugAni.Play("Spider_Moving");
                 }
 
             break;
+
             case EnemyState.Die:
-                float moveInput_X = Input.GetAxis("PS4-L-Horizontal"); 
-                rb.velocity = new Vector3(moveInput_X*movingSpeed,rb.velocity.y,0);
+                
             break;
+
             default:
             break;
         }
+
+        
+        
+
         print(currentState);
     }
+    
+    IEnumerator AfterFrame(int frameNum)
+    {
+        isOverFrame = false;
 
-    Vector3 RepelDir()
+        for(int i = 0;i<frameNum;i++)
+		{
+			yield return 0;
+		}
+        isOverFrame = true;
+    }
+    void get_RepelDir()
     {
         Vector3 dir = GetComponent<tempGetHit>().KnockDir;
-        return dir;
+        RepelDir = dir;
     }
     IEnumerator AttackCD_Count()
 	{
@@ -204,7 +255,6 @@ public class RushingBug : MonoBehaviour
 	}
     void DetectingPlayer()
     {
-
         if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
         {
             PlayerDetect = true;
@@ -214,19 +264,18 @@ public class RushingBug : MonoBehaviour
             PlayerDetect = false;
         }
     }
-    void AttackRangeDetect()
+    bool PlayerInRange()
     {
-
         if(Physics.CheckBox(AttackPos.position,AttackRange,Quaternion.identity,WhatIsPlayer))
         {
-            PlayerInRange = true;
+            return true;
         }
         else
         {
-            PlayerInRange = false;
+            return false;
         }
     }
-    void FacingPlayer()
+    void GetMoveDir()
     {
         if(transform.position.x>Player.transform.position.x)
         {
@@ -275,65 +324,41 @@ public class RushingBug : MonoBehaviour
     {
         rb.velocity = dir*AttForce;
         canAttack = false;
-        AttackCDCoroutine = AttackCD_Count();
-        StartCoroutine(AttackCDCoroutine);
     }
 
-    Vector3 AttackDir()
+    void get_AttackDir()
     {
         if(isFacingRight)
         {
             Vector3 dir = new Vector3(Mathf.Cos(AttackAngle*Mathf.Deg2Rad),Mathf.Sin(AttackAngle*Mathf.Deg2Rad),0.0f);
-            return dir;
+            AttackDir = dir;
         }
         else
         {
             Vector3 dir = new Vector3(-Mathf.Cos(AttackAngle*Mathf.Deg2Rad),Mathf.Sin(AttackAngle*Mathf.Deg2Rad),0.0f);
-            return dir;
+            AttackDir = dir;
         }    
     }
-    
-    IEnumerator StartAttacking()
-    {
-        rb.velocity = Vector3.zero;
-        isAttacking = true;
-        Vector3 attackdir = AttackDir();
-        for(float i =0 ; i<=PreAttackTime ; i+=Time.deltaTime)
-		{
-            print("start att");
-			yield return 0;
-		}
-		JumpAttack(attackdir);
-        currentState = EnemyState.Attack;
-    }
-    IEnumerator AfterAttack()
-    {
-        
-        rb.velocity = Vector3.zero;
-        currentState = EnemyState.WaitForTransfer;
-        for(float i =0 ; i<=AfterAttackWaitingTime ; i+=Time.deltaTime)
-		{
-            print("counting after Attack");
-			yield return 0;
-		}
-        currentState = EnemyState.Combat;
-        RushBugAni.Play("Spider_Moving");
-    }
-    void getHitCheck()
+    void GetHitCheck()
     {
         if(GetComponent<tempGetHit>().isHit)
         {
+            get_RepelDir();
+            hp--;
+
             if(!isAttacking)
             {
-                StopCoroutinesExceptTiming();
-                currentState = EnemyState.Repel;
-                print("REPEL!!");
-            }
-            else
-            {
-                print("GetHit BUT Enemy ATTACKING");
+                StartCoroutine(Repelling());
             }
         }
+    }
+    IEnumerator Repelling()
+    {
+        for(float i =0 ; i <= RepelTime; i+=Time.deltaTime)
+		{
+            rb.AddForce(RepelDir*RepelForce,ForceMode.VelocityChange);
+			yield return 0;
+		}
     }
     void OnDrawGizmos()
     {
@@ -341,7 +366,7 @@ public class RushingBug : MonoBehaviour
         Gizmos.DrawWireCube(transform.position,2*DetectPlayerlength);
         Gizmos.DrawWireSphere(transform.position,DetectPlayerRadius);
 
-        if(PlayerInRange)
+        if(PlayerInRange())
         {
             Gizmos.color = Color.red;
         }
@@ -358,4 +383,5 @@ public class RushingBug : MonoBehaviour
         if(StartAttackCoroutine!=null)
             StopCoroutine(StartAttackCoroutine);
     }
+
 }

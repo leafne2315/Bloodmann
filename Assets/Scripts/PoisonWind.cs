@@ -14,7 +14,6 @@ public class PoisonWind : MonoBehaviour
     public GameObject tempDamageBlock;
     void Start()
     {
-        
     }
 
     // Update is called once per frame
@@ -34,7 +33,7 @@ public class PoisonWind : MonoBehaviour
 
         PoisonField.x = hit.distance/2;
  
-        if(Physics.CheckBox(transform.position+transform.right*PoisonField.x,PoisonField,Quaternion.identity,WhatIsPlayer))
+        if(Physics.CheckBox(transform.position+transform.right*PoisonField.x,PoisonField,transform.localRotation,WhatIsPlayer))
         {
             Player.GetComponent<PlayerCtroller>().gettingHit();
         }
@@ -45,6 +44,8 @@ public class PoisonWind : MonoBehaviour
     void OnDrawGizmos() 
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(new Vector3((hit.point.x+transform.position.x)/2,hit.point.y, hit.point.z),2*PoisonField);
+        
+        Gizmos.matrix = Matrix4x4.TRS(transform.position+transform.right*PoisonField.x,transform.rotation,Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero,2*PoisonField);
     }
 }
