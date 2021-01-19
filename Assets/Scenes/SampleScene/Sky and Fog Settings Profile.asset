@@ -153,7 +153,7 @@ MonoBehaviour:
     m_Value: 0
   exposure:
     m_OverrideState: 1
-    m_Value: 20.49
+    m_Value: 0.63
   multiplier:
     m_OverrideState: 1
     m_Value: 1
@@ -182,8 +182,8 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {fileID: 8900000, guid: 1cde0e200e792cb4491204276a656490, type: 3}
   enableBackplate:
-    m_OverrideState: 1
-    m_Value: 1
+    m_OverrideState: 0
+    m_Value: 0
   backplateType:
     m_OverrideState: 1
     m_Value: 0
