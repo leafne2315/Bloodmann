@@ -164,6 +164,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Update()
 	{
+		print(currentState);
 		if(hp<=0)
 		{
 			Die();
@@ -646,7 +647,9 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		StartCoroutine(AttackCD_Count());
 		
-		Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
+
+
+
 		if(facingRight)
 		{
 			GameObject Ftx = Instantiate(AttackFTX,hitPos.position,Quaternion.identity);
@@ -657,6 +660,8 @@ public class PlayerCtroller : MonoBehaviour {
 			GameObject Ftx = Instantiate(AttackFTX,hitPos.position,Quaternion.Euler(0,180,0));
 			Ftx.transform.SetParent(transform);
 		}
+		
+		Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
 		
 		if(hitObjs.Length==0)
 		{
@@ -895,6 +900,11 @@ public class PlayerCtroller : MonoBehaviour {
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
 			currentState = PlayerState.GetHit;
+
+			if(GetComponent<FixedJoint>()!=null)
+			{
+				Destroy(GetComponent<FixedJoint>());
+			}
 		}
 	} 
 	void OnTriggerEnter(Collider other)

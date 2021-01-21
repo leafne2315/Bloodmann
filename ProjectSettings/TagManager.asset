@@ -17,6 +17,7 @@ TagManager:
   - Jar
   - Lift
   - Spike
+  - DeadObject
   layers:
   - Default
   - TransparentFX
@@ -38,7 +39,7 @@ TagManager:
   - Jar
   - Lift
   - Spike
-  - 
+  - DeadObject
   - 
   - 
   - 

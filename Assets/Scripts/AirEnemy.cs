@@ -73,18 +73,10 @@ public class AirEnemy : MonoBehaviour
     
     void FixedUpdate()
     {
-        if(tempGetHit.isHit)
-        {
-            print("repel!!");
-            health--;
-            StartCoroutine(Repelling());
-        }
-
         if(currentState == EnemyState.Dead)
         {
             GravityInput();
-        }
-        
+        } 
     }
     void Update()
     {
@@ -93,13 +85,20 @@ public class AirEnemy : MonoBehaviour
             if(notDie)
             {   
                 notDie = false;
+                gameObject.tag = "DeadObject";
+                gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 
                 currentState = EnemyState.Dead;
                 FlyBugAni.SetTrigger("Die");
             }
             
         }
-        
+        if(tempGetHit.isHit)
+        {
+            print("repel!!");
+            health--;
+            StartCoroutine(Repelling());
+        }
 
         switch (currentState)
         {

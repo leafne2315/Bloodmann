@@ -42,7 +42,7 @@ public class tempGetHit : MonoBehaviour
         isHit = true;
         KnockDir = HitDir;
         GetComponent<Renderer>().material.color = Color.red;
-		yield return new WaitForFixedUpdate();
+		yield return 0;
         isHit = false;
         GetComponent<Renderer>().material.color = OriginColor;
     }

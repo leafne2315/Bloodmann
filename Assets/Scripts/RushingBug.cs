@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +12,7 @@ public class RushingBug : MonoBehaviour
     public float Timer;
     public bool isOverFrame;
     public Animator RushBugAni;
+    public bool notDie = true;
     [Header("Basic Element")]
     public float hp;
     public float movingSpeed;
@@ -44,6 +45,10 @@ public class RushingBug : MonoBehaviour
     public Vector3 RepelDir;
     public float RepelForce;
     public float RepelTime;
+    private float RepelTimer;
+    [Header("Die Settings")]
+    private float dieTimer;
+    public float dyingTime = 1;
 
     [Header("Statement")]
     public EnemyState currentState;
@@ -64,7 +69,7 @@ public class RushingBug : MonoBehaviour
     void FixedUpdate()
     {
         GravityInput();
-        GetHitCheck();
+        
         
         switch(currentState)
         {
@@ -94,9 +99,10 @@ public class RushingBug : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
         FacingCheck();
-        print(rb.velocity);
+        GetHitCheck();
+        DieCheck();
+        //print(rb.velocity);
 
         switch(currentState)
         {
@@ -137,7 +143,7 @@ public class RushingBug : MonoBehaviour
                     rb.velocity = Vector3.zero;
                     RushBugAni.Play("Spider_Idle");
                 }
-
+                
             break;
             case EnemyState.PreAttack:
 
@@ -195,21 +201,21 @@ public class RushingBug : MonoBehaviour
             
             case EnemyState.Repel:
                 
-                print(Timer);
-                if(Timer<RepelTime*0.3f)
+                //print(RepelTimer);
+                if(RepelTimer<RepelTime*0.3f)
                 {
-                    Timer += Time.deltaTime;
+                    RepelTimer += Time.deltaTime;
 
                     rb.velocity = RepelDir*RepelForce;
                 }
-                else if(Timer<RepelTime)
+                else if(RepelTimer<RepelTime)
                 {
-                    Timer += Time.deltaTime;
+                    RepelTimer += Time.deltaTime;
                     rb.velocity = Vector3.zero;
                 }
                 else
                 {
-                    Timer = 0;
+                    RepelTimer = 0;
                     currentState = EnemyState.InCombat;
                     RushBugAni.Play("Spider_Moving");
                 }
@@ -217,17 +223,22 @@ public class RushingBug : MonoBehaviour
             break;
 
             case EnemyState.Die:
-                
+                rb.velocity = Vector3.zero;
+
+                if(dieTimer<dyingTime)
+                {
+                    dieTimer+=Time.deltaTime;
+                }
+                else
+                {
+                    Destroy(gameObject);
+                }
+
             break;
 
             default:
             break;
         }
-
-        
-        
-
-        print(currentState);
     }
     
     IEnumerator AfterFrame(int frameNum)
@@ -348,17 +359,27 @@ public class RushingBug : MonoBehaviour
 
             if(!isAttacking)
             {
-                StartCoroutine(Repelling());
+                currentState = EnemyState.Repel;
+                Timer = 0;
+                RushBugAni.Play("Spider_Idle");
             }
         }
     }
-    IEnumerator Repelling()
+    void DieCheck()
     {
-        for(float i =0 ; i <= RepelTime; i+=Time.deltaTime)
-		{
-            rb.AddForce(RepelDir*RepelForce,ForceMode.VelocityChange);
-			yield return 0;
-		}
+        if(hp<=0)
+        {
+            if(notDie)
+            {   
+                notDie = false;
+
+                gameObject.tag = "DeadObject";
+                gameObject.layer = LayerMask.NameToLayer("DeadObject");
+                
+                currentState = EnemyState.Die;
+                //RushBugAni.SetTrigger("Die");
+            }   
+        }
     }
     void OnDrawGizmos()
     {
