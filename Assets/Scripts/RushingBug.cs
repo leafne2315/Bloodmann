@@ -15,6 +15,7 @@ public class RushingBug : MonoBehaviour
     public bool notDie = true;
     [Header("Basic Element")]
     public float hp;
+    public float MaxHp;
     public float movingSpeed;
     public float gravityScale;
 
@@ -231,6 +232,7 @@ public class RushingBug : MonoBehaviour
                 }
                 else
                 {
+                    transform.GetChild(2).GetComponent<RushEnemyUIController>().DestroyUI();
                     Destroy(gameObject);
                 }
 

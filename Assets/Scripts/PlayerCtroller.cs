@@ -108,6 +108,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float AttackCD = 0.8f;
 	public float AttackRange;
 	public Transform hitPos;
+	public Transform hitPos_Up;
 	public LayerMask EnemyLayer;
 	public float ReviveTime;
 	public Vector3 HitBox_size;
@@ -164,7 +165,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Update()
 	{
-		print(currentState);
+		//print(currentState);
 		if(hp<=0)
 		{
 			Die();
@@ -228,7 +229,6 @@ public class PlayerCtroller : MonoBehaviour {
 							j.connectedBody = AttachingObj.attachedRigidbody;
 						}
 					}
-					
 
 					currentState = PlayerState.Attach;
 					
@@ -647,21 +647,35 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		StartCoroutine(AttackCD_Count());
 		
+		Quaternion rotateAngle;
+		Transform currentHitPos;
+		Vector3 AttackDir;
 
-
-
-		if(facingRight)
+		if(moveInput_Y>0.65f)
 		{
-			GameObject Ftx = Instantiate(AttackFTX,hitPos.position,Quaternion.identity);
-			Ftx.transform.SetParent(transform);
+			rotateAngle = Quaternion.Euler(0,0,90);
+			currentHitPos = hitPos_Up;
+			AttackDir = Vector3.up;
 		}
 		else
 		{
-			GameObject Ftx = Instantiate(AttackFTX,hitPos.position,Quaternion.Euler(0,180,0));
-			Ftx.transform.SetParent(transform);
+			currentHitPos = hitPos;
+			if(facingRight)
+			{
+				rotateAngle = Quaternion.identity;
+				AttackDir = Vector3.right;
+			}
+			else
+			{
+				rotateAngle = Quaternion.Euler(0,180,0);
+				AttackDir = Vector3.left;
+			}
 		}
 		
-		Collider[] hitObjs = Physics.OverlapBox((Vector3)hitPos.position,(Vector3)HitBox_size,Quaternion.identity,EnemyLayer);
+		GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,rotateAngle);
+		Ftx.transform.SetParent(transform);
+
+		Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,rotateAngle,EnemyLayer);
 		
 		if(hitObjs.Length==0)
 		{
@@ -669,23 +683,13 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		else
 		{
-			if(facingRight)
+			foreach(Collider c in hitObjs)
 			{
-				Instantiate(AttackHitFTX,hitPos.position,Quaternion.identity);
-			}
-			else
-			{
-				Instantiate(AttackHitFTX,hitPos.position,Quaternion.Euler(0,180,0));
+				print("Hit"+c.name+"!!!!");
+				StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
 			}
 		}
 
-		foreach(Collider c in hitObjs)
-		{
-			print("Hit"+c.name+"!!!!");
-			
-			Vector3 AttackDir = new Vector3(c.transform.position.x-transform.position.x,0,0).normalized;
-			StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
-		}
 	}
 	Vector3 Default_ThrowDir()
 	{
@@ -901,6 +905,15 @@ public class PlayerCtroller : MonoBehaviour {
 			LastState = currentState;
 			currentState = PlayerState.GetHit;
 
+			if(facingRight)
+			{
+				KnockDir = new Vector3(-Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+			}
+			else
+			{
+				KnockDir = new Vector3(Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+			}
+
 			if(GetComponent<FixedJoint>()!=null)
 			{
 				Destroy(GetComponent<FixedJoint>());
@@ -992,7 +1005,8 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		if(other.collider.CompareTag("Sea"))
 		{
-			Die();
+			transform.position = SavePointPos;
+			hp = hp-15;
 		}
 		if(other.collider.CompareTag("Spike"))
 		{

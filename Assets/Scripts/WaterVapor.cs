@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.VFX;
 public class WaterVapor : MonoBehaviour
 {
     [Header("Detect Settings")]
@@ -21,6 +21,10 @@ public class WaterVapor : MonoBehaviour
     [Header("Statement")]
     public vaporState currentState;
     public enum vaporState{On, Off }
+    void Awake()
+    {
+        
+    }
     void Start()
     {
         VaporField.x = VaporLength;
@@ -43,6 +47,7 @@ public class WaterVapor : MonoBehaviour
                 else
                 {
                     onTimer = 0;
+                    VTX_Off();
                     currentState = vaporState.Off;
                     isVaporOn = false;
                     //
@@ -66,18 +71,28 @@ public class WaterVapor : MonoBehaviour
                 else
                 {
                     offTimer = 0;
+                    VTX_On();
                     currentState = vaporState.On;
                     isVaporOn = true;
                     //
+                    /*
                     tempDamageBlock = Instantiate(tempPf,transform.position+VaporField.x*transform.right,Quaternion.identity);
                     tempDamageBlock.transform.localScale = 2*VaporField;
                     tempDamageBlock.transform.rotation = Quaternion.Euler(0,0,transform.rotation.eulerAngles.z);
+                    */
                 }
             
             break;      
         }
     }
-
+    void VTX_On()
+    {
+        transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
+    }
+    void VTX_Off()
+    {
+        transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnStop");
+    }
     void OnDrawGizmos() 
     {
         if(!isVaporOn)

@@ -87,7 +87,7 @@ public class AirEnemy : MonoBehaviour
                 notDie = false;
                 gameObject.tag = "DeadObject";
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
-                
+
                 currentState = EnemyState.Dead;
                 FlyBugAni.SetTrigger("Die");
             }
@@ -217,6 +217,11 @@ public class AirEnemy : MonoBehaviour
             break;
             case EnemyState.Dead:
 
+                
+                if(rb.velocity.y>1.5f)
+                {
+                    rb.velocity = Vector3.Lerp(rb.velocity,Vector3.zero,0.9f);
+                }
                 rb.velocity = new Vector3(Mathf.Lerp(rb.velocity.x,0,0.9f),rb.velocity.y,0);
                 
                 if(dieTimer<dyingTime)
@@ -225,6 +230,8 @@ public class AirEnemy : MonoBehaviour
                 }
                 else
                 {
+                    
+                    transform.GetChild(2).GetComponent<AirEnemyHealthBar>().DestroyUI();
                     Destroy(gameObject);
                 }
                 

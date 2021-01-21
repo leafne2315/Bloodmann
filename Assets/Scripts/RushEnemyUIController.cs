@@ -2,42 +2,40 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
-public class AirEnemyHealthBar : MonoBehaviour
+public class RushEnemyUIController : MonoBehaviour
 {
-    private AirEnemy airEnemyScript;
-    public Image airEnemyHPBar;
+    // Start is called before the first frame update
+    private RushingBug EnemyScript;
+    public Image EnemyHPBar;
     private GameObject HP_UI;
     public GameObject HpPf;
     public Transform Canvas;
-    
-    //public GameObject AirEnemy;
     void Start()
     {
         //airEnemyHPBar = GetComponent<Image>();
         GenerateUI();
-        airEnemyScript = transform.parent.GetComponent<AirEnemy>();
+        EnemyScript = transform.parent.GetComponent<RushingBug>();
     }
     
     void Update() 
     {
-        Vector3 airEnemyBarPos = Camera.main.WorldToScreenPoint(this.transform.position);
-        airEnemyHPBar.transform.position = airEnemyBarPos;
+        Vector3 EnemyBarPos = Camera.main.WorldToScreenPoint(this.transform.position);
+        EnemyHPBar.transform.position = EnemyBarPos;
     }
     private void LateUpdate()
     {
-        airEnemyHPBar.fillAmount = (float)airEnemyScript.health/(float)airEnemyScript.maxhealth;
+        EnemyHPBar.fillAmount = (float)EnemyScript.hp/(float)EnemyScript.MaxHp;
     }
 
     void GenerateUI()
     {
         Vector3 GeneratePos = Camera.main.WorldToScreenPoint(this.transform.position);
         HP_UI = Instantiate(HpPf,GeneratePos,Quaternion.identity,Canvas);
-        airEnemyHPBar = HP_UI.GetComponent<Image>();
+        EnemyHPBar = HP_UI.GetComponent<Image>();
     }
     public void DestroyUI()
     {
-        Destroy(airEnemyHPBar.gameObject);
+        Destroy(EnemyHPBar.gameObject);
         print("Done");
     }
 }
