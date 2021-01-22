@@ -6340,8 +6340,8 @@ MonoBehaviour:
   AttackCD: 4
   damage: 0
   AttackAngle: 30
-  PreAttackTime: 1
-  AfterAttackWaitingTime: 1
+  PreAttackTime: 0.8
+  AfterAttackWaitingTime: 1.2
   RepelDir: {x: 0, y: 0, z: 0}
   RepelForce: 5
   RepelTime: 0.4

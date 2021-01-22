@@ -114,7 +114,7 @@ public class RushingBug : MonoBehaviour
                 if(PlayerDetect)
                 {
                     currentState = EnemyState.InCombat;
-                    RushBugAni.Play("Spider_Moving");
+                    RushBugAni.SetTrigger("ToMove");
                 }
 
             break;
@@ -131,7 +131,7 @@ public class RushingBug : MonoBehaviour
                 {
 
                     currentState = EnemyState.PreAttack;
-                    RushBugAni.Play("Spider_Idle");
+                    RushBugAni.SetTrigger("Attack");
 
                     rb.velocity = Vector3.zero;
                     isAttacking = true;
@@ -142,7 +142,7 @@ public class RushingBug : MonoBehaviour
                 {
                     currentState = EnemyState.Idle;
                     rb.velocity = Vector3.zero;
-                    RushBugAni.Play("Spider_Idle");
+                    RushBugAni.SetTrigger("ToIdle");
                 }
                 
             break;
@@ -192,13 +192,9 @@ public class RushingBug : MonoBehaviour
                 {
                     Timer = 0;
                     currentState = EnemyState.InCombat;
-                    RushBugAni.Play("Spider_Moving");
+                    RushBugAni.SetTrigger("ToMove");
                 }
             break;
-
-            case EnemyState.WaitForTransfer:
-                //do nothing
-            break; 
             
             case EnemyState.Repel:
                 
@@ -218,7 +214,7 @@ public class RushingBug : MonoBehaviour
                 {
                     RepelTimer = 0;
                     currentState = EnemyState.InCombat;
-                    RushBugAni.Play("Spider_Moving");
+                    RushBugAni.SetTrigger("ToMove");
                 }
 
             break;
@@ -363,7 +359,7 @@ public class RushingBug : MonoBehaviour
             {
                 currentState = EnemyState.Repel;
                 Timer = 0;
-                RushBugAni.Play("Spider_Idle");
+                RushBugAni.SetTrigger("Repel");
             }
         }
     }
@@ -379,7 +375,7 @@ public class RushingBug : MonoBehaviour
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 
                 currentState = EnemyState.Die;
-                //RushBugAni.SetTrigger("Die");
+                RushBugAni.SetTrigger("Die");
             }   
         }
     }
