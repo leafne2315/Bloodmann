@@ -103,7 +103,7 @@ public class RushingBug : MonoBehaviour
         FacingCheck();
         GetHitCheck();
         DieCheck();
-        print(currentState);
+        //print(currentState);
 
         switch(currentState)
         {
