@@ -103,7 +103,7 @@ public class RushingBug : MonoBehaviour
         FacingCheck();
         GetHitCheck();
         DieCheck();
-        //print(rb.velocity);
+        print(currentState);
 
         switch(currentState)
         {
@@ -267,10 +267,12 @@ public class RushingBug : MonoBehaviour
         if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
         {
             PlayerDetect = true;
+            print("checked");
         }
         else
         {
             PlayerDetect = false;
+            print("NotFound");
         }
     }
     bool PlayerInRange()
