@@ -1384,7 +1384,7 @@ VisualEffectResource:
     m_UpdateMode: 1
     m_PreWarmDeltaTime: 0
     m_PreWarmStepCount: 0
-    m_InitialEventName: 
+    m_InitialEventName: OnPlay
   m_Systems:
   - type: 0
     flags: 0

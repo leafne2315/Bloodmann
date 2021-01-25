@@ -267,12 +267,12 @@ public class RushingBug : MonoBehaviour
         if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
         {
             PlayerDetect = true;
-            print("checked");
+            //print("checked");
         }
         else
         {
             PlayerDetect = false;
-            print("NotFound");
+            //print("NotFound");
         }
     }
     bool PlayerInRange()
