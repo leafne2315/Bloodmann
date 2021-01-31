@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class LerpCameraFollow : MonoBehaviour
 {
     public Transform Target;
