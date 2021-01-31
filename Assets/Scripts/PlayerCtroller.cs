@@ -86,7 +86,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,Attack,Throw,Idle};
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Throw,Idle};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -99,14 +99,16 @@ public class PlayerCtroller : MonoBehaviour {
 	public float Gas_MaxValue;
 	public bool Out_Of_Gas;
 	private bool RestoreGas_isOver = true;
+	[Header("PreAttack Settings")]
+	public float PreAttackTime;
+	private float Timer;
 	//
 	//攻擊
 	[Header("Attack Settings")]
 	public bool canAttack = true;
-	public float AttackAniTime = 0.5f;
-	float AttackTimeCount = 0;
+	public float AttackTime = 0.5f;
 	public float AttackCD = 0.8f;
-	public float AttackRange;
+	//public float AttackRange;
 	public Transform hitPos;
 	public Transform hitPos_Up;
 	public LayerMask EnemyLayer;
@@ -114,6 +116,9 @@ public class PlayerCtroller : MonoBehaviour {
 	public Vector3 HitBox_size;
 	public GameObject AttackFTX;
 	public GameObject AttackHitFTX;
+	public bool hitConfirm = false;
+	[Header("AfterAttack Settings")]
+	public float AfterAttackTime;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -209,13 +214,16 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					if(canAttack)
 					{
+						rb.velocity = Vector3.zero;
 						canAttack = false;
-						AttackMovement();
+						StartCoroutine(AttackCD_Count());
+						currentState = PlayerState.PreAttack;
+						
 					}
 				}
 				// if(isGrounded)
 				// {
-				// 	RestoreGas();
+				// 		RestoreGas();
 				// }
 				
 				if(isAttachWall&&!isGrounded&&canAttach)
@@ -521,37 +529,80 @@ public class PlayerCtroller : MonoBehaviour {
 						currentState = PlayerState.BugFly;
 					}
 				}
-				
+
+			break;
+
+			case PlayerState.PreAttack:
+
+				if(Timer<PreAttackTime)
+				{
+					Timer+=Time.deltaTime;
+					//animation
+				}
+				else
+				{
+					Timer = 0;
+					currentState = PlayerState.Attack;
+					
+				}
 
 			break;
 
 			case PlayerState.Attack:
 
-				if(isFlying)
+				// if(isFlying)
+				// {
+				// 	FlyDir = new Vector2(moveInput_X,moveInput_Y);
+				// 	rb.velocity = FlyDir *(flySpeed-5);
+				// 	if(AttackTimeCount<AttackAniTime)
+				// 	{
+				// 		AttackTimeCount+=Time.deltaTime;
+				// 	}
+				// 	else
+				// 	{
+				// 		currentState = LastState;
+				// 		AttackTimeCount = 0;
+				// 	}
+				// }
+				// else
+				// {
+				// 	if(AttackTimeCount<AttackAniTime+0.3f)
+				// 	{
+				// 		AttackTimeCount+=Time.deltaTime;
+				// 	}
+				// 	else
+				// 	{
+				// 		currentState = LastState;
+				// 		AttackTimeCount = 0;
+				// 	}
+				// }
+				
+				if(Timer<AttackTime)
 				{
-					FlyDir = new Vector2(moveInput_X,moveInput_Y);
-					rb.velocity = FlyDir *(flySpeed-5);
-					if(AttackTimeCount<AttackAniTime)
-					{
-						AttackTimeCount+=Time.deltaTime;
-					}
-					else
-					{
-						currentState = LastState;
-						AttackTimeCount = 0;
-					}
+					Timer+=Time.deltaTime;
+
+					AttackMovement();
+					//animation
 				}
 				else
 				{
-					if(AttackTimeCount<AttackAniTime+0.3f)
-					{
-						AttackTimeCount+=Time.deltaTime;
-					}
-					else
-					{
-						currentState = LastState;
-						AttackTimeCount = 0;
-					}
+					Timer = 0;
+					currentState = PlayerState.AfterAttack;
+				}
+
+			break;
+
+			case PlayerState.AfterAttack:
+
+				if(Timer<AfterAttackTime)
+				{
+					Timer+=Time.deltaTime;
+				}
+				else
+				{
+					Timer = 0;
+					hitConfirm = false;
+					currentState = PlayerState.Normal;
 				}
 
 			break;
@@ -644,49 +695,52 @@ public class PlayerCtroller : MonoBehaviour {
 
 	}
 	void AttackMovement()
-	{
-		StartCoroutine(AttackCD_Count());
-		
-		Quaternion rotateAngle;
-		Transform currentHitPos;
-		Vector3 AttackDir;
+	{	
+		if(!hitConfirm)
+		{
 
-		if(moveInput_Y>0.65f)
-		{
-			rotateAngle = Quaternion.Euler(0,0,90);
-			currentHitPos = hitPos_Up;
-			AttackDir = Vector3.up;
-		}
-		else
-		{
-			currentHitPos = hitPos;
-			if(facingRight)
+			Quaternion rotateAngle;
+			Transform currentHitPos;
+			Vector3 AttackDir;
+
+			if(moveInput_Y>0.65f)
 			{
-				rotateAngle = Quaternion.identity;
-				AttackDir = Vector3.right;
+				rotateAngle = Quaternion.Euler(0,0,90);
+				currentHitPos = hitPos_Up;
+				AttackDir = Vector3.up;
 			}
 			else
 			{
-				rotateAngle = Quaternion.Euler(0,180,0);
-				AttackDir = Vector3.left;
+				currentHitPos = hitPos;
+				if(facingRight)
+				{
+					rotateAngle = Quaternion.identity;
+					AttackDir = Vector3.right;
+				}
+				else
+				{
+					rotateAngle = Quaternion.Euler(0,180,0);
+					AttackDir = Vector3.left;
+				}
 			}
-		}
-		
-		GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,rotateAngle);
-		Ftx.transform.SetParent(transform);
+			
+			GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,rotateAngle);
+			Ftx.transform.SetParent(transform);
 
-		Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,rotateAngle,EnemyLayer);
-		
-		if(hitObjs.Length==0)
-		{
-			print("Miss");
-		}
-		else
-		{
-			foreach(Collider c in hitObjs)
+			Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,rotateAngle,EnemyLayer);
+			
+			if(hitObjs.Length==0)
 			{
-				print("Hit"+c.name+"!!!!");
-				StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
+				print("Miss");
+			}
+			else
+			{
+				hitConfirm = true;
+				foreach(Collider c in hitObjs)
+				{
+					print("Hit"+c.name+"!!!!");
+					StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
+				}
 			}
 		}
 
