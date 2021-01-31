@@ -119,7 +119,7 @@ public class RushingBug : MonoBehaviour
 
             break;
             case EnemyState.Patrol:
-
+                
             break;
             case EnemyState.InCombat:
                 

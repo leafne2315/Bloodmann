@@ -94,11 +94,11 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	//燃料
 	[Header("Gas Settings")]
+	public float GasUsingValue;
 	public float currentGas;
 	public float Gas_MaxValue;
 	public bool Out_Of_Gas;
 	private bool RestoreGas_isOver = true;
-	public float GasUsingValue;
 	//
 	//攻擊
 	[Header("Attack Settings")]
