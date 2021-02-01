@@ -31,11 +31,11 @@ public class AnimationController : MonoBehaviour
             PlayerAni.SetTrigger("Jump");
         }
 
-        if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
-		{
-            if(playerCtroller.canAttack)
-                PlayerAni.SetTrigger("Attack");
-        }
+        
+		
+            
+        
+        
         
     }
 }

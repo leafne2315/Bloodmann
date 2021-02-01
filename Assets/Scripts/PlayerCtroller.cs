@@ -105,6 +105,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	//攻擊
 	[Header("Attack Settings")]
+	private bool isAttacking;
 	public bool canAttack = true;
 	public float AttackTime = 0.5f;
 	public float AttackCD = 0.8f;
@@ -134,6 +135,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public float ThrowCD;
 	private bool canThrow = true;
 	private bool isThrowing = false;
+	[Header("Animation Settings")]
+	public Animator PlayerAni;
 	//
 	[Header("??? Settings")]
 	//private float OriginGravity;
@@ -212,14 +215,14 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
 				{
-					if(canAttack)
-					{
-						rb.velocity = Vector3.zero;
-						canAttack = false;
-						StartCoroutine(AttackCD_Count());
-						currentState = PlayerState.PreAttack;
-						
-					}
+					
+					
+					rb.velocity = Vector3.zero;
+					canAttack = false;
+					//StartCoroutine(AttackCD_Count());
+					currentState = PlayerState.PreAttack;
+					PlayerAni.SetTrigger("Attack");
+					
 				}
 				// if(isGrounded)
 				// {
@@ -359,11 +362,9 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
 				{
-					if(canAttack)
-					{
-						canAttack = false;
-						AttackMovement();
-					}
+					
+					AttackMovement();
+					
 				}
 
 				if(Out_Of_Gas)
@@ -603,6 +604,7 @@ public class PlayerCtroller : MonoBehaviour {
 					Timer = 0;
 					hitConfirm = false;
 					currentState = PlayerState.Normal;
+					
 				}
 
 			break;
@@ -638,13 +640,18 @@ public class PlayerCtroller : MonoBehaviour {
 			AttachingObj = null;
 		}
 			
-		
+		isAttacking = (currentState ==PlayerState.PreAttack||currentState==PlayerState.Attack||currentState==PlayerState.AfterAttack);
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
 		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
 
 		CheckStability();
-		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
-		moveInput_Y = Input.GetAxis("PS4-L-Vertical");
+
+		if(!isAttacking)
+		{
+			getMoveInput();
+		}
+
+		
 		//Debug.Log(rb.velocity.x);
 		//Debug.Log(rb.velocity.y);
 		if(isGrounded == true)
@@ -693,6 +700,11 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		}
 
+	}
+	void getMoveInput()
+	{
+		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
+		moveInput_Y = Input.GetAxis("PS4-L-Vertical");
 	}
 	void AttackMovement()
 	{	
