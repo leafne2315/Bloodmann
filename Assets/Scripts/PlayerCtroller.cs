@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -592,7 +592,10 @@ public class PlayerCtroller : MonoBehaviour {
 			break;
 			case PlayerState.Reloading:
 
-
+				if(Timer<ReloadTime)
+				{
+					/////上次繼續打的地方
+				}
 				
 			break;
 
