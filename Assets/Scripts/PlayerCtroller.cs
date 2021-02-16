@@ -61,7 +61,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	//衝刺
 	[Header("Dash Settings")]
-	[SerializeField]private Vector2 DashDir;
+	[SerializeField]private Vector3 DashDir;
 	public float Charge_MaxTime;
 	public float Dash_PreTime;
 	public float dashTimer;
@@ -72,6 +72,11 @@ public class PlayerCtroller : MonoBehaviour {
 	private bool canDash;
 	[SerializeField]private float dashSpeed;
 	public float Max_dashSpeed;
+
+	[Header("ReBound Settings")]
+	public float BoundSpeed;
+	Vector3 BoundDir;
+	public float BoundTime;
 	//
 	//被攻擊
 	[Header("UnderAttack Settings")]
@@ -86,7 +91,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Throw,Idle};
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Throw,Idle};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -105,6 +110,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	//攻擊
 	[Header("Attack Settings")]
+	public bool isIneffective;
 	private bool isAttacking;
 	public int AttackRemain;
 	public int FullRemain;
@@ -172,7 +178,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach)
+		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash)
 		{
 			rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
 		}
@@ -226,15 +232,15 @@ public class PlayerCtroller : MonoBehaviour {
 				// }
 				
 
-				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle")&&!Out_Of_Gas&&(isAttachWall||isGrounded))//->Dash
+				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
-					dashSpeed = 0;
+					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
 	
 					// rb.gravityScale = 0;
-					rb.velocity = Vector2.down*1.0f;
+					rb.velocity = Vector3.zero;
 					//StartCoroutine(dashCD_Count());
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
@@ -254,7 +260,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 					currentState = PlayerState.Attach;
 					
-					rb.velocity = Vector2.zero;
+					rb.velocity = Vector3.zero;
 				}
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1"))
 				{
@@ -276,11 +282,14 @@ public class PlayerCtroller : MonoBehaviour {
 					canAttack = false;
 					//StartCoroutine(AttackCD_Count());
 					currentState = PlayerState.PreAttack;
-					PlayerAni.SetTrigger("Attack");	
+					PlayerAni.SetTrigger("Attack");
+					
 				}
 
 				if(Input.GetButtonDown("PS4-L2"))
 				{
+					rb.velocity = Vector3.zero;
+
 					if(AttackRemain!=FullRemain)
 					{
 						currentState = PlayerState.Reloading;
@@ -298,10 +307,10 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
 				{	
 				
-					dashSpeed = 0;
+					
 					currentState = PlayerState.Dash;
 					//rb.gravityScale = 2;
-					rb.velocity = Vector2.zero;
+					rb.velocity = Vector3.zero;
 					//StartCoroutine(dashCD_Count());
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;	
@@ -369,12 +378,12 @@ public class PlayerCtroller : MonoBehaviour {
 					//FlyDir = Vector2.zero;
 				}
 
-				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
-				{
+				// if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+				// {
 					
-					AttackHitCheck();
+				// 	AttackHitCheck();
 					
-				}
+				// }
 
 				if(Out_Of_Gas)
 				{
@@ -400,7 +409,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(!isDash)
 				{
-					GasUse(40);
+
+					
+					//GasUse(40);
+					/*
 					if(dashSpeed<Max_dashSpeed)
 					{
 						dashSpeed+=75*Time.deltaTime;
@@ -409,23 +421,17 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						dashSpeed = Max_dashSpeed;
 					}
+					*/
 
-					dashTimer+=Time.deltaTime;
+					//dashTimer+=Time.deltaTime;
 
 					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-Triangle")||dashTimer>Charge_MaxTime||Out_Of_Gas)
 					{
-						if(dashTimer<Dash_PreTime)//->Normal
-						{
-							currentState = PlayerState.Normal;
-								
-						}
-						else
-						{
-							isDash = true;
 						
-							//Mouse_DirCache();
-							GetDashDir();
-						}
+						isDash = true;
+						
+						//Mouse_DirCache();
+						GetDashDir();
 
 						dashTimer = 0;
 						Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
@@ -450,39 +456,48 @@ public class PlayerCtroller : MonoBehaviour {
 
 						if((isAttachWall||isGrounded) && dashTimer>0.1f)//撞牆
 						{
-							rb.velocity = Vector2.zero;
+							rb.velocity = Vector3.zero;
 
 							dashTimer = 0; //重置dash 時間
 							currentState = PlayerState.Normal;
 							isDash = false;
 							
 						}
-							
-					}
-					else if(dashTimer<dashTime+holdingTime)
-					{
-						dashTimer+=Time.deltaTime;
-						rb.velocity =Vector2.Lerp(rb.velocity,Vector2.zero,0.1f);
-						
-						if(isAttachWall)
-						{
-							rb.velocity = Vector2.zero;
 
-							dashTimer = 0; //重置dash 時間
-							currentState = PlayerState.Normal;
+						DashAttack();
+						if(hitConfirm)
+						{
+							dashTimer = 0;
+							hitConfirm = false;
+							AttackRemain--;
+							currentState = PlayerState.Rebound;
 							isDash = false;
-							
-						}		
+							getBoundDir();
+						}	
 					}
 					else
 					{
 						dashTimer = 0; //重置dash 時間
 						currentState = PlayerState.Normal;
-						isDash = false;
-						
-									
+						isDash = false;			
 					}
 				}
+			break;
+			
+			case PlayerState.Rebound:
+
+				if(Timer<BoundTime)
+				{
+					Timer+=Time.deltaTime;
+
+					rb.velocity = BoundDir*BoundSpeed;
+				}
+				else
+				{
+					Timer = 0;
+					currentState = PlayerState.Normal;
+				}
+
 			break;
 
 			case PlayerState.Throw:
@@ -586,7 +601,8 @@ public class PlayerCtroller : MonoBehaviour {
 					Timer = 0;
 					hitConfirm = false;
 					currentState = PlayerState.Normal;
-					
+
+					print(AttackRemain);
 				}
 
 			break;
@@ -594,7 +610,13 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Timer<ReloadTime)
 				{
-					/////上次繼續打的地方
+					Timer+=Time.deltaTime;
+				}
+				else
+				{
+					Timer = 0;
+					AttackRemain = FullRemain;
+					currentState = PlayerState.Normal;
 				}
 				
 			break;
@@ -633,6 +655,8 @@ public class PlayerCtroller : MonoBehaviour {
 		isAttacking = (currentState ==PlayerState.PreAttack||currentState==PlayerState.Attack||currentState==PlayerState.AfterAttack);
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
 		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
+
+		checkAttackRemain();
 
 		CheckStability();
 
@@ -691,6 +715,77 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 
 	}
+	void getBoundDir()
+	{
+		if(DashDir.x>0)
+		{
+			if(DashDir.y>0.5f)
+			{
+				BoundDir = Vector3.left;
+			}
+			else
+			{
+				BoundDir = new Vector3(-0.5f,0.5f,0);
+			}
+		}
+		else
+		{
+			if(DashDir.y>0.5f)
+			{
+				BoundDir = Vector3.right;
+			}
+			else
+			{
+				BoundDir = new Vector3(0.5f,0.5f,0);
+			}
+		}
+	}
+	void DashAttack()
+	{
+		Vector3 attackPos = transform.position + DashDir*2.0f;
+		Vector3 hitBox = new Vector3(0.25f,0.25f,0.5f); 
+		float angle = Vector3.SignedAngle(Vector3.right,DashDir,Vector3.forward);
+		Vector3 q = new Vector3(0,0,angle);
+		
+		if(!isIneffective)
+		{
+			if(!hitConfirm)
+			{
+				Collider[] hitObjs = Physics.OverlapBox(attackPos,hitBox,Quaternion.Euler(q),EnemyLayer);
+				
+				if(hitObjs.Length==0)
+				{
+					print("Miss");
+				}
+				else
+				{
+					hitConfirm = true;
+					
+					foreach(Collider c in hitObjs)
+					{
+						print("Hit"+c.name+"!!!!");
+						StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
+					}
+				}
+			}
+
+		}
+		else
+		{
+			print("No Core!!");
+		}
+	}
+	void checkAttackRemain()
+	{
+		if(AttackRemain<=0)
+		{
+			isIneffective = true;
+		}
+		else
+		{
+			isIneffective = false;
+		}
+	}
 	void getMoveInput()
 	{
 		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
@@ -718,29 +813,39 @@ public class PlayerCtroller : MonoBehaviour {
 					AttackDir = Vector3.left;
 				}
 			}
+			AttackRemain--;
+
 			GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,AttackAngle);
 			Ftx.transform.SetParent(transform);
 	}
 	void AttackHitCheck()
 	{	
-		if(!hitConfirm)
+		if(!isIneffective)
 		{
-			Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,AttackAngle,EnemyLayer);
-			
-			if(hitObjs.Length==0)
+			if(!hitConfirm)
 			{
-				print("Miss");
-			}
-			else
-			{
-				hitConfirm = true;
-				AttackRemain--;
-				foreach(Collider c in hitObjs)
+				Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,AttackAngle,EnemyLayer);
+				
+				if(hitObjs.Length==0)
 				{
-					print("Hit"+c.name+"!!!!");
-					StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
+					print("Miss");
+				}
+				else
+				{
+					hitConfirm = true;
+					
+					foreach(Collider c in hitObjs)
+					{
+						print("Hit"+c.name+"!!!!");
+						StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
+					}
 				}
 			}
+
+		}
+		else
+		{
+			print("No Core!!");
 		}
 
 	}
@@ -975,30 +1080,30 @@ public class PlayerCtroller : MonoBehaviour {
 	} 
 	void OnTriggerEnter(Collider other)
 	{
-		if(other.CompareTag("Enemy"))
-		{
-			if(!isInvincible)
-			{
-				//print(other.name);
+		// if(other.CompareTag("Enemy"))
+		// {
+		// 	if(!isInvincible)
+		// 	{
+		// 		//print(other.name);
 
-				if(other.transform.position.x>transform.position.x)
-				{
-					getHitByRight = true;
-				}
-				else
-				{
-					getHitByRight = false;
-				}
-				getKnockDir();
-				hp -= 15.0f;
+		// 		if(other.transform.position.x>transform.position.x)
+		// 		{
+		// 			getHitByRight = true;
+		// 		}
+		// 		else
+		// 		{
+		// 			getHitByRight = false;
+		// 		}
+		// 		getKnockDir();
+		// 		hp -= 15.0f;
 
-				isInvincible = true;
-				StartCoroutine(ReviveTime_Count());
-				LastState = currentState;
-				currentState = PlayerState.GetHit;
-			}
+		// 		isInvincible = true;
+		// 		StartCoroutine(ReviveTime_Count());
+		// 		LastState = currentState;
+		// 		currentState = PlayerState.GetHit;
+		// 	}
 			
-		}
+		// }
 	}
 	private void OnDrawGizmos()
 	{
@@ -1033,29 +1138,29 @@ public class PlayerCtroller : MonoBehaviour {
 	// }
 	private void OnCollisionEnter(Collision other)
 	{
-		if(other.collider.CompareTag("VisionEnemy"))
-		{
-			if(isDash)
-			{
-				other.collider.GetComponent<EnemyAI>().Die();
-			}
-			else
-			{
-				Die();
-			}	
-		}
+		// if(other.collider.CompareTag("VisionEnemy"))
+		// {
+		// 	if(isDash)
+		// 	{
+		// 		other.collider.GetComponent<EnemyAI>().Die();
+		// 	}
+		// 	else
+		// 	{
+		// 		Die();
+		// 	}	
+		// }
 
-		if(other.collider.CompareTag("SoundEnemy"))
-		{
-			if(isDash)
-			{
-				other.collider.GetComponent<SoundEnemy>().Die();
-			}
-			else
-			{
-				Die();
-			}
-		}
+		// if(other.collider.CompareTag("SoundEnemy"))
+		// {
+		// 	if(isDash)
+		// 	{
+		// 		other.collider.GetComponent<SoundEnemy>().Die();
+		// 	}
+		// 	else
+		// 	{
+		// 		Die();
+		// 	}
+		// }
 		if(other.collider.CompareTag("Sea"))
 		{
 			transform.position = SavePointPos;
