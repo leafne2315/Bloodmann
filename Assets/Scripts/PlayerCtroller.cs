@@ -363,6 +363,7 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.BugFly:
 
 				FlyMovement();
+				/*
 				if(Input.GetButtonDown("PS4-Triangle")&&canAirDash)
 				{
 					isAirDash = true;
@@ -371,13 +372,26 @@ public class PlayerCtroller : MonoBehaviour {
 					FlyDir = new Vector2(moveInput_X,moveInput_Y);
 					canAirDash = false;
 				}
+				*/
 				if(Input.GetKeyDown(KeyCode.V)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.Normal;
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
-
+				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
+				{	
+					
+					dashTimer = 0; //重置dash 時間
+					// dashSpeed = 0;
+					currentState = PlayerState.Dash;
+	
+					// rb.gravityScale = 0;
+					rb.velocity = Vector3.zero;
+					//StartCoroutine(dashCD_Count());
+					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
+					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
+				}
 				// if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
 				// {
 					
@@ -470,9 +484,12 @@ public class PlayerCtroller : MonoBehaviour {
 							dashTimer = 0;
 							hitConfirm = false;
 							AttackRemain--;
-							currentState = PlayerState.Rebound;
+
+							
 							isDash = false;
 							getBoundDir();
+							rb.velocity = BoundDir*BoundSpeed;
+							currentState = PlayerState.Rebound;
 						}	
 					}
 					else
@@ -490,7 +507,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer+=Time.deltaTime;
 
-					rb.velocity = BoundDir*BoundSpeed;
+					
 				}
 				else
 				{
