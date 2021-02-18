@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class RushingBug : MonoBehaviour
 {
-    // Start is called before the first frame update
-    private Rigidbody rb;
+private Rigidbody rb;
     public GameObject Player;
     private Vector3 MovingDir;
     private bool isFacingRight = true;
@@ -18,7 +17,11 @@ public class RushingBug : MonoBehaviour
     public float MaxHp;
     public float movingSpeed;
     public float gravityScale;
-
+    public float patrolSpeed;
+    public float idleTime;
+    private float idleTimer;
+    public float patrolTime;
+    private float patrolTimer;
     [Header("Detect Settings")]
     public Vector3 DetectPlayerlength;
     public float DetectPlayerRadius;
@@ -103,6 +106,7 @@ public class RushingBug : MonoBehaviour
         FacingCheck();
         GetHitCheck();
         DieCheck();
+        //print(PlayerDetect);
         //print(currentState);
 
         switch(currentState)
@@ -110,16 +114,63 @@ public class RushingBug : MonoBehaviour
             case EnemyState.Idle:
 
                 DetectingPlayer();
+                if(idleTimer<idleTime)
+                {
+                    idleTimer+= Time.deltaTime;
+                }
+                else
+                {
+                    MovingDir.x *= -1;
+                    idleTimer = 0;
+                    currentState = EnemyState.Patrol;
+                    //RushBugAni.SetTrigger("ToMove");
+                    RushBugAni.SetBool("Move", true);
+                    RushBugAni.SetBool("Idle", false);
+                                   
+                }
+                
+                
 
                 if(PlayerDetect)
                 {
+                    idleTimer = 0;
                     currentState = EnemyState.InCombat;
-                    RushBugAni.SetTrigger("ToMove");
+                    //RushBugAni.SetTrigger("ToMove");
+                    RushBugAni.SetBool("Move", true);
+                    RushBugAni.SetBool("Idle", false);
                 }
 
             break;
             
             case EnemyState.Patrol:
+                DetectingPlayer();
+                PatrolDir();
+                rb.velocity = MovingDir*patrolSpeed;
+                if(patrolTimer<patrolTime)
+                {
+                    patrolTimer+= Time.deltaTime;
+                }
+                else
+                {
+                    rb.velocity = Vector3.zero;
+                    patrolTimer = 0;
+                    currentState = EnemyState.Idle;
+                    //RushBugAni.SetTrigger("ToIdle");
+                    RushBugAni.SetBool("Idle", true);
+                    RushBugAni.SetBool("Move", false);
+                    
+                }
+
+                
+                
+
+                if(PlayerDetect)
+                {
+                    patrolTimer = 0;
+                    currentState = EnemyState.InCombat;
+                    //RushBugAni.SetTrigger("ToMove");
+                    RushBugAni.SetBool("Move", true);
+                }
 
             break;
 
@@ -134,6 +185,7 @@ public class RushingBug : MonoBehaviour
 
                     currentState = EnemyState.PreAttack;
                     RushBugAni.SetTrigger("Attack");
+                    RushBugAni.SetBool("Move", false);
 
                     rb.velocity = Vector3.zero;
                     isAttacking = true;
@@ -144,7 +196,9 @@ public class RushingBug : MonoBehaviour
                 {
                     currentState = EnemyState.Idle;
                     rb.velocity = Vector3.zero;
-                    RushBugAni.SetTrigger("ToIdle");
+                    //RushBugAni.SetTrigger("ToIdle");
+                    RushBugAni.SetBool("Idle", true);
+                    RushBugAni.SetBool("Move", false);
                 }
                 
             break;
@@ -194,7 +248,8 @@ public class RushingBug : MonoBehaviour
                 {
                     Timer = 0;
                     currentState = EnemyState.InCombat;
-                    RushBugAni.SetTrigger("ToMove");
+                    //RushBugAni.SetTrigger("ToMove");
+                    RushBugAni.SetBool("Move", true);
                 }
             break;
             
@@ -216,7 +271,8 @@ public class RushingBug : MonoBehaviour
                 {
                     RepelTimer = 0;
                     currentState = EnemyState.InCombat;
-                    RushBugAni.SetTrigger("ToMove");
+                    //RushBugAni.SetTrigger("ToMove");
+                    RushBugAni.SetBool("Move", true);
                 }
 
             break;
@@ -246,9 +302,9 @@ public class RushingBug : MonoBehaviour
         isOverFrame = false;
 
         for(int i = 0;i<frameNum;i++)
-		{
-			yield return 0;
-		}
+  {
+   yield return 0;
+  }
         isOverFrame = true;
     }
     void get_RepelDir()
@@ -257,13 +313,13 @@ public class RushingBug : MonoBehaviour
         RepelDir = dir;
     }
     IEnumerator AttackCD_Count()
-	{
-		for(float i =0 ; i<=AttackCD ; i+=Time.deltaTime)
-		{
-			yield return 0;
-		}
-		canAttack = true;
-	}
+ {
+  for(float i =0 ; i<=AttackCD ; i+=Time.deltaTime)
+  {
+   yield return 0;
+  }
+  canAttack = true;
+ }
     void DetectingPlayer()
     {
         if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
@@ -286,6 +342,17 @@ public class RushingBug : MonoBehaviour
         else
         {
             return false;
+        }
+    }
+    void PatrolDir()
+    {
+        if(MovingDir.x >= 0)
+        {
+            MovingDir = Vector3.right;
+        }
+        if(MovingDir.x <=0)
+        {
+            MovingDir = -Vector3.right;
         }
     }
     void GetMoveDir()
@@ -326,8 +393,8 @@ public class RushingBug : MonoBehaviour
     {
         isFacingRight = !isFacingRight;
         Vector3 Scaler = transform.localScale;
-		Scaler.x*=-1;
-		transform.localScale = Scaler;
+        Scaler.x*=-1;
+        transform.localScale = Scaler;
     }
     void GravityInput()
     {

@@ -6,7 +6,7 @@ public class ViewDetect : MonoBehaviour
 {
     // Start is called before the first frame update
     public Transform OriginPos;
-    private Vector2 RayDir;
+    public Vector3 RayDir;
     private Vector2 RayDir_02;
     [SerializeField]private Color RayColor = Color.yellow;
     [SerializeField]private float RayLength = 20;
@@ -23,8 +23,11 @@ public class ViewDetect : MonoBehaviour
     public bool RedWarning;
     public Vector3 PlayerLastPos;
     public GameObject target;
+    public bool isFacingRight;
+    AirEnemy airEnemy;
     void Start()
     {
+        airEnemy = GetComponent<AirEnemy>();
         
     }
 
@@ -34,6 +37,8 @@ public class ViewDetect : MonoBehaviour
         Detecting(DetectAngle,YellowRange,Color.yellow,ref Warning);
         Detecting(DetectAngle,RedRange,Color.red,ref RedWarning);
         currentAngle += Ray_RotatePerSecond*Time.deltaTime;
+
+        
     }
     public void SwitchDetectMode(string color)
     {   
@@ -54,26 +59,38 @@ public class ViewDetect : MonoBehaviour
             break;
         }
     }
+
+   
     public void Detecting(float angle,float range,Color ray,ref bool trigger)
     {
         float subAngle = angle / accuracy;
         for(int i=0;i<accuracy;i++)
-        {
-            RayDir = transform.right;
-            RayDir = Quaternion.AngleAxis(-DetectAngle/2 + Mathf.Repeat(Ray_RotatePerSecond*Time.time + i*subAngle,angle),Vector3.back)*RayDir;
-            RaycastHit2D hit = Physics2D.Raycast(OriginPos.position,RayDir,range, ~(ignoreYourself|ignoreLayer01));
-            if(hit)
+        {   
+            
+            if(airEnemy.isFacingRight)
             {
-                if(hit.collider)
-                {
-                    Debug.DrawLine(OriginPos.position,hit.point,ray);
-                }
+                RayDir = new Vector3(-1,0,0);
+            }
+            else
+            {
+                RayDir = new Vector3(1,0,0); 
+            }
+            RayDir = Quaternion.AngleAxis(-DetectAngle/2 + Mathf.Repeat(Ray_RotatePerSecond*Time.time + i*subAngle,angle),Vector3.back)*RayDir;
+            //RaycastHit2D hit = Physics2D.Raycast(OriginPos.position,RayDir,range, ~(ignoreYourself|ignoreLayer01));
+            RaycastHit shit;
+            if(Physics.Raycast(OriginPos.position, RayDir,out shit ,range ,~(ignoreYourself|ignoreLayer01)))
+            {
+                // if(hit.collider)
+                // {
+                //     Debug.DrawLine(OriginPos.position,hit.point,ray);
+                // }
 
-                if(hit.collider.CompareTag("Player"))
+                if(shit.collider.CompareTag("Player"))
                 {
+                    print("a");
                     trigger = true;
-                    PlayerLastPos = hit.collider.transform.position;
-                    target = hit.collider.gameObject;
+                    PlayerLastPos = shit.collider.transform.position;
+                    target = shit.collider.gameObject;
                     break;
                 }
                 else
@@ -88,4 +105,6 @@ public class ViewDetect : MonoBehaviour
             }
         }
     }
+
+
 }
