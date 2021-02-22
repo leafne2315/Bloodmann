@@ -1045,7 +1045,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void GetDashDir()
 	{
-		DashDir = Arrow.GetComponent<ArrowShow>().LastDir;
+		DashDir = Arrow.GetComponent<ArrowShow>().LastDir.normalized;
 	}
 	void Mouse_DirCache()
 	{
