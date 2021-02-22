@@ -437,19 +437,27 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 					*/
 
-					//dashTimer+=Time.deltaTime;
-
-					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-Triangle")||dashTimer>Charge_MaxTime||Out_Of_Gas)
+					dashTimer+=Time.deltaTime;
+					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-Triangle"))
 					{
+						if(dashTimer<Dash_PreTime)//->Normal
+						{
+							currentState = PlayerState.Normal;
+								
+						}
+						else
+						{
+							isDash = true;
 						
-						isDash = true;
-						
-						//Mouse_DirCache();
-						GetDashDir();
+							//Mouse_DirCache();
+							GetDashDir();
+						}
 
 						dashTimer = 0;
 						Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 					}
+
+					
 				}
 				else
 				{
