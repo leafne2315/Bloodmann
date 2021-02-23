@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: 6944aafbb5f157d4b8b4772fb76ad359
+guid: ee4583c671c1579468d89e8c656fc234
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable:
   - first:
-      74: -3177097536708547587
-    second: Player3D|jump up 2.0
+      74: -5771218682457468231
+    second: Armature.003|flybug_walk
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -35,18 +35,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Player3D|jump up 2.0
-      takeName: Armature|jump up
+      name: Armature.003|flybug_walk
+      takeName: Armature.003|flybug_walk
       internalID: 0
       firstFrame: 0
-      lastFrame: 20
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
