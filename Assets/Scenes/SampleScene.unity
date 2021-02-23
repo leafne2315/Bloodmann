@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 131.16855, g: 162.52502, b: 215.10977, a: 1}
+  m_IndirectSpecularColor: {r: 131.19772, g: 162.48279, b: 214.93106, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -432,7 +432,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Profile: {fileID: 11400000, guid: 2801c2ff7303a7543a8727f862f6c236, type: 2}
   m_StaticLightingSkyUniqueID: 1
-  m_SkySettings: {fileID: 2132834065}
+  m_SkySettings: {fileID: 2021374730}
   m_SkySettingsFromProfile: {fileID: 7488742677745068149, guid: 2801c2ff7303a7543a8727f862f6c236,
     type: 2}
 --- !u!4 &16585775
@@ -3909,6 +3909,7 @@ MonoBehaviour:
   isOverFrame: 0
   RushBugAni: {fileID: 300980204}
   notDie: 1
+  BodyRadius: 0
   hp: 5
   MaxHp: 5
   movingSpeed: 5
@@ -6787,6 +6788,7 @@ MonoBehaviour:
   isOverFrame: 0
   RushBugAni: {fileID: 496180153}
   notDie: 1
+  BodyRadius: 1.2
   hp: 5
   MaxHp: 5
   movingSpeed: 4
@@ -10821,6 +10823,7 @@ MonoBehaviour:
   isOverFrame: 0
   RushBugAni: {fileID: 1026870203}
   notDie: 1
+  BodyRadius: 0
   hp: 5
   MaxHp: 5
   movingSpeed: 5
@@ -12551,7 +12554,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 656582363}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 48.937733, y: -10.001475, z: 0}
+  m_LocalPosition: {x: 178.6, y: -71.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1921950482}
@@ -13189,7 +13192,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   version: 1
   data:
-    dataString: UEsDBBQAAAgIAABAIexwmxG4ZQIAAAcFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVMtymzAU/RWP1k0GbEjs7lriOF3kMXU72bAR6GI0FhKjR2wn43/vlYBA3BWae859nKMrPgiXpoXSKr3RnD0qBuT7jPgz+TYbwQc40p2SW/4OA+eVM1t7Eg2c39RyhfHYpxnVgNW8/CF3wpMjDDrJK6WbNdtBpow1GK6oMICQVtZnSwx9zMgRP1crn3LC0/zWn97xtIpmZzyWIC3okZom1/Nktbi5WfYZ8e31ah5FUbrsE7s8J0tBmxaYFzGmx+nQKV6kgShRYM9Z+H5KCG766Yg9tUF9RlvjUBsSGKeoNozkxdfAd7X1k0+Tn6vKgO2t0PR0xzWa1lUlP1XnZEPNvpvsjQrn+6TxPMzUFX38D7+KA1xp1TwMfePI97A1L/e/6amkxk6snobvvg7u5IGKPS0EvNYgn9RGKycZglY7n+oMzO8mpT61ZTWU+5HXzToEB7ZrR88Hx4eb9SrOQf8xE7wpPHSddIGtUMHxsBCg8W5+4chhXUxfAqN+jL8G/tDddK964J5rYxHqdUo/X6Gc9lSyDq55Oc5mSksI4V5KC5IKe3rBMvbyEi+wSdsL5J76F9Q377HhYVykhPDIj6IL6EUdPq/L1OrwCKZ+dlZwCePQHnhCnzIlZbdjU0+GtK3TFS0naTvH2dflIlCmySJNKEsiWLIiulotk3SxrJKkiIpVUZQkbB+XqJOKl27Q3h68NTkWl7hpw49lttG0DfvOND1s+HujJpZzWaltqQHk85cKBjT2wGfJ1oyjP1uwlstw3eQjJ0KVe2D5Jz8PQtdHq2k+qs9Jy9+U9ZGcZOFHkpMzOf8DUEsDBBQAAAgIAABAIexj9zjvbQAAAHgAAAAJACQAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0Bq1YqSy0qzszPU7JSMNEz0jM01VFQSi9KLMgoBooYgjilmSkgdrRSarKpibGpSWKKiUGqRUqSga6lhYmpsUWaiUmSQZJlUlKyUixQfUllQapfYm4qRE9AYklGWmZeSmZeup57UWaKO8hopdhaAFBLAQItABQAAAgIAABAIexwmxG4ZQIAAAcFAAALACQAAAAAAAAAAAAAAAAAAABncmFwaDAuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAVBLAQItABQAAAgIAABAIexj9zjvbQAAAHgAAAAJACQAAAAAAAAAAAAAALICAABtZXRhLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwUGAAAAAAIAAgC4AAAAagMAAAAA
+    dataString: UEsDBBQAAAgIAABAIewMhurWYwIAAAQFAAALACQAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFlVMtyozAQ/BWXzusUdsCx97ZLHGcPeVScrVy4CDQYlYVE6RHbSfnfdyQgEO8J1XT3aHpmxCfh0jRQWKU3mrMHxYD8nBB/Jj8mA3gPR7pTcss/oOe8cWYrT6KB80ItVxifeZlRNVjNi19yJzw5wqCTvFS6XrMdpMpYg+GSCgMIaWW9WmLoc0KO+JmuvOSEp/mNP33gaRVNzngsQFrQA3WW3FwtF8ly0Qmmi9nVfJ7cXHeyVuVkIWjdAPMWRuJ42ckWq8CT6K6jeCeFEoKbrjRiT02wntLGODSGBMYpWg31eH4FfFdZX/ZY/FSWBmzXB01Pt1xjx9qs5Ldq21hTs28Le6fC+XuS2TzU1CZ9+A+fzgJcalXf9/fOIn+HrXixf6Gngho76vM4fPu9cCcPVOxpLuCtAvmoNlo5yRC02nmpMzC/HaX68pZWUOwHXltrH+zZrhla3g+2H6t3cQ7+j6ngde6hq7gNbIUKHQ/bABpn8wdLDrtiuhQY9WX8NfBKd+Ol6oA7ro1FqPMpfX25ctpTyTp0zdtxNlVaQgh3VhqQVNjTM6axl0O8wEbXXiB31D+f7vIO61/FhSSEB34UXUDP6vA1LlOpwwOY6slZwSUMRXvgEfuUKinbHRv3pJdtnS5pMZLtHGffl4tAkcTXSUxZHMGS5dF0tYyT62UZx3mUr/K8IGH7uESfVDy3hXbtwanJIbnETev/KpONpk3Yd6bpYcM/ajVqOZel2hYaQD59y2BA4x34LNmacezPFqzlMoybfGZEqGIPLPviZ8Ho+mg1zQb3GWn4u7I+kpE0/EUycibnf1BLAwQUAAAICAAAQCHsY/c4720AAAB4AAAACQAkAG1ldGEuanNvbgoAIAAAAAAAAQAYAACAPtXesZ0BAIA+1d6xnQEAgD7V3rGdAatWKkstKs7Mz1OyUjDRM9IzNNVRUEovSizIKAaKGII4pZkpIHa0UmqyqYmxqUliiolBqkVKkoGupYWJqbFFmolJkkGSZVJSslIsUH1JZUGqX2JuKkRPQGJJRlpmXkpmXrqee1FmijvIaKXYWgBQSwECLQAUAAAICAAAQCHsDIbq1mMCAAAEBQAACwAkAAAAAAAAAAAAAAAAAAAAZ3JhcGgwLmpzb24KACAAAAAAAAEAGAAAgD7V3rGdAQCAPtXesZ0BAIA+1d6xnQFQSwECLQAUAAAICAAAQCHsY/c4720AAAB4AAAACQAkAAAAAAAAAAAAAACwAgAAbWV0YS5qc29uCgAgAAAAAAABABgAAIA+1d6xnQEAgD7V3rGdAQCAPtXesZ0BUEsFBgAAAAACAAIAuAAAAGgDAAAAAA==
     upgradeData: 
     file_cachedStartup: {fileID: 0}
     data_cachedStartup: 
@@ -37778,7 +37781,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1350073412}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.11, y: 0, z: 0}
+  m_LocalPosition: {x: 38.2, y: 1.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 656582364}
@@ -51698,7 +51701,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1655546806}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.33, y: 8.71, z: 0}
+  m_LocalPosition: {x: 8.7, y: -10.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 656582364}
@@ -51902,6 +51905,7 @@ MonoBehaviour:
   isOverFrame: 0
   RushBugAni: {fileID: 1716659436}
   notDie: 1
+  BodyRadius: 0
   hp: 5
   MaxHp: 5
   movingSpeed: 5
@@ -56581,6 +56585,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   RealMovement: {x: 0, y: 0}
   facingRight: 1
+  isAttachWall: 0
   checkRadius: 0.05
   GroundCheck: {fileID: 445198256}
   FrontCheck: {fileID: 105405310}
@@ -56618,7 +56623,7 @@ MonoBehaviour:
   dashCD: 0.3
   holdingTime: 0.2
   isDash: 0
-  dashSpeed: 30
+  dashSpeed: 40
   Max_dashSpeed: 80
   BoundSpeed: 25
   BoundTime: 0.2
@@ -56657,6 +56662,11 @@ MonoBehaviour:
   hitConfirm: 0
   AfterAttackTime: 0.25
   ReloadTime: 0.8
+  RollTime: 0.3
+  RollSpeed: 15
+  SaveTime: 0.2
+  canRoll: 1
+  RollCD: 0.5
   ThrowScript: {fileID: 1224599934}
   ThrowWaitingTime: 0.5
   AimSmoothTime: 0.1
@@ -57182,7 +57192,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1921950481}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.08, y: 0, z: 0}
+  m_LocalPosition: {x: -4.8, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 656582364}
@@ -58031,12 +58041,12 @@ PrefabInstance:
     - target: {fileID: 7883882301358017990, guid: d4c23da574acee94c9868302a5e5f19e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 40.5
+      value: 182.9
       objectReference: {fileID: 0}
     - target: {fileID: 7883882301358017990, guid: d4c23da574acee94c9868302a5e5f19e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -9.69
+      value: -73
       objectReference: {fileID: 0}
     - target: {fileID: 7883882301358017990, guid: d4c23da574acee94c9868302a5e5f19e,
         type: 3}
@@ -59293,6 +59303,107 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2020149208}
   m_CullTransparentMesh: 0
+--- !u!114 &2021374730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  active: 1
+  m_AdvancedMode: 0
+  rotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  skyIntensityMode:
+    m_OverrideState: 0
+    m_Value: 0
+  exposure:
+    m_OverrideState: 0
+    m_Value: 10
+  multiplier:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxValue:
+    m_OverrideState: 0
+    m_Value: 1
+    min: 0
+  upperHemisphereLuxColor:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  desiredLuxValue:
+    m_OverrideState: 0
+    m_Value: 20000
+  updateMode:
+    m_OverrideState: 0
+    m_Value: 0
+  updatePeriod:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+  includeSunInBaking:
+    m_OverrideState: 0
+    m_Value: 0
+  hdriSky:
+    m_OverrideState: 0
+    m_Value: {fileID: 8900000, guid: 8253d41e6e8b11a4cbe77a4f8f82934d, type: 3}
+  enableBackplate:
+    m_OverrideState: 0
+    m_Value: 0
+  backplateType:
+    m_OverrideState: 0
+    m_Value: 0
+  groundLevel:
+    m_OverrideState: 0
+    m_Value: 0
+  scale:
+    m_OverrideState: 0
+    m_Value: {x: 32, y: 32}
+  projectionDistance:
+    m_OverrideState: 0
+    m_Value: 16
+    min: 0.0000001
+  plateRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexRotation:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 360
+  plateTexOffset:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0}
+  blendAmount:
+    m_OverrideState: 0
+    m_Value: 0
+    min: 0
+    max: 100
+  shadowTint:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+    hdr: 0
+    showAlpha: 1
+    showEyeDropper: 1
+  pointLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  dirLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
+  rectLightShadow:
+    m_OverrideState: 0
+    m_Value: 0
 --- !u!1001 &2021764673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61332,107 +61443,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2130163713}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &2132834065
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59b6606ef2548734bb6d11b9d160bc7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  active: 1
-  m_AdvancedMode: 0
-  rotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  skyIntensityMode:
-    m_OverrideState: 0
-    m_Value: 0
-  exposure:
-    m_OverrideState: 0
-    m_Value: 10
-  multiplier:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxValue:
-    m_OverrideState: 0
-    m_Value: 1
-    min: 0
-  upperHemisphereLuxColor:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0, z: 0}
-  desiredLuxValue:
-    m_OverrideState: 0
-    m_Value: 20000
-  updateMode:
-    m_OverrideState: 0
-    m_Value: 0
-  updatePeriod:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-  includeSunInBaking:
-    m_OverrideState: 0
-    m_Value: 0
-  hdriSky:
-    m_OverrideState: 0
-    m_Value: {fileID: 8900000, guid: 8253d41e6e8b11a4cbe77a4f8f82934d, type: 3}
-  enableBackplate:
-    m_OverrideState: 0
-    m_Value: 0
-  backplateType:
-    m_OverrideState: 0
-    m_Value: 0
-  groundLevel:
-    m_OverrideState: 0
-    m_Value: 0
-  scale:
-    m_OverrideState: 0
-    m_Value: {x: 32, y: 32}
-  projectionDistance:
-    m_OverrideState: 0
-    m_Value: 16
-    min: 0.0000001
-  plateRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexRotation:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 360
-  plateTexOffset:
-    m_OverrideState: 0
-    m_Value: {x: 0, y: 0}
-  blendAmount:
-    m_OverrideState: 0
-    m_Value: 0
-    min: 0
-    max: 100
-  shadowTint:
-    m_OverrideState: 0
-    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    hdr: 0
-    showAlpha: 1
-    showEyeDropper: 1
-  pointLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  dirLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
-  rectLightShadow:
-    m_OverrideState: 0
-    m_Value: 0
 --- !u!1 &2136755679
 GameObject:
   m_ObjectHideFlags: 0

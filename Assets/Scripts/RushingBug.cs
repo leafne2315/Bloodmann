@@ -13,6 +13,7 @@ private Rigidbody rb;
     public Animator RushBugAni;
     public bool notDie = true;
     [Header("Basic Element")]
+    public float BodyRadius;
     public float hp;
     public float MaxHp;
     public float movingSpeed;
@@ -224,6 +225,13 @@ private Rigidbody rb;
             case EnemyState.Attacking:
                 
                 bool isGrounded = Physics.CheckSphere(GroundCheck.position,GroundCheckRadius,WhatIsGround);
+                bool HitBox = Physics.CheckSphere(transform.position,BodyRadius,WhatIsPlayer);
+
+                if(HitBox)
+                {
+                    Player.GetComponent<PlayerCtroller>().gettingHit();
+                }
+
                 if(isGrounded&&isOverFrame)
                 {
                     rb.velocity = Vector3.zero;
@@ -465,6 +473,8 @@ private Rigidbody rb;
             Gizmos.color = Color.green;
         }
         Gizmos.DrawWireCube(AttackPos.position,2*AttackRange);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position,BodyRadius);
     }
     void StopCoroutinesExceptTiming()
     {

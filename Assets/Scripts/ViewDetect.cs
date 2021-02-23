@@ -87,7 +87,7 @@ public class ViewDetect : MonoBehaviour
 
                 if(shit.collider.CompareTag("Player"))
                 {
-                    print("a");
+                    
                     trigger = true;
                     PlayerLastPos = shit.collider.transform.position;
                     target = shit.collider.gameObject;
