@@ -21,7 +21,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool facingRight = true;
 	//偵測
 	[Header("Detect Settings")]
-	private bool isGrounded;
+	public bool isRolling;
+	public bool isGrounded;
 	public bool isAttachWall;
 	private bool isAttachOnTop;
 	private Collider AttachingObj;
@@ -719,12 +720,13 @@ public class PlayerCtroller : MonoBehaviour {
 		isAttacking = (currentState ==PlayerState.PreAttack||currentState==PlayerState.Attack||currentState==PlayerState.AfterAttack);
 		isFlying = (currentState == PlayerState.AirDash||currentState == PlayerState.BugFly);
 		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
+		isRolling = currentState== PlayerState.Roll;
 
 		checkAttackRemain();
 
 		CheckStability();
 
-		if(!isAttacking)
+		if(!isAttacking&&!isRolling)
 		{
 			getMoveInput();
 		}
