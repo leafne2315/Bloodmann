@@ -22,7 +22,7 @@ public class PlayerCtroller : MonoBehaviour {
 	//偵測
 	[Header("Detect Settings")]
 	private bool isGrounded;
-	private bool isAttachWall;
+	public bool isAttachWall;
 	private bool isAttachOnTop;
 	private Collider AttachingObj;
 	public float checkRadius;
@@ -91,7 +91,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Throw,Idle};
+	public enum PlayerState{Normal,Defend,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Idle};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -133,6 +133,13 @@ public class PlayerCtroller : MonoBehaviour {
 	public float AfterAttackTime;
 	[Header("Reload Settings")]
 	public float ReloadTime;
+
+	[Header("Roll Settings")]
+	public float RollTime;
+	public float RollSpeed;
+	public float SaveTime;
+	public bool canRoll;
+	public float RollCD;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -230,7 +237,14 @@ public class PlayerCtroller : MonoBehaviour {
 				// {
 				// 		RestoreGas();
 				// }
-				
+				if(Input.GetButtonDown("PS4-O"))
+				{
+					if(canRoll)
+					{
+						Roll();
+						currentState = PlayerState.Roll;
+					}
+				}
 
 				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
 				{	
@@ -293,6 +307,7 @@ public class PlayerCtroller : MonoBehaviour {
 					if(AttackRemain!=FullRemain)
 					{
 						currentState = PlayerState.Reloading;
+						PlayerAni.SetTrigger("Reload");
 					}
 				}
 
@@ -437,19 +452,27 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 					*/
 
-					//dashTimer+=Time.deltaTime;
-
-					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-Triangle")||dashTimer>Charge_MaxTime||Out_Of_Gas)
+					dashTimer+=Time.deltaTime;
+					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-Triangle"))
 					{
+						if(dashTimer<Dash_PreTime)//->Normal
+						{
+							currentState = PlayerState.Normal;
+								
+						}
+						else
+						{
+							isDash = true;
 						
-						isDash = true;
-						
-						//Mouse_DirCache();
-						GetDashDir();
+							//Mouse_DirCache();
+							GetDashDir();
+						}
 
 						dashTimer = 0;
 						Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 					}
+
+					
 				}
 				else
 				{
@@ -514,6 +537,30 @@ public class PlayerCtroller : MonoBehaviour {
 					Timer = 0;
 					currentState = PlayerState.Normal;
 				}
+
+			break;
+
+			case PlayerState.Roll:
+
+				if(Timer<RollTime)
+				{
+					if(Timer<SaveTime)
+					{
+						
+					}
+					else
+					{
+						isInvincible = false;
+					}
+
+					Timer+=Time.deltaTime;
+				}
+				else 
+				{
+					Timer=0;
+					currentState = PlayerState.Normal;
+				}
+
 
 			break;
 
@@ -713,6 +760,7 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 
+		/*
 		if(Input.GetButtonDown("PS4-O"))//從任何階段進入Throw階段
 		{
 			if(canThrow)
@@ -730,7 +778,31 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 			
 		}
+		*/
 
+	}
+	void Roll()
+	{
+		isInvincible = true;
+		canRoll = false;
+		StartCoroutine(RollCD_Count());
+
+		if(facingRight)
+		{
+			rb.velocity = Vector3.right*RollSpeed;
+		}
+		else
+		{
+			rb.velocity = Vector3.left*RollSpeed;
+		}
+	}
+	IEnumerator RollCD_Count()
+	{
+		for(float i =0 ; i<=RollCD ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		canRoll = true;
 	}
 	void getBoundDir()
 	{
@@ -1037,7 +1109,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void GetDashDir()
 	{
-		DashDir = Arrow.GetComponent<ArrowShow>().LastDir;
+		DashDir = Arrow.GetComponent<ArrowShow>().LastDir.normalized;
 	}
 	void Mouse_DirCache()
 	{
@@ -1069,16 +1141,24 @@ public class PlayerCtroller : MonoBehaviour {
 		yield return 0;
         GetComponent<Renderer>().material.color = OriginColor;
     }
+	void resetAniTrigger()
+	{
+		PlayerAni.ResetTrigger("Reload");
+		PlayerAni.ResetTrigger("Jump");
+		PlayerAni.ResetTrigger("Attack");
+	}
 	public void gettingHit()
 	{
 		if(!isInvincible)
 		{
+			resetAniTrigger();
 			isInvincible = true;
 			hp -= 15.0f;
 			//StartCoroutine(HitTrigger());
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
 			currentState = PlayerState.GetHit;
+
 
 			if(facingRight)
 			{
