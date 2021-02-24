@@ -78,6 +78,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float BoundSpeed;
 	Vector3 BoundDir;
 	public float BoundTime;
+	public float ReboundAngle;
 	//
 	//被攻擊
 	[Header("UnderAttack Settings")]
@@ -301,7 +302,7 @@ public class PlayerCtroller : MonoBehaviour {
 					
 				}
 
-				if(Input.GetButtonDown("PS4-L2"))
+				if(Input.GetButtonDown("PS4-L2")&&isGrounded)
 				{
 					rb.velocity = Vector3.zero;
 
@@ -725,6 +726,7 @@ public class PlayerCtroller : MonoBehaviour {
 		checkAttackRemain();
 
 		CheckStability();
+		BooleanCorrectCheck();
 
 		if(!isAttacking&&!isRolling)
 		{
@@ -812,22 +814,22 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = Vector3.left;
+				BoundDir = Vector3.down;
 			}
 			else
 			{
-				BoundDir = new Vector3(-0.5f,0.5f,0);
+				BoundDir = new Vector3(-Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
 			}
 		}
 		else
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = Vector3.right;
+				BoundDir = Vector3.down;
 			}
 			else
 			{
-				BoundDir = new Vector3(0.5f,0.5f,0);
+				BoundDir = new Vector3(Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
 			}
 		}
 	}
@@ -1149,11 +1151,20 @@ public class PlayerCtroller : MonoBehaviour {
 		PlayerAni.ResetTrigger("Jump");
 		PlayerAni.ResetTrigger("Attack");
 	}
+	void ResetAllTimer()
+	{
+		Timer = 0;
+		dashTimer = 0;
+		JumpTimer = 0;
+
+	}
 	public void gettingHit()
 	{
 		if(!isInvincible)
 		{
 			resetAniTrigger();
+			ResetAllTimer();
+
 			isInvincible = true;
 			hp -= 15.0f;
 			//StartCoroutine(HitTrigger());
@@ -1300,6 +1311,13 @@ public class PlayerCtroller : MonoBehaviour {
 		else
 		{
 			KnockDir = new Vector3(Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+		}
+	}
+	void BooleanCorrectCheck()
+	{
+		if(currentState!=PlayerState.Dash)
+		{
+			isDash = false;
 		}
 	}
 	public void Die()
