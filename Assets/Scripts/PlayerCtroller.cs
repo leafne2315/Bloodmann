@@ -517,6 +517,20 @@ public class PlayerCtroller : MonoBehaviour {
 							currentState = PlayerState.Rebound;
 						}	
 					}
+					else if(dashTimer<dashTime+holdingTime)
+					{
+						dashTimer+=Time.deltaTime;
+						rb.velocity =Vector2.Lerp(rb.velocity,Vector2.zero,0.1f);
+						
+						if(isAttachWall)
+						{
+							rb.velocity = Vector2.zero;
+
+							dashTimer = 0; //重置dash 時間
+							currentState = PlayerState.Normal;
+							isDash = false;
+						}		
+					}
 					else
 					{
 						dashTimer = 0; //重置dash 時間
