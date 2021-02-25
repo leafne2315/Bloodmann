@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 
 
@@ -9,6 +10,8 @@ public class PlayerCtroller : MonoBehaviour {
 	private GameManager GameManager;
 	private Vector3 StartPos;
 	public GameObject Arrow;
+	public Image GasBar;
+	public Image GasBarBase;
 	public Vector2 FlyDir;
 	public float hp;
 	public float hp_Max = 100;
@@ -184,6 +187,8 @@ public class PlayerCtroller : MonoBehaviour {
 		currentState = PlayerState.Normal;
 		currentGas = Gas_MaxValue;
 		Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+		GasBar.enabled = false;
+		GasBarBase.enabled = false;
 	}
 	void FixedUpdate()
 	{
@@ -1091,6 +1096,8 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void GasUse(float comsumePS)
 	{
+		GasBar.enabled = true;
+		GasBarBase.enabled = true;
 		if(currentGas>0)
 			currentGas-=comsumePS*Time.deltaTime;
 		else
@@ -1101,6 +1108,8 @@ public class PlayerCtroller : MonoBehaviour {
 	
 	void RestoreGas()
 	{
+		GasBar.enabled = true;
+		GasBarBase.enabled = true;
 		if(currentGas<Gas_MaxValue)
 		{
 			currentGas+=60*Time.deltaTime;
@@ -1111,6 +1120,8 @@ public class PlayerCtroller : MonoBehaviour {
 		else
 		{
 			currentGas = Gas_MaxValue;
+			GasBar.enabled = false;
+			GasBarBase.enabled = false;
 		}
 	}
 	Vector3 Joysticks_Dir()

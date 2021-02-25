@@ -8,18 +8,22 @@ public class GasGasGas : MonoBehaviour
     // Start is called before the first frame update
     private PlayerCtroller playerCtrScript;
     public Image GasBar;
+    public Image GasBarBase;
     //public GameObject GasUI;
     public GameObject Player;
     void Start()
     {
-        GasBar = GetComponent<Image>();
+        //GasBar = GetComponent<Image>();
         playerCtrScript = Player.GetComponent<PlayerCtroller>();
     }
     
     void Update() 
     {
-        //Vector3 gasbarPos = Camera.main.WorldToScreenPoint(this.transform.position);
-        //GasBar.transform.position = gasbarPos;
+        Vector3 gasbarPos = Camera.main.WorldToScreenPoint(this.transform.position);
+        GasBar.transform.position = gasbarPos;
+
+        Vector3 gasbarbasePos = Camera.main.WorldToScreenPoint(this.transform.position);
+        GasBarBase.transform.position = gasbarbasePos;
     }
     private void LateUpdate()
     {
