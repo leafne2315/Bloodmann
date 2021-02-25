@@ -280,6 +280,7 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 
 					currentState = PlayerState.Attach;
+					PlayerAni.SetTrigger("Attach");
 					
 					rb.velocity = Vector3.zero;
 				}
@@ -470,7 +471,7 @@ public class PlayerCtroller : MonoBehaviour {
 						else
 						{
 							isDash = true;
-						
+							PlayerAni.SetBool("isDash",true);
 							//Mouse_DirCache();
 							GetDashDir();
 						}
@@ -505,7 +506,7 @@ public class PlayerCtroller : MonoBehaviour {
 							dashTimer = 0; //重置dash 時間
 							currentState = PlayerState.Normal;
 							isDash = false;
-							
+							PlayerAni.SetBool("isDash",false);
 						}
 
 						DashAttack();
@@ -517,6 +518,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 							
 							isDash = false;
+							PlayerAni.SetBool("isDash",false);
 							getBoundDir();
 							rb.velocity = BoundDir*BoundSpeed;
 							currentState = PlayerState.Rebound;
@@ -534,13 +536,15 @@ public class PlayerCtroller : MonoBehaviour {
 							dashTimer = 0; //重置dash 時間
 							currentState = PlayerState.Normal;
 							isDash = false;
+							PlayerAni.SetBool("isDash",false);
 						}		
 					}
 					else
 					{
 						dashTimer = 0; //重置dash 時間
 						currentState = PlayerState.Normal;
-						isDash = false;			
+						isDash = false;
+						PlayerAni.SetBool("isDash",false);	
 					}
 				}
 			break;
@@ -809,6 +813,7 @@ public class PlayerCtroller : MonoBehaviour {
 		isInvincible = true;
 		canRoll = false;
 		StartCoroutine(RollCD_Count());
+		PlayerAni.SetTrigger("Roll");
 
 		if(facingRight)
 		{
@@ -1175,6 +1180,8 @@ public class PlayerCtroller : MonoBehaviour {
 		PlayerAni.ResetTrigger("Reload");
 		PlayerAni.ResetTrigger("Jump");
 		PlayerAni.ResetTrigger("Attack");
+		PlayerAni.ResetTrigger("Roll");
+		PlayerAni.ResetTrigger("Attach");
 	}
 	void ResetAllTimer()
 	{

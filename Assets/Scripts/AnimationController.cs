@@ -45,5 +45,7 @@ public class AnimationController : MonoBehaviour
     {
         PlayerAni.ResetTrigger("Jump");
         PlayerAni.ResetTrigger("Reload");
+        PlayerAni.ResetTrigger("Roll");
+        PlayerAni.ResetTrigger("Attach");
     }
 }
