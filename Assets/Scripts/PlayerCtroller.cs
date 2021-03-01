@@ -716,7 +716,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 
 		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
-		isAttachOnTop = Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
+		//isAttachOnTop = Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
 		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||isAttachOnTop;
 		
 		if(isAttachWall)
@@ -894,7 +894,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void checkAttackRemain()
 	{
-		if(AttackRemain<=0)
+		if(AttackRemain<0)
 		{
 			isIneffective = true;
 		}

@@ -21,6 +21,7 @@ public class AnimationController : MonoBehaviour
         PlayerAni.SetFloat("MoveY",playerCtroller.RealMovement.y);
         PlayerAni.SetBool("isFly",playerCtroller.isFlying);
         PlayerAni.SetBool("isDash",playerCtroller.isAirDash);
+        PlayerAni.SetBool("isGound",playerCtroller.isGrounded);
         if(playerCtroller.isAttachWall&&!playerCtroller.isGrounded&&!playerCtroller.isFlying)
         {
             PlayerAni.SetBool("isOnWall",true);

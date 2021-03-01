@@ -38,8 +38,8 @@ ModelImporter:
       name: Armature|evade
       takeName: Armature|evade
       internalID: 0
-      firstFrame: 6
-      lastFrame: 17
+      firstFrame: 4
+      lastFrame: 27
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
