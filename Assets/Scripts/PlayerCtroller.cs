@@ -527,7 +527,7 @@ public class PlayerCtroller : MonoBehaviour {
 					else if(dashTimer<dashTime+holdingTime)
 					{
 						dashTimer+=Time.deltaTime;
-						rb.velocity =Vector2.Lerp(rb.velocity,Vector2.zero,0.1f);
+						rb.velocity =Vector2.Lerp(rb.velocity,Vector2.zero,0.03f);
 						
 						if(isAttachWall)
 						{
