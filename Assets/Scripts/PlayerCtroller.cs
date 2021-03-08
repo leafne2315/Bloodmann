@@ -145,6 +145,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float SaveTime;
 	public bool canRoll;
 	public float RollCD;
+	public float AfterRollTime;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -194,7 +195,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash)
 		{
-			rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
+			rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
 		}
 		
 	}
@@ -253,7 +254,7 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 				}
 
-				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
+				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle")&&!isIneffective)//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
@@ -402,7 +403,7 @@ public class PlayerCtroller : MonoBehaviour {
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
-				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
+				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle")&&!isIneffective)//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
@@ -474,7 +475,7 @@ public class PlayerCtroller : MonoBehaviour {
 							PlayerAni.SetBool("isDash",true);
 							//Mouse_DirCache();
 							GetDashDir();
-							DashVel = DashDir*dashSpeed;
+							AttackRemain--;
 						}
 
 						dashTimer = 0;
@@ -512,11 +513,12 @@ public class PlayerCtroller : MonoBehaviour {
 						}
 
 						DashAttack();
+						
 						if(hitConfirm)
 						{
 							dashTimer = 0;
 							hitConfirm = false;
-							AttackRemain--;
+							
 
 							
 							isDash = false;
@@ -530,8 +532,8 @@ public class PlayerCtroller : MonoBehaviour {
 					else if(dashTimer<dashTime+holdingTime)
 					{
 						dashTimer+=Time.deltaTime;
-						rb.velocity = Vector3.Lerp(DashVel,Vector2.zero,(dashTimer-dashTime)/holdingTime);
-						print(rb.velocity);
+						rb.velocity = DashDir * Mathf.Lerp(dashSpeed,0.0f,(dashTimer-dashTime)/holdingTime);
+						
 						
 						if(isAttachWall)
 						{
@@ -558,8 +560,6 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Timer<BoundTime)
 				{
 					Timer+=Time.deltaTime;
-
-					
 				}
 				else
 				{
@@ -583,6 +583,11 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 
 					Timer+=Time.deltaTime;
+				}
+				else if(Timer<RollTime+AfterRollTime)
+				{
+					Timer+=Time.deltaTime;
+					rb.velocity = new Vector3(0.0f,rb.velocity.y,0.0f);
 				}
 				else 
 				{
@@ -868,6 +873,7 @@ public class PlayerCtroller : MonoBehaviour {
 		float angle = Vector3.SignedAngle(Vector3.right,DashDir,Vector3.forward);
 		Vector3 q = new Vector3(0,0,angle);
 		
+		
 		if(!isIneffective)
 		{
 			if(!hitConfirm)
@@ -898,7 +904,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void checkAttackRemain()
 	{
-		if(AttackRemain<0)
+		if(AttackRemain<=0)
 		{
 			isIneffective = true;
 		}
@@ -941,33 +947,28 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void AttackHitCheck()
 	{	
-		if(!isIneffective)
+		
+		if(!hitConfirm)
 		{
-			if(!hitConfirm)
+			Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,AttackAngle,EnemyLayer);
+			
+			if(hitObjs.Length==0)
 			{
-				Collider[] hitObjs = Physics.OverlapBox(currentHitPos.position,HitBox_size,AttackAngle,EnemyLayer);
+				print("Miss");
+			}
+			else
+			{
+				hitConfirm = true;
 				
-				if(hitObjs.Length==0)
+				foreach(Collider c in hitObjs)
 				{
-					print("Miss");
-				}
-				else
-				{
-					hitConfirm = true;
-					
-					foreach(Collider c in hitObjs)
-					{
-						print("Hit"+c.name+"!!!!");
-						StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
-					}
+					print("Hit"+c.name+"!!!!");
+					StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
 				}
 			}
+		}
 
-		}
-		else
-		{
-			print("isIneffective!!");
-		}
+		
 
 	}
 	Vector3 Default_ThrowDir()
