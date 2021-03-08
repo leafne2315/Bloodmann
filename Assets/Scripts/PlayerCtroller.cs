@@ -75,7 +75,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isDash;
 	private bool canDash;
 	[SerializeField]private float dashSpeed;
-	public float Max_dashSpeed;
+	public Vector3 DashVel;
 
 	[Header("ReBound Settings")]
 	public float BoundSpeed;
@@ -474,6 +474,7 @@ public class PlayerCtroller : MonoBehaviour {
 							PlayerAni.SetBool("isDash",true);
 							//Mouse_DirCache();
 							GetDashDir();
+							DashVel = DashDir*dashSpeed;
 						}
 
 						dashTimer = 0;
@@ -489,6 +490,7 @@ public class PlayerCtroller : MonoBehaviour {
 						dashTimer+=Time.deltaTime;
 						
 						rb.velocity = DashDir*dashSpeed;
+						
 
 						if(DashDir.x>0 &&!facingRight)
 						{
@@ -521,13 +523,15 @@ public class PlayerCtroller : MonoBehaviour {
 							PlayerAni.SetBool("isDash",false);
 							getBoundDir();
 							rb.velocity = BoundDir*BoundSpeed;
+							
 							currentState = PlayerState.Rebound;
 						}	
 					}
 					else if(dashTimer<dashTime+holdingTime)
 					{
 						dashTimer+=Time.deltaTime;
-						rb.velocity =Vector2.Lerp(rb.velocity,Vector2.zero,0.03f);
+						rb.velocity = Vector3.Lerp(DashVel,Vector2.zero,(dashTimer-dashTime)/holdingTime);
+						print(rb.velocity);
 						
 						if(isAttachWall)
 						{
@@ -930,7 +934,7 @@ public class PlayerCtroller : MonoBehaviour {
 					AttackDir = Vector3.left;
 				}
 			}
-			AttackRemain--;
+			
 
 			GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,AttackAngle);
 			Ftx.transform.SetParent(transform);
@@ -962,7 +966,7 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		else
 		{
-			print("No Core!!");
+			print("isIneffective!!");
 		}
 
 	}
