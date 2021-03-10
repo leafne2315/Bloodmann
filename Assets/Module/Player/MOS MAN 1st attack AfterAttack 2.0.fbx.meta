@@ -41,7 +41,7 @@ ModelImporter:
       name: Player3D|1st attack after 2.0
       takeName: Armature|1st attack after
       internalID: 0
-      firstFrame: 2.5
+      firstFrame: 5.5
       lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0

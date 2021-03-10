@@ -954,7 +954,7 @@ public class PlayerCtroller : MonoBehaviour {
 			
 			if(hitObjs.Length==0)
 			{
-				print("Miss");
+				//print("Miss");
 			}
 			else
 			{
