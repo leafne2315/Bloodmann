@@ -11,7 +11,7 @@ public class BossController : MonoBehaviour{
     public LayerMask PlayerLayer;
     private Rigidbody rb;
     public bool facingRight;
-    private float timer;
+    public float timer;
 
     [Header("Move Settings")]
     public float MoveSpeed;
@@ -19,6 +19,7 @@ public class BossController : MonoBehaviour{
     public float MoveTime;
 
     [Header("TwiceAttack Settings")]
+    public bool isAttack;
     public Vector3 HitBox_size;
     public float AttackStart_1;
     public float AttackEnd_1;
@@ -26,15 +27,17 @@ public class BossController : MonoBehaviour{
     public float AttackEnd_2;
     public float TA_StateTime;
     public bool hitConfirm;
-    private Transform HitPos;
+    public Transform HitPos;
+
     [Header("AirDown Settings")]
     public float JumpUpTime;
-    private Transform targetAirPos;
+    private Vector3 targetAirPos;
     public float DownSpeed;
     public float AD_StateTime;
     [Header("DashAttack Settings")]
     public float DA_Speed;
     public float DA_Time;
+    public float DA_Dir_Start;
     private Vector3 DA_Dir;
     public float DA_StateTime;
     [Header("QuickBack")]
@@ -46,6 +49,13 @@ public class BossController : MonoBehaviour{
     {
         PlayerCtroller = Player.GetComponent<PlayerCtroller>();
         rb = GetComponent<Rigidbody>();
+    }
+    void FixedUpdate()
+    {
+        if(currentState!=BossState.AirDown)
+        {
+            rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
+        }
     }
 
     // Update is called once per frame
@@ -65,7 +75,29 @@ public class BossController : MonoBehaviour{
                 }
                 else
                 {
-                    //next state
+                    bool isClose = Physics.CheckBox(transform.position,4*Vector3.one,Quaternion.identity,PlayerLayer);
+                    int RandomNum = Random.Range(1,51);
+                    print(RandomNum);
+
+                    if(isClose)
+                    {
+                        currentState = BossState.TwiceAttack;
+                        rb.velocity = Vector3.zero;
+                    }
+                    else
+                    {
+                        if(RandomNum<=50)
+                        {
+                            DA_Dir = MoveDir;
+                            currentState = BossState.DashAttack;
+                        }
+                        else
+                        {
+                            targetAirPos = Player.transform.position + 5*Vector3.up;
+                            currentState = BossState.AirDown;
+                        }
+                    }
+                    timer = 0;
                 }
 
             break;
@@ -87,6 +119,7 @@ public class BossController : MonoBehaviour{
                 {
                     //attack_end1~attack_start2
                     hitConfirm = false;
+                    isAttack = false;
                 }
                 else if(timer<AttackEnd_2)
                 {
@@ -97,10 +130,12 @@ public class BossController : MonoBehaviour{
                 {
                     //attack_2 End ~ StateTime
                     hitConfirm = false;
+                    isAttack = false;
                 }
                 else
                 {
                     timer = 0;
+                    currentState = BossState.Move;
                     //next state
                 }
                 
@@ -112,7 +147,7 @@ public class BossController : MonoBehaviour{
 
                 if(timer<JumpUpTime)
                 {
-                    transform.position = Vector3.Lerp(transform.position,targetAirPos.position,timer/JumpUpTime);
+                    transform.position = Vector3.Lerp(transform.position,targetAirPos,timer/JumpUpTime);
                 }
                 else if(timer<AD_StateTime)
                 {
@@ -121,6 +156,7 @@ public class BossController : MonoBehaviour{
                 else
                 {
                     timer = 0;
+                    currentState = BossState.Move;
                     //next state
                 }
 
@@ -128,7 +164,12 @@ public class BossController : MonoBehaviour{
 
             case BossState.DashAttack:
 
-                if(timer<DA_Time)
+                timer += Time.deltaTime;
+                if(timer<DA_Dir_Start)
+                {
+                    rb.velocity = Vector3.zero;
+                }
+                else if(timer<DA_Dir_Start +DA_Time)
                 {
                     rb.velocity = DA_Dir*DA_Speed;
                     //DA
@@ -141,6 +182,7 @@ public class BossController : MonoBehaviour{
                 else
                 {
                     timer = 0;
+                    currentState = BossState.Move;
                     //next state
                 }
 
@@ -197,6 +239,7 @@ public class BossController : MonoBehaviour{
     }
     void AttackHitCheck()
     {
+        isAttack = true;
         if(!hitConfirm)
 		{
 			Collider[] hitObjs = Physics.OverlapBox(HitPos.position,HitBox_size,Quaternion.identity,PlayerLayer);
@@ -216,5 +259,41 @@ public class BossController : MonoBehaviour{
 				}
 			}
 		}
+    }
+    void NextState()
+    {
+        bool isClose = Physics.CheckBox(transform.position,2*Vector3.one,Quaternion.identity,PlayerLayer);
+        int RandomNum = Random.Range(1,101);
+        if(isClose)
+        {
+            currentState = BossState.TwiceAttack;
+        }
+        else
+        {
+            if(RandomNum<=50)
+            {
+                currentState = BossState.DashAttack;
+            }
+            else
+            {
+                currentState = BossState.AirDown;
+            }
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        if(isAttack)
+        {
+            Gizmos.color = Color.red;
+        }
+        else
+        {
+            Gizmos.color = Color.yellow;
+        }
+        Gizmos.DrawWireCube(HitPos.position,2*HitBox_size);
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(transform.position,8*Vector3.one);
     }
 }
