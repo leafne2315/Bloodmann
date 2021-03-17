@@ -30,8 +30,11 @@ public class BossController : MonoBehaviour{
     public Transform HitPos;
 
     [Header("AirDown Settings")]
+    public float WaitToJump;
     public float JumpUpTime;
+    public float StayUpTime;
     private Vector3 targetAirPos;
+    public float Height; 
     public float DownSpeed;
     public float AD_StateTime;
     [Header("DashAttack Settings")]
@@ -76,7 +79,7 @@ public class BossController : MonoBehaviour{
                 else
                 {
                     bool isClose = Physics.CheckBox(transform.position,4*Vector3.one,Quaternion.identity,PlayerLayer);
-                    int RandomNum = Random.Range(1,51);
+                    int RandomNum = Random.Range(51,101);
                     print(RandomNum);
 
                     if(isClose)
@@ -93,7 +96,7 @@ public class BossController : MonoBehaviour{
                         }
                         else
                         {
-                            targetAirPos = Player.transform.position + 5*Vector3.up;
+                            
                             currentState = BossState.AirDown;
                         }
                     }
@@ -145,9 +148,18 @@ public class BossController : MonoBehaviour{
 
                 timer+= Time.deltaTime;
 
-                if(timer<JumpUpTime)
+                if(timer<WaitToJump)
                 {
-                    transform.position = Vector3.Lerp(transform.position,targetAirPos,timer/JumpUpTime);
+                    rb.velocity = Vector3.zero;
+                    targetAirPos = Player.transform.position + Height*Vector3.up;
+                }
+                else if(timer<WaitToJump+JumpUpTime)
+                {
+                    transform.position = Vector3.Lerp(transform.position,targetAirPos,(timer-WaitToJump)/JumpUpTime);
+                }
+                else if(timer<WaitToJump+JumpUpTime+StayUpTime)
+                {
+                    rb.velocity = Vector3.zero;
                 }
                 else if(timer<AD_StateTime)
                 {
