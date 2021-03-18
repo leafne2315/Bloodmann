@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DropEnemyCtrller : MonoBehaviour
 {
+    public int hp;
+    public int maxHp = 5;
     public bool getHit;
     private tempGetHit tempGetHit;
     public Vector3 isfallCheck;
@@ -21,6 +23,9 @@ public class DropEnemyCtrller : MonoBehaviour
     public Transform GroundCheck;
     public LayerMask WhatIsGround;
     public LayerMask WhatIsPlayer;
+    private bool notDie = true;
+    private float dieTimer = 0;
+    public float dyingTime;
     public enum EnemyState{OnWall, Moving, Dead}
     // Start is called before the first frame update
     void Start()
@@ -33,7 +38,9 @@ public class DropEnemyCtrller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        DieCheck();
         getHitCheck();
+        
         isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
         
         switch(currentState)
@@ -60,12 +67,26 @@ public class DropEnemyCtrller : MonoBehaviour
 
             case EnemyState.Moving:
             rb.velocity = MovingDir*movingSpeed;
-            GetMoveDir();
-            FacingCheck();
-            
+           
+            if(Player.transform.position.x-transform.position.x>2 ||Player.transform.position.x-transform.position.x<-2)
+            {
+                GetMoveDir();
+                FacingCheck();
+            }            
             break;
 
             case EnemyState.Dead:
+            rb.velocity = Vector3.zero;
+
+                if(dieTimer<dyingTime)
+                {
+                    dieTimer+=Time.deltaTime;
+                }
+                else
+                {
+                    transform.GetChild(2).GetComponent<DropEnemyHealthBar>().DestroyUI();
+                    Destroy(gameObject);
+                }
             break;
         }        
     }
@@ -86,6 +107,17 @@ public class DropEnemyCtrller : MonoBehaviour
         {
             getHit = false;
         }
+
+        if(GetComponent<tempGetHit>().isHit)
+        {
+            hp--;
+            // if(!isAttacking)
+            // {
+            //     currentState = EnemyState.Repel;
+            //     Timer = 0;
+            //     RushBugAni.SetTrigger("Repel");
+            // }
+        }
     }
     void GetMoveDir()
     {
@@ -100,8 +132,6 @@ public class DropEnemyCtrller : MonoBehaviour
 
     }
 
-   
-            
     void FacingCheck()
     {
         if(isFacingRight==false&&MovingDir.x>0)
@@ -121,8 +151,30 @@ public class DropEnemyCtrller : MonoBehaviour
         Scaler.x*=-1;
         transform.localScale = Scaler;
     }
-    // void OnCollisionEnter(Collision other)
-    // {
-    //     Player.GetComponent<PlayerCtroller>().gettingHit();
-    // }
+    
+    void DieCheck()
+    {
+        if(hp<=0)
+        {
+            if(notDie)
+            {   
+                notDie = false;
+
+                gameObject.tag = "DeadObject";
+                gameObject.layer = LayerMask.NameToLayer("DeadObject");
+                
+                currentState = EnemyState.Dead;
+                
+            }   
+        }
+    }
+
+    public void PullTrigger(Collider c)
+    {
+        if(c.CompareTag("Player"))
+        {
+            Player.GetComponent<PlayerCtroller>().gettingHit();
+        }
+    }
+   
 }

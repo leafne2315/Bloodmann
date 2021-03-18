@@ -18,6 +18,7 @@ TagManager:
   - Lift
   - Spike
   - DeadObject
+  - LilEnemy
   layers:
   - Default
   - TransparentFX

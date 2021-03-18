@@ -100,6 +100,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
+	public bool isFlyAttack;
 	[Range(0.0f,0.5f)]public float Attach_IntervalTime;
 	//
 	//燃料
@@ -170,6 +171,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private float StableValue;
 	private ExternalForce Ef;
 	public Vector3 SavePointPos;
+	public bool noGravity;
 
 	void Awake()
 	{
@@ -193,7 +195,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash)
+		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash&&!noGravity)
 		{
 			rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
 		}
@@ -251,6 +253,7 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						Roll();
 						currentState = PlayerState.Roll;
+						
 					}
 				}
 
@@ -260,7 +263,7 @@ public class PlayerCtroller : MonoBehaviour {
 					dashTimer = 0; //重置dash 時間
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
-	
+
 					// rb.gravityScale = 0;
 					rb.velocity = Vector3.zero;
 					//StartCoroutine(dashCD_Count());
@@ -359,11 +362,11 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						if(!facingRight)
 						{
-							rb.velocity = Vector2.one.normalized*JumpForce;
+							rb.velocity = Vector2.one*JumpForce;
 						}
 						else
 						{
-							rb.velocity = new Vector2(-1,1).normalized*JumpForce;
+							rb.velocity = new Vector2(-1,1)*JumpForce;
 						}
 					}
 					else
@@ -416,12 +419,16 @@ public class PlayerCtroller : MonoBehaviour {
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
 				}
-				// if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
-				// {
-					
-				// 	AttackHitCheck();
-					
-				// }
+
+				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+				{
+
+					rb.velocity = Vector3.zero;
+					currentState = PlayerState.PreAttack;
+					PlayerAni.SetTrigger("Attack");
+
+					isFlyAttack = true;
+				}
 
 				if(Out_Of_Gas)
 				{
@@ -657,6 +664,11 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.PreAttack:
 
+				if(isFlyAttack)
+				{
+					FlyMovement();
+				}
+
 				if(Timer<PreAttackTime)
 				{
 					Timer+=Time.deltaTime;
@@ -669,10 +681,16 @@ public class PlayerCtroller : MonoBehaviour {
 					AttackMove();
 				}
 
+
 			break;
 
 			case PlayerState.Attack:
 				
+				if(isFlyAttack)
+				{
+					FlyMovement();
+				}
+
 				if(Timer<AttackTime)
 				{
 					Timer+=Time.deltaTime;
@@ -686,9 +704,15 @@ public class PlayerCtroller : MonoBehaviour {
 					currentState = PlayerState.AfterAttack;
 				}
 
+
 			break;
 
 			case PlayerState.AfterAttack:
+
+				if(isFlyAttack)
+				{
+					FlyMovement();
+				}
 
 				if(Timer<AfterAttackTime)
 				{
@@ -698,10 +722,20 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer = 0;
 					hitConfirm = false;
-					currentState = PlayerState.Normal;
+
+					if(isFlyAttack)
+					{
+						currentState = PlayerState.BugFly;
+						isFlyAttack = false;
+					}
+					else
+					{
+						currentState = PlayerState.Normal;
+					}
 
 					print(AttackRemain);
 				}
+
 
 			break;
 			case PlayerState.Reloading:
@@ -765,6 +799,10 @@ public class PlayerCtroller : MonoBehaviour {
 			getMoveInput();
 		}
 
+		if(currentState!=PlayerState.Normal)
+		{
+			RealMovementReset();
+		}
 		
 		//Debug.Log(rb.velocity.x);
 		//Debug.Log(rb.velocity.y);
@@ -954,7 +992,7 @@ public class PlayerCtroller : MonoBehaviour {
 			
 			if(hitObjs.Length==0)
 			{
-				print("Miss");
+				//print("Miss");
 			}
 			else
 			{
@@ -999,6 +1037,12 @@ public class PlayerCtroller : MonoBehaviour {
 			RealMovement.x = 0.0f;
 		}
 	}
+
+	void RealMovementReset()
+	{
+		if(RealMovement.x!=0)
+			RealMovement.x = 0.0f;
+	} 
 	IEnumerator AirDash_Count()
 	{
 		for(float i =0 ; i<=AirDashTime ; i+=Time.deltaTime)

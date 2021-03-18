@@ -127,7 +127,6 @@ private Rigidbody rb;
                     //RushBugAni.SetTrigger("ToMove");
                     RushBugAni.SetBool("Move", true);
                     RushBugAni.SetBool("Idle", false);
-                                   
                 }
                 
                 
