@@ -41,6 +41,14 @@ public class AnimationController : MonoBehaviour
             PlayerAni.SetTrigger("Jump");
         }
 
+        if(Input.GetAxis("PS4-L-Horizontal")!=0.0f)
+        {
+            PlayerAni.SetBool("MovingInputting",true);
+        }
+        else
+        {
+            PlayerAni.SetBool("MovingInputting",false);
+        }
     }
     public void ResetTrigger()
     {
