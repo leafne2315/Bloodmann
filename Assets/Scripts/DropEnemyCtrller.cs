@@ -47,7 +47,7 @@ public class DropEnemyCtrller : MonoBehaviour
         {
             case EnemyState.OnWall:
 
-            if(Physics.Raycast(transform.position, -transform.up, out hit, Mathf.Infinity,WhatIsPlayer))
+            if(Physics.Raycast(transform.position, -transform.up, out hit, 10,WhatIsPlayer))
             {
                 Debug.DrawLine(transform.position, hit.point, Color.yellow);
                 isfall = true;
@@ -56,7 +56,7 @@ public class DropEnemyCtrller : MonoBehaviour
             }
             else
             {
-                Debug.DrawRay(transform.position, -transform.up * 1000, Color.white);
+                Debug.DrawRay(transform.position, -transform.up * 10, Color.white);
             }
 
             if(isGrounded)

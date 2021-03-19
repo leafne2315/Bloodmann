@@ -8,6 +8,8 @@ using System;
 public class PlayerCtroller : MonoBehaviour {
 	public GameObject GM;
 	private GameManager GameManager;
+	private InputManager IM;
+	public GameObject inputmanager;
 	private Vector3 StartPos;
 	public GameObject Arrow;
 	public Image GasBar;
@@ -118,6 +120,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Attack Settings")]
 	public bool isIneffective;
 	private bool isAttacking;
+	public bool inAttacktime;
 	public int AttackRemain;
 	public int FullRemain;
 	public bool canAttack = true;
@@ -179,6 +182,7 @@ public class PlayerCtroller : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		//OriginGravity = rb.gravityScale;
 		Ef = GetComponent<ExternalForce>();
+		IM = inputmanager.GetComponent<InputManager>();
 	}
 	void Start()
 	{
@@ -238,7 +242,7 @@ public class PlayerCtroller : MonoBehaviour {
 					GasUse(0);
 				}
 				*/
-				if(Input.GetKeyDown(KeyCode.Space)||Input.GetButtonDown("PS4-x") && isGrounded == true)
+				if(Input.GetKeyDown(KeyCode.Space)||IM.PS4_X_Input && isGrounded == true)
 				{
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
 				}
@@ -247,17 +251,16 @@ public class PlayerCtroller : MonoBehaviour {
 				// {
 				// 		RestoreGas();
 				// }
-				if(Input.GetButtonDown("PS4-O"))
+				if(IM.PS4_O_Input)
 				{
 					if(canRoll)
 					{
 						Roll();
 						currentState = PlayerState.Roll;
-						
 					}
 				}
 
-				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle")&&!isIneffective)//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input&&!isIneffective)//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
@@ -302,7 +305,7 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 				}
 
-				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
 				{
 					rb.velocity = Vector3.zero;
 					canAttack = false;
@@ -331,7 +334,7 @@ public class PlayerCtroller : MonoBehaviour {
 				rb.velocity = Vector3.zero;
 				RestoreGas();
 
-				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle"))//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input)//->Dash
 				{	
 				
 					
@@ -356,7 +359,7 @@ public class PlayerCtroller : MonoBehaviour {
 					FlyDir = rb.velocity.normalized;
 				}
 
-				if(Input.GetButtonDown("PS4-x"))
+				if(IM.PS4_X_Input)
 				{
 					if(!isAttachOnTop)
 					{
@@ -406,7 +409,7 @@ public class PlayerCtroller : MonoBehaviour {
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
-				if(Input.GetMouseButtonDown(0)||Input.GetButtonDown("PS4-Triangle")&&!isIneffective)//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input&&!isIneffective)//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
@@ -420,7 +423,7 @@ public class PlayerCtroller : MonoBehaviour {
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
 				}
 
-				if(Input.GetButtonDown("PS4-Square")||Input.GetKeyDown(KeyCode.Z))
+				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
 				{
 
 					rb.velocity = Vector3.zero;
@@ -702,6 +705,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer = 0;
 					currentState = PlayerState.AfterAttack;
+					inAttacktime = false;
 				}
 
 
@@ -979,7 +983,7 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 			}
 			
-
+			inAttacktime = true;
 			GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,AttackAngle);
 			Ftx.transform.SetParent(transform);
 	}
@@ -1299,6 +1303,14 @@ public class PlayerCtroller : MonoBehaviour {
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
+		if(inAttacktime)
+		{
+			Gizmos.color = Color.red;
+		}
+		else
+		{
+			Gizmos.color = Color.white;
+		}
 		Gizmos.DrawWireCube(hitPos.position,2*HitBox_size);
 	}
 	// private void OnTriggerEnter2D(Collider2D other)
