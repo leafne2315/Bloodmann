@@ -320,13 +320,13 @@ private Rigidbody rb;
         RepelDir = dir;
     }
     IEnumerator AttackCD_Count()
- {
-  for(float i =0 ; i<=AttackCD ; i+=Time.deltaTime)
-  {
-   yield return 0;
-  }
-  canAttack = true;
- }
+    {
+        for(float i =0 ; i<=AttackCD ; i+=Time.deltaTime)
+        {
+            yield return 0;
+        }
+            canAttack = true;
+        }
     void DetectingPlayer()
     {
         if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))

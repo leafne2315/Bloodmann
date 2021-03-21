@@ -53,6 +53,7 @@ public class MovingEnemy : MonoBehaviour
         DieCheck();
         getHitCheck();
         PatrolDir();
+        FacingCheck();
 
         switch(currentState)
         {
@@ -60,7 +61,7 @@ public class MovingEnemy : MonoBehaviour
 
                 rb.velocity = MovingDir*patrolSpeed;
                 DetectingPlayer();
-                FacingCheck();
+                
                 if(PlayerDetect)
                 {
                     currentState = EnemyState.PreMoving;
@@ -256,7 +257,7 @@ public class MovingEnemy : MonoBehaviour
     }
     void getHitCheck()
     {
-         if(GetComponent<tempGetHit>().isHit)
+        if(GetComponent<tempGetHit>().isHit)
         {
             hp--;
             get_RepelDir();
