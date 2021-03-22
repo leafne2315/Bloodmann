@@ -11,7 +11,7 @@ public class ZagoBug : MonoBehaviour
     public bool isFacingRight = true;
     private tempGetHit tempGetHit;
     public GameObject Player;
-    public enum EnemyState{Patrol,PreMoving,Stop,Attacking,Repel,Dead,Idle}
+    public enum EnemyState{Patrol,PreMoving,Stop,Attacking,Repel,Dead,Idle,Fall}
     public EnemyState currentState;
     private EnemyState LastState;
     public Vector3 MovingDir;
@@ -21,22 +21,34 @@ public class ZagoBug : MonoBehaviour
 
     [Header("Detect Settings")]
     public LayerMask PlayerLayer;
-    public float DetectPlayerRadius;
-    public Vector3 DetectPlayerlength;
+    
     public bool PlayerDetect;
     public bool isGroundCheck;
-    public Transform groundCheck;
+    public bool isWallCheck;
+    public Transform CheckPoint;
     public float groundCheckLength;
     public LayerMask GroundLayer;
+    
 
     [Header("Patrol Settings")]
+    public Vector3 PatrolDetectlength;
     public float patrolSpeed;
+    public float patrolTime;
+    public float patrolRest;
+
     [Header("Attacking Settings")]
     public float AttackingSpeed;
     public float AttackTime;
+    public Transform AttackPos;
+    public float AttackCD;
+    public Vector3 AttackDetectlength;
     
     [Header("Stop Settings")]
     public float StopTime;
+
+    [Header("Fall Settings")]
+    public bool isLand;
+    public Transform[] Button;
 
     [Header("Repel Setting")]
     public Vector3 RepelDir;
@@ -52,28 +64,59 @@ public class ZagoBug : MonoBehaviour
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
     }
-
+    
+    void FixedUpdate()
+    {
+        rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
+    }
     // Update is called once per frame
     void Update()
     {
+        FacingCheck();
         getHitCheck();
+        ButtonCheck();
         DieCheck();
 
         switch(currentState)
         {
             case EnemyState.Patrol:
                 
-                rb.velocity = MovingDir*patrolSpeed;
+                if(timer<patrolTime)
+                {
+                    timer+=Time.deltaTime;
+
+                    rb.velocity = MovingDir*patrolSpeed;
+                }
+                else
+                {
+                    timer = 0;
+                    currentState = EnemyState.Stop;
+                }
                 
                 GroundCheck();
                 if(!isGroundCheck)
                 {
                     MovingDir.x*=-1;
                 }
+                WallCheck();
+                if(isWallCheck)
+                {
+                    MovingDir.x*=-1;
+                }
+                
 
-                DetectPlayer();
+                PatrolDetect();
                 if(PlayerDetect)
                 {
+                    if(Player.transform.position.x>transform.position.x)
+                    {
+                        MovingDir.x = 1;
+                    }
+                    else
+                    {
+                        MovingDir.x = -1;
+                    }
+
                     currentState = EnemyState.Stop;
                     goAttack = true;
                 }
@@ -103,11 +146,30 @@ public class ZagoBug : MonoBehaviour
 
                 if(timer<StopTime)
                 {
+                    rb.velocity = Vector3.zero;
                     timer += Time.deltaTime;
                 }
                 else
                 {
                     timer = 0;
+
+                    AttackDetect();
+                    if(PlayerDetect)
+                    {
+                        if(Player.transform.position.x>transform.position.x)
+                        {
+                            MovingDir.x = 1;
+                        }
+                        else
+                        {
+                            MovingDir.x = -1;
+                        }
+                        
+                        currentState = EnemyState.Stop;
+                        goAttack = true;
+                        StopTime = AttackCD;
+                    }
+                    
 
                     if(goAttack)
                     {
@@ -157,6 +219,17 @@ public class ZagoBug : MonoBehaviour
 
             break;
 
+            case EnemyState.Fall:
+
+                rb.velocity = new Vector3(0.0f,rb.velocity.y,0);
+
+                if(isLand)
+                {
+                    currentState = EnemyState.Patrol;
+                }
+
+            break;
+
             case EnemyState.Idle:
             break;
         }
@@ -168,10 +241,31 @@ public class ZagoBug : MonoBehaviour
         Scaler.x*=-1;
         transform.localScale = Scaler;
     }
-
-    void DetectPlayer()
+    void FacingCheck()
     {
-        if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,PlayerLayer))
+        if(isFacingRight==false&&MovingDir.x>0)
+        {
+            Flip();
+        }
+        else if(isFacingRight == true&&MovingDir.x<0)
+        {
+            Flip();
+        }
+    }
+    void PatrolDetect()
+    {
+        if(Physics.CheckBox(AttackPos.position,PatrolDetectlength,Quaternion.identity,PlayerLayer))
+        {
+            PlayerDetect = true;
+        }
+        else
+        {
+            PlayerDetect = false;
+        }
+    }
+    void AttackDetect()
+    {
+        if(Physics.CheckBox(transform.position,AttackDetectlength,Quaternion.identity,PlayerLayer))
         {
             PlayerDetect = true;
         }
@@ -183,14 +277,26 @@ public class ZagoBug : MonoBehaviour
     void GroundCheck()
     {
         RaycastHit hitGround;
-        if(Physics.Raycast(groundCheck.position, Vector3.down, out hitGround,groundCheckLength,GroundLayer))
+        if(Physics.Raycast(CheckPoint.position, Vector3.down, out hitGround,groundCheckLength,GroundLayer))
         {
-            Debug.DrawRay(groundCheck.position, Vector3.down *groundCheckLength,Color.red);
+            Debug.DrawRay(CheckPoint.position, Vector3.down *groundCheckLength,Color.red);
             isGroundCheck = true;  
         }
         else
         {
             isGroundCheck = false;
+        }
+    }
+    void WallCheck()
+    {
+        RaycastHit hitWall;
+        if(Physics.Raycast(CheckPoint.position,MovingDir,out hitWall,0.2f,GroundLayer))
+        {
+            isWallCheck = true;
+        }
+        else
+        {
+            isWallCheck = false;
         }
     }
     void getHitCheck()
@@ -201,6 +307,29 @@ public class ZagoBug : MonoBehaviour
             hp--;
             LastState = currentState;
             currentState = EnemyState.Repel;
+        }
+    }
+    void ButtonCheck()
+    {
+        for(int i = 0;i<Button.Length;i++)
+        {
+            RaycastHit hit;
+            if(Physics.Raycast(Button[i].position,Vector3.down,out hit,0.2f,GroundLayer))
+            {
+                isLand = true;
+                break;
+            }
+            else
+            {
+                isLand = false;
+            }
+            Debug.DrawRay(Button[i].position, Vector3.down *0.2f,Color.red);
+        }
+        
+
+        if(!isLand&&currentState!=EnemyState.Dead)
+        {
+            currentState = EnemyState.Fall;
         }
     }
     void get_RepelDir()
@@ -223,5 +352,11 @@ public class ZagoBug : MonoBehaviour
                 //Die animation
             }   
         }
+    }
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(AttackPos.position,2*PatrolDetectlength);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(transform.position,2*AttackDetectlength);
     }
 }
