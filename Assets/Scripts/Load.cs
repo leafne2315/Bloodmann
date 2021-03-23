@@ -22,11 +22,11 @@ public class Load : MonoBehaviour
             FadeToLevel(1);
         }
 
-        if(menuController.isHomePage)
-        {
-            FadeToLevel(0);
-            animator.SetTrigger("FadeIn");
-        }
+        // if(menuController.isHomePage)
+        // {
+        //     FadeToLevel(0);
+        //     animator.SetTrigger("FadeIn");
+        // }
     }
 
     // public void FadeToNextLevel()

@@ -18,6 +18,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public Vector2 FlyDir;
 	public float hp;
 	public float hp_Max = 100;
+	public int AidKitNum;
+	public int AidKitNum_Max;
 	public float speed;
 	public float moveInput_X;
 	private float moveInput_Y;
@@ -99,7 +101,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,Defend,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Idle};
+	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,Idle};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -151,6 +153,9 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool canRoll;
 	public float RollCD;
 	public float AfterRollTime;
+
+	[Header("Recovery Settings")]
+	public float RecoveryTime;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -209,10 +214,7 @@ public class PlayerCtroller : MonoBehaviour {
 	void Update()
 	{
 		//print(currentState);
-		if(hp<=0)
-		{
-			Die();
-		}
+		HpCheck();
 
 		switch(currentState)
 		{
@@ -335,7 +337,7 @@ public class PlayerCtroller : MonoBehaviour {
 				rb.velocity = Vector3.zero;
 				RestoreGas();
 
-				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input)//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input&&!isIneffective)//->Dash
 				{	
 				
 					
@@ -458,7 +460,6 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(!isDash)
 				{
-
 					
 					//GasUse(40);
 					/*
@@ -545,7 +546,8 @@ public class PlayerCtroller : MonoBehaviour {
 						dashTimer+=Time.deltaTime;
 						rb.velocity = DashDir * Mathf.Lerp(dashSpeed,0.0f,(dashTimer-dashTime)/holdingTime);
 						
-						
+							
+
 						if(isAttachWall)
 						{
 							rb.velocity = Vector2.zero;
@@ -758,6 +760,21 @@ public class PlayerCtroller : MonoBehaviour {
 				
 			break;
 
+			case PlayerState.Recovery:
+
+				if(Timer<RecoveryTime)
+				{
+					Timer+= Time.deltaTime;
+				}
+				else
+				{
+					Timer = 0;
+					Recover();
+					currentState = PlayerState.Normal; 
+				}
+
+			break;
+
 			default:
 			break;
 		}
@@ -799,7 +816,7 @@ public class PlayerCtroller : MonoBehaviour {
 		CheckStability();
 		BooleanCorrectCheck();
 
-		if(!isAttacking&&!isRolling)
+		if(!isAttacking&&!isRolling&&IM.isInGameInput)
 		{
 			getMoveInput();
 		}
@@ -859,6 +876,19 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		*/
 
+	}
+	void HpCheck()
+	{
+		hp = Mathf.Clamp(hp,0,100);
+
+		if(hp<=0)
+		{
+			Die();
+		}
+	}
+	void Recover()
+	{
+		hp+=35;
 	}
 	void Roll()
 	{

@@ -18,6 +18,8 @@ GameObject:
   - component: {fileID: 7883882301358017985}
   - component: {fileID: 7883882301358017993}
   - component: {fileID: 7883882301358017984}
+  - component: {fileID: 1664897724}
+  - component: {fileID: 1664897725}
   m_Layer: 12
   m_Name: FlyingBug
   m_TagString: Enemy
@@ -139,14 +141,9 @@ MonoBehaviour:
     m_Bits: 429568
   PatrolDir: {x: 0, y: 0, z: 0}
   PatrolSpeed: 0.3
-  PatrolingSpeed: 0
   ChangeDirFreq: 4
-  PatrolPoint: []
-  PatrolNum: 0
-  Target: {fileID: 0}
-  nextWaypointDistance: 3
   GeneratePos: {fileID: 7883882301863728368}
-  AttackRange: 9
+  AttackRange: 7
   TraceRange: 5
   canAttack: 1
   MovingDir: {x: 0, y: 0, z: 0}
@@ -157,7 +154,7 @@ MonoBehaviour:
   PreAttackTime: 0.9602429
   SearchingMoveSpeed: 3
   SearchTime: 3
-  RandomSearchTime: 5
+  RandomSearchTime: 3
   currentState: 0
   getHit: 0
   repelTime: 0.15
@@ -209,8 +206,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.85
-  m_Center: {x: -0.12, y: -0.02, z: 0}
+  m_Radius: 0.27320528
+  m_Center: {x: -0.9254532, y: -0.04388857, z: 0}
 --- !u!136 &7883882301358017993
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -221,10 +218,10 @@ CapsuleCollider:
   m_Material: {fileID: 13400000, guid: 1541bd19ddc15044ea4852c3d08ecfa7, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.37578574
-  m_Height: 1.6162422
-  m_Direction: 2
-  m_Center: {x: 0.75, y: 0.16204834, z: 0}
+  m_Radius: 0.4274721
+  m_Height: 1.9711914
+  m_Direction: 0
+  m_Center: {x: 0.08106995, y: 0.048909187, z: 0}
 --- !u!135 &7883882301358017984
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -236,8 +233,71 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.38
-  m_Center: {x: -1.17, y: -0.38, z: 0}
+  m_Radius: 0.2571391
+  m_Center: {x: -1.1153867, y: -0.5711268, z: 0}
+--- !u!114 &1664897724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883882301358017994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d71fd71204daa7a43828df200c1e352f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OriginPos: {fileID: 7883882301358017990}
+  RayDir: {x: 0, y: 0, z: 0}
+  RayColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  RayLength: 20
+  YellowRange: 0
+  RedRange: 10
+  TargetLayer:
+    serializedVersion: 2
+    m_Bits: 2048
+  DetectAngle: 90
+  accuracy: 30
+  Ray_RotatePerSecond: 0
+  ignoreYourself:
+    serializedVersion: 2
+    m_Bits: 4096
+  ignoreLayer01:
+    serializedVersion: 2
+    m_Bits: 4
+  Warning: 0
+  RedWarning: 0
+  PlayerLastPos: {x: 0, y: 0, z: 0}
+  target: {fileID: 0}
+  isFacingRight: 0
+--- !u!114 &1664897725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883882301358017994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 1
+  drawGizmos: 1
+  detailedGizmos: 0
+  startEndModifier:
+    addPoints: 0
+    exactStartPoint: 3
+    exactEndPoint: 3
+    useRaycasting: 0
+    mask:
+      serializedVersion: 2
+      m_Bits: 4294967295
+    useGraphRaycasting: 0
+  traversableTags: -1
+  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask:
+    value: -1
 --- !u!1 &7883882301562425003
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,6 +451,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3539677888231342648, guid: cdcf610f77b1c424090546de21d907bf,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fad6437e0ca35f842af0003cad002f1d, type: 2}
     - target: {fileID: 919132149155446097, guid: cdcf610f77b1c424090546de21d907bf,
         type: 3}
       propertyPath: m_Name
@@ -401,7 +466,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 7320465314908489496, guid: cdcf610f77b1c424090546de21d907bf,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.1441484
+      objectReference: {fileID: 0}
+    - target: {fileID: 7320465314908489496, guid: cdcf610f77b1c424090546de21d907bf,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.40440625
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 5866666021909216657, guid: cdcf610f77b1c424090546de21d907bf, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: cdcf610f77b1c424090546de21d907bf, type: 3}
 --- !u!4 &6825963965763168684 stripped
 Transform:

@@ -16,14 +16,16 @@ public class MenuController : MonoBehaviour
     public bool isOption;
     public bool isHomePage;
     public bool isController;
+    private InputManager Im;
+    public GameObject InputManager;
     // Start is called before the first frame update
     void Awake()
     {
-        DontDestroyOnLoad(transform.gameObject);
+        
     }
     void Start()
     {
-        
+        Im = InputManager.GetComponent<InputManager>();
     }
 
     // Update is called once per frame
@@ -32,7 +34,7 @@ public class MenuController : MonoBehaviour
         if(Input.GetButtonDown("PS4-Option"))
         {
             isOption=!isOption;
-            //isOption = true;
+            Im.SwitchInputAbility();
             pauseMenu.SetActive(isOption);
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(pauseFirstButton);
@@ -48,7 +50,7 @@ public class MenuController : MonoBehaviour
            Time.timeScale = 1f;
         }
 
-        if(isController && Input.GetButtonDown("PS4-x"))
+        if(isController && Input.GetButtonDown("PS4-O"))
         {
             isController = false;
             pauseControllerImage.SetActive(false);
@@ -65,13 +67,14 @@ public class MenuController : MonoBehaviour
     public void Resume()
     {
         isOption=!isOption;
+        Im.SwitchInputAbility();
         pauseMenu.SetActive(isOption);
     }
 
     public void ControllerImage()
     {
         isController = true;
-        print("b");
+    
         pauseControllerImage.SetActive(true);
         isOption=!isOption;
         pauseMenu.SetActive(isOption);
