@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class MovingEnemyHealthBar : MonoBehaviour
 {
-   private MovingEnemy EnemyScript;
+    private ZagoBug EnemyScript;
     public Image EnemyHPBar;
     private GameObject HP_UI;
     public GameObject HpPf;
@@ -14,7 +14,7 @@ public class MovingEnemyHealthBar : MonoBehaviour
     {
         //airEnemyHPBar = GetComponent<Image>();
         GenerateUI();
-        EnemyScript = transform.parent.GetComponent<MovingEnemy>();
+        EnemyScript = transform.parent.GetComponent<ZagoBug>();
     }
     
     void Update() 

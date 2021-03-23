@@ -22,26 +22,16 @@ public class AirEnemy : MonoBehaviour
     public AnimationClip FlyBugShoot;
 
     [Header("Detect Settings")]
-    Seeker seeker;
     public bool SeePlayer;
     public float playerDetectRadius;
     public float AttackDetectRadius;
     public LayerMask whatIsPlayer;
     public LayerMask whatIsObstacle;
-    private ViewDetect EnemyView;
 
     [Header("Patrol Settings")]
     [SerializeField]private Vector3 PatrolDir; 
     public float PatrolSpeed;
-    public float PatrolingSpeed;
     public float ChangeDirFreq;
-    public Transform[] PatrolPoint;
-    public int PatrolNum;
-    Path path;
-    bool reachEndOfPath = false;
-    int currentWaypoint = 0;
-    public GameObject Target;
-    public float nextWaypointDistance = 3.0f;
     [Header("Attack Settings")]
     public Transform GeneratePos;
     public float AttackRange;
@@ -62,7 +52,7 @@ public class AirEnemy : MonoBehaviour
 
     [Header("Statement Settings")]
     public EnemyState currentState;
-    public enum EnemyState{Patrol, Attacking, search, MoveBack, Dead}
+    public enum EnemyState{Patrol, Attacking, search, Dead}
 
     [Header("Under Attack")]
     public bool getHit;
@@ -76,12 +66,9 @@ public class AirEnemy : MonoBehaviour
     //private GameObject newEnemyAttack;
     void Start()
     {
-        EnemyView = GetComponent<ViewDetect>();
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
-        seeker = GetComponent<Seeker>();
         ChangePatrolDir();
-        PatrolNum = 0;
         //attackTimer = 3;
     }
     
@@ -118,41 +105,15 @@ public class AirEnemy : MonoBehaviour
         {
             case EnemyState.Patrol:
 
-                
-                FacingPlayer();
-                rb.velocity = MovingDir*PatrolingSpeed;
-                Vector3 targetPos = PatrolPoint[PatrolNum].position;
-                //MovingDir = Vector3.Lerp(MovingDir,(targetPos-transform.position).normalized,0.1f);
-                MovingDir = (targetPos-transform.position).normalized;
-
-                if(Vector3.Distance(targetPos,transform.position)<0.2f)
-                {
-                    if(PatrolNum<PatrolPoint.Length-1)
-                    {
-                        PatrolNum++;
-                    }
-                    else
-                    {
-                        PatrolNum = 0;
-                    }
-                    //currentState = EnemyState.Scan;
-                }
-                //rb.velocity = PatrolDir*PatrolSpeed;
-                
-                // if(Physics.CheckSphere(transform.position,playerDetectRadius,whatIsPlayer))
-                // {
-                //     CheckPlayerInSight();
-                // }
-                if(EnemyView.RedWarning)
+                rb.velocity = PatrolDir*PatrolSpeed;
+                if(Physics.CheckSphere(transform.position,playerDetectRadius,whatIsPlayer))
                 {
                     CheckPlayerInSight();
                 }
 
-
                 if(SeePlayer)
                 {
                     currentState = EnemyState.Attacking;
-                    
                     FlyBugAni.SetTrigger("StartMoving");
                     MovingDir = (Player.transform.position-transform.position).normalized;
                     ResetTimer();
@@ -209,21 +170,18 @@ public class AirEnemy : MonoBehaviour
                     {
                         MovingDir = (MovingDir+Vector3.up).normalized;
                     }
-                    StateIn_Search();
+                    currentState = EnemyState.search;
                 }
                 
             break;
             case EnemyState.search:
-                aiPathfind();
+
                 CheckPlayerInSight();
-                //FacingPlayer();
                 if(SeePlayer)
                 {
                     currentState = EnemyState.Attacking;
-                    
                     MovingDir = (Player.transform.position-transform.position).normalized;
                     ResetTimer();
-                    StateLeave_Search();
                 }
 
                 
@@ -252,51 +210,12 @@ public class AirEnemy : MonoBehaviour
                     else
                     {
                         ResetTimer();
-                        //currentState = EnemyState.Patrol;
-                        currentState = EnemyState.MoveBack;
-                        StateLeave_Search();
-                        seeker.StartPath(rb.position,PatrolPoint[0].position,OnPathComplete);
-                        //FlyBugAni.SetTrigger("BackToIdle");
-                        FlyBugAni.SetTrigger("StartMoving");
+                        currentState = EnemyState.Patrol;
+                        FlyBugAni.SetTrigger("BackToIdle");
                     }
                 }
 
             break;
-
-            case EnemyState.MoveBack:
-            aiPathfind();
-            FacingPlayer();
-            //rb.velocity = *PatrolingSpeed;
-            
-            if(Vector2.Distance(transform.position,PatrolPoint[0].position)<2.0f)
-            {
-                currentState = EnemyState.Patrol;
-            }
-                
-            // if(Physics.CheckSphere(transform.position,playerDetectRadius,whatIsPlayer))
-            // {
-            //     CheckPlayerInSight();
-            // }
-
-            if(EnemyView.RedWarning)
-            {
-                CheckPlayerInSight();
-            }
-
-            
-
-            if(SeePlayer)
-            {
-                //currentState = EnemyState.Attacking;
-                StateIn_Search();
-                FlyBugAni.SetTrigger("StartMoving");
-                MovingDir = (Player.transform.position-transform.position).normalized;
-                ResetTimer();
-            }
-
-                
-            break;
-            
             case EnemyState.Dead:
 
                 
@@ -331,7 +250,6 @@ public class AirEnemy : MonoBehaviour
             Flip();
         }
     }
-   
     void Flip()
     {
         isFacingRight = !isFacingRight;
@@ -433,56 +351,5 @@ public class AirEnemy : MonoBehaviour
         //     attackTimer+=Time.deltaTime; 
         // }
     }
-
-     void OnPathComplete(Path p)
-    {
-        if(!p.error)
-        {
-            path = p;
-            currentWaypoint = 0;
-        }
-    }
-    void UpdatePath()
-    {
-        seeker.StartPath(rb.position,Target.transform.position,OnPathComplete);
-    }
-    void aiPathfind()
-    {
-        if(path == null)
-            return;
-        if(currentWaypoint>= path.vectorPath.Count)
-        {
-            reachEndOfPath = true;
-            return;
-        }
-        else
-        {
-            reachEndOfPath = false;
-        }
-        MovingDir = ((Vector3)path.vectorPath[currentWaypoint]-rb.position).normalized;
-        
-        rb.velocity = MovingDir*PatrolingSpeed;
-
-        //transform.right = Vector3.Lerp(transform.right,(Vector3)direction,0.1f);
-        
-
-        float distance = Vector2.Distance(rb.position,path.vectorPath[currentWaypoint]);
-        if(distance<nextWaypointDistance)
-        {
-            currentWaypoint++;
-        }
-
-    }
-    void StateIn_Search()
-    {
-        currentState = EnemyState.search;
-        //Target = EnemyView.target;
-        
-        InvokeRepeating("UpdatePath",0,0.3f);
-    }
-    void StateLeave_Search()
-    {
-        rb.velocity = Vector2.zero;
-        CancelInvoke("UpdatePath");
-    }
 }
+

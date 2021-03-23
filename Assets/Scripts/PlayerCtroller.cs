@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 using System;
 
 
@@ -1004,6 +1005,7 @@ public class PlayerCtroller : MonoBehaviour {
 				
 				foreach(Collider c in hitObjs)
 				{
+					transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
 					print("Hit"+c.name+"!!!!");
 					StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
 				}

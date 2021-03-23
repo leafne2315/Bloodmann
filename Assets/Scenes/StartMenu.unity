@@ -913,6 +913,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 169563780123942152, guid: 236e9681ec7ff124ebb4db819137f669,
+        type: 3}
+      propertyPath: menuController
+      value: 
+      objectReference: {fileID: 1753374532331861291, guid: a123689759ce12c4a9cefd21821dae4a,
+        type: 3}
     - target: {fileID: 169563780123942153, guid: 236e9681ec7ff124ebb4db819137f669,
         type: 3}
       propertyPath: m_RootOrder
