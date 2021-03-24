@@ -10,6 +10,7 @@ public class CoreUI : MonoBehaviour
     public GameObject Player;
     public Image[] cores;
     public Sprite fullCore;
+    public Sprite FirstCore;
     public Sprite emptyCore;
     // Start is called before the first frame update
     void Start()
@@ -24,7 +25,14 @@ public class CoreUI : MonoBehaviour
         {
             if(i<playerCtrScript.AttackRemain)
             {
-                cores[i].sprite = fullCore;
+                if(i==0)
+                {
+                    cores[i].sprite = FirstCore;
+                }
+                else
+                {
+                    cores[i].sprite = fullCore;
+                }
             }
             else
             {

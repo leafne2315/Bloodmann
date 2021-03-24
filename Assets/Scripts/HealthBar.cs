@@ -22,6 +22,6 @@ public class HealthBar : MonoBehaviour
     }
     private void LateUpdate()
     {
-        healthBar.fillAmount = playerCtrScript.hp/playerCtrScript.hp_Max;
+        healthBar.fillAmount = ((float)playerCtrScript.hp/(float)playerCtrScript.hp_Max);
     }
 }

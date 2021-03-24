@@ -8,16 +8,18 @@ using System;
 
 public class PlayerCtroller : MonoBehaviour {
 	public GameObject GM;
+	public Transform RealWorldUICanVas;
 	private GameManager GameManager;
 	private InputManager IM;
 	public GameObject inputmanager;
+	private SavingAndLoad SlManager;
 	private Vector3 StartPos;
 	public GameObject Arrow;
 	public Image GasBar;
 	public Image GasBarBase;
 	public Vector2 FlyDir;
-	public float hp;
-	public float hp_Max = 100;
+	public int hp;
+	public int hp_Max = 100;
 	public int AidKitNum;
 	public int AidKitNum_Max;
 	public float speed;
@@ -101,7 +103,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,Idle};
+	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -156,6 +158,14 @@ public class PlayerCtroller : MonoBehaviour {
 
 	[Header("Recovery Settings")]
 	public float RecoveryTime;
+	[Header("Blood Collect Settings")]
+	public float CollectTime;
+	private float bloodAmount = 0;
+	public bool CollectBegin;
+	public GameObject BloodUI;
+	public GameObject pf_BloodUI;
+	public Image BloodBar;
+	private GameObject currentActivateBloodPoint;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -189,6 +199,7 @@ public class PlayerCtroller : MonoBehaviour {
 		//OriginGravity = rb.gravityScale;
 		Ef = GetComponent<ExternalForce>();
 		IM = inputmanager.GetComponent<InputManager>();
+		SlManager = GameObject.Find("Save&Load").GetComponent<SavingAndLoad>();
 	}
 	void Start()
 	{
@@ -783,6 +794,16 @@ public class PlayerCtroller : MonoBehaviour {
 
 			break;
 
+			case PlayerState.BloodCollect:
+
+				if(CollectBegin)
+				{
+					CollectingBlood();
+				}
+				rb.velocity = Vector3.zero;
+
+			break;
+
 			default:
 			break;
 		}
@@ -824,7 +845,7 @@ public class PlayerCtroller : MonoBehaviour {
 		CheckStability();
 		BooleanCorrectCheck();
 
-		if(!isAttacking&&!isRolling&&IM.isInGameInput && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery)
+		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&&currentState!=PlayerState.Idle && IM.isInGameInput)
 		{
 			getMoveInput();
 		}
@@ -883,7 +904,50 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		}
 		*/
+		if(Input.GetKeyDown(KeyCode.A))
+		{
+			StartCollect();
+		}
+	}
+	public void StartCollect()
+	{
+		Vector3 WorldPos = transform.position + Vector3.right*2;
+		Vector3 UI_pos = new Vector3(WorldPos.x,WorldPos.y);
+		BloodUI = Instantiate(pf_BloodUI,UI_pos,Quaternion.identity,RealWorldUICanVas);
+		BloodBar = BloodUI.transform.GetChild(1).GetComponent<Image>();
+		CollectBegin = true;
+	}
+	void CollectingBlood()
+	{
+		if(Timer<CollectTime)
+		{
+			Timer+=Time.deltaTime;
+			bloodAmount += (1/CollectTime)*Time.deltaTime;
+			
+			BloodBar.fillAmount = bloodAmount;
+			print(BloodBar.fillAmount);
+		}
+		else
+		{
+			Timer = 0;
+			CollectBegin = false;
+			StartCoroutine(UI_Reset());
+			currentState = PlayerState.Normal;
+			currentActivateBloodPoint.GetComponent<BloodPoint>().canActivate = false;
+		}
+	}
+	IEnumerator UI_Reset()
+	{
+		for(int i =0;i<BloodUI.transform.childCount;i++)
+		{
+			BloodUI.transform.GetChild(i).GetComponent<Image>().CrossFadeAlpha(0.0f,0.5f,false);
+		}
 
+		for(float i =0 ; i<=1 ; i+=Time.deltaTime)
+		{
+			yield return 0;
+		}
+		Destroy(BloodUI.gameObject);
 	}
 	void HpCheck()
 	{
@@ -1291,7 +1355,7 @@ public class PlayerCtroller : MonoBehaviour {
 			ResetAllTimer();
 
 			isInvincible = true;
-			hp -= 15.0f;
+			hp -= 15;
 			//StartCoroutine(HitTrigger());
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
@@ -1315,6 +1379,7 @@ public class PlayerCtroller : MonoBehaviour {
 	} 
 	void OnTriggerEnter(Collider other)
 	{
+		
 		// if(other.CompareTag("Enemy"))
 		// {
 		// 	if(!isInvincible)
@@ -1340,6 +1405,40 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		// }
 	}
+	void OnTriggerStay(Collider other)
+	{
+		if(other.CompareTag("SavePoint"))
+		{
+			if(other.GetComponent<SavePoint>().showUI)
+			{
+
+				if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
+				{
+					IM.currentState = InputManager.InputState.SavePointMenu;
+					SlManager.SaveFile();
+					other.GetComponent<SavePoint>().SavePointMenu_Open();
+					currentState = PlayerState.Idle;
+				}
+			}
+		}
+
+		if(other.CompareTag("BloodPoint"))
+		{
+			if(other.GetComponent<BloodPoint>().showUI)
+			{
+				if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
+				{
+					
+					currentState = PlayerState.BloodCollect;
+					currentActivateBloodPoint = other.gameObject;
+					
+					print("a");
+					//採血動畫
+				}
+			}
+		}
+	}
+
 	private void OnDrawGizmos()
 	{
 		Gizmos.DrawWireSphere(FrontCheck.position,checkRadius);
