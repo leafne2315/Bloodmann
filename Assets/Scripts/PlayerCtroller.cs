@@ -254,6 +254,12 @@ public class PlayerCtroller : MonoBehaviour {
 				// {
 				// 		RestoreGas();
 				// }
+				if(IM.PS4_Up && AidKitNum>0)
+				{
+					currentState = PlayerState.Recovery;
+					AidKitNum-=1;
+				}
+
 				if(IM.PS4_O_Input)
 				{
 					if(canRoll)
@@ -740,7 +746,7 @@ public class PlayerCtroller : MonoBehaviour {
 						currentState = PlayerState.Normal;
 					}
 
-					print(AttackRemain);
+					
 				}
 
 
@@ -764,6 +770,8 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Timer<RecoveryTime)
 				{
+					rb.velocity = Vector3.zero;
+
 					Timer+= Time.deltaTime;
 				}
 				else
@@ -816,7 +824,7 @@ public class PlayerCtroller : MonoBehaviour {
 		CheckStability();
 		BooleanCorrectCheck();
 
-		if(!isAttacking&&!isRolling&&IM.isInGameInput)
+		if(!isAttacking&&!isRolling&&IM.isInGameInput && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery)
 		{
 			getMoveInput();
 		}

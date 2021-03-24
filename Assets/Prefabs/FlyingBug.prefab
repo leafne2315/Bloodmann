@@ -18,8 +18,6 @@ GameObject:
   - component: {fileID: 7883882301358017985}
   - component: {fileID: 7883882301358017993}
   - component: {fileID: 7883882301358017984}
-  - component: {fileID: 1664897724}
-  - component: {fileID: 1664897725}
   m_Layer: 12
   m_Name: FlyingBug
   m_TagString: Enemy
@@ -235,69 +233,6 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.2571391
   m_Center: {x: -1.1153867, y: -0.5711268, z: 0}
---- !u!114 &1664897724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7883882301358017994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d71fd71204daa7a43828df200c1e352f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  OriginPos: {fileID: 7883882301358017990}
-  RayDir: {x: 0, y: 0, z: 0}
-  RayColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
-  RayLength: 20
-  YellowRange: 0
-  RedRange: 10
-  TargetLayer:
-    serializedVersion: 2
-    m_Bits: 2048
-  DetectAngle: 90
-  accuracy: 30
-  Ray_RotatePerSecond: 0
-  ignoreYourself:
-    serializedVersion: 2
-    m_Bits: 4096
-  ignoreLayer01:
-    serializedVersion: 2
-    m_Bits: 4
-  Warning: 0
-  RedWarning: 0
-  PlayerLastPos: {x: 0, y: 0, z: 0}
-  target: {fileID: 0}
-  isFacingRight: 0
---- !u!114 &1664897725
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7883882301358017994}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 373b52eb9bf8c40f785bb6947a1aee66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  drawGizmos: 1
-  detailedGizmos: 0
-  startEndModifier:
-    addPoints: 0
-    exactStartPoint: 3
-    exactEndPoint: 3
-    useRaycasting: 0
-    mask:
-      serializedVersion: 2
-      m_Bits: 4294967295
-    useGraphRaycasting: 0
-  traversableTags: -1
-  tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  graphMask:
-    value: -1
 --- !u!1 &7883882301562425003
 GameObject:
   m_ObjectHideFlags: 0
