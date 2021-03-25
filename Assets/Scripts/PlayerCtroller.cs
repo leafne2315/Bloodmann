@@ -30,6 +30,10 @@ public class PlayerCtroller : MonoBehaviour {
 	public Rigidbody rb;
 	public Vector2 RealMovement;
 	public bool facingRight = true;
+	[Header("Effect Settings")]
+	private ParticleSystem DashEffect;
+ 	public GameObject dashEffect;
+	private ParticleSystem.EmissionModule emission;
 	//偵測
 	[Header("Detect Settings")]
 	public bool isRolling;
@@ -200,6 +204,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 	void Awake()
 	{
+		DashEffect = GetComponentInChildren<ParticleSystem>();
 		GameManager = GM.GetComponent<GameManager>();
 		rb = GetComponent<Rigidbody>();
 		//OriginGravity = rb.gravityScale;
@@ -219,6 +224,8 @@ public class PlayerCtroller : MonoBehaviour {
 		Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 		GasBar.enabled = false;
 		GasBarBase.enabled = false;
+
+		emission = DashEffect.emission;
 	}
 	void FixedUpdate()
 	{
@@ -508,6 +515,8 @@ public class PlayerCtroller : MonoBehaviour {
 						}
 						else
 						{
+							emission.enabled = true;
+
 							isDash = true;
 							PlayerAni.SetBool("isDash",true);
 							//Mouse_DirCache();
@@ -543,6 +552,7 @@ public class PlayerCtroller : MonoBehaviour {
 						{
 							rb.velocity = Vector3.zero;
 
+							emission.enabled = false;
 							dashTimer = 0; //重置dash 時間
 							currentState = PlayerState.Normal;
 							isDash = false;
@@ -555,7 +565,7 @@ public class PlayerCtroller : MonoBehaviour {
 						{
 							dashTimer = 0;
 							hitConfirm = false;
-							
+							emission.enabled = false;
 
 							
 							isDash = false;
@@ -578,6 +588,7 @@ public class PlayerCtroller : MonoBehaviour {
 							rb.velocity = Vector2.zero;
 
 							dashTimer = 0; //重置dash 時間
+							emission.enabled = false;
 							currentState = PlayerState.Normal;
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
@@ -586,6 +597,7 @@ public class PlayerCtroller : MonoBehaviour {
 					else
 					{
 						dashTimer = 0; //重置dash 時間
+						emission.enabled = false;
 						currentState = PlayerState.Normal;
 						isDash = false;
 						PlayerAni.SetBool("isDash",false);	
@@ -1423,7 +1435,7 @@ public class PlayerCtroller : MonoBehaviour {
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
 			currentState = PlayerState.GetHit;
-
+			transform.GetChild(1).GetComponent<VisualEffect>().SendEvent("OnPlay");
 
 			if(facingRight)
 			{

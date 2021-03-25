@@ -39,6 +39,15 @@ public class MenuController : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(pauseFirstButton);
         }
+        
+        if(isOption && Input.GetButtonDown("PS4-O"))
+        {
+            isOption=!isOption;
+            //isOption = true;
+            pauseMenu.SetActive(isOption);
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(pauseFirstButton);
+        }
 
         
         if(isOption||isController)
