@@ -6,6 +6,6 @@ public class DropEnemyChild : MonoBehaviour
 {
    void OnTriggerEnter(Collider c)
    {
-        gameObject.GetComponentInParent<DropEnemyCtrller>().PullTrigger(c);
+      //   gameObject.GetComponentInParent<DropEnemyCtrller>().PullTrigger(c);
    }  
 }

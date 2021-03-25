@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {
+    public bool PS4_Option;
     public bool PS4_X_Input;
     public bool PS4_O_Input;
     public bool PS4_Triangle_Input;
@@ -29,9 +30,27 @@ public class InputManager : MonoBehaviour
         {
             case InputState.MainMenu:
 
+                if(Input.GetButtonDown("PS4-Option"))
+                {
+                    PS4_Option = true;
+                }
+                else
+                {
+                    PS4_Option = false;
+                }
+
             break;
 
             case InputState.InGame:
+
+                if(Input.GetButtonDown("PS4-Option"))
+                {
+                    PS4_Option = true;
+                }
+                else
+                {
+                    PS4_Option = false;
+                }
 
                 if(Input.GetButtonDown("PS4-x")&&!PS4_X_Input)
                 {
@@ -60,7 +79,7 @@ public class InputManager : MonoBehaviour
                 if(Input.GetAxis("PS4-UpDown")>0.3f && Up_Exit)
                 {
                     PS4_Up = true;
-                    StartCoroutine(InputDelay_PS4Up());
+                    StartCoroutine(InputAfter_PS4Up());
                     Up_Exit = false;
                 }
                 else
@@ -74,23 +93,29 @@ public class InputManager : MonoBehaviour
 
             case InputState.SavePointMenu:
 
-
+                if(Input.GetButtonDown("PS4-O"))
+                {
+                    PS4_O_Input = true;
+                    StartCoroutine(InputAfter_PS4_O());
+                }
 
             break;
 
             case InputState.CollectingBlood:
 
+                if(Input.GetButtonDown("PS4-O"))
+                {
+                    PS4_O_Input = true;
+                    StartCoroutine(InputAfter_PS4_O());
+                }
+
             break;
+
+            
         }
 
-        if(isInGameInput)
-        {
-            currentState = InputState.InGame;
-        }
-        else
-        {
-            currentState = InputState.MainMenu;
-        }
+        
+
 
     }
     void LH()
@@ -100,7 +125,7 @@ public class InputManager : MonoBehaviour
         if(Input.GetAxis("PS4-L-Vertical")>0.3f && LH_up_Exit)
         {
             PS4_LH_Up = true;
-            StartCoroutine(InputDelay_PS4_LH_Up());
+            StartCoroutine(InputAfter_PS4_LH_Up());
             LH_up_Exit = false;
         }
         else
@@ -109,21 +134,29 @@ public class InputManager : MonoBehaviour
         }
         
     }
-    IEnumerator InputDelay_PS4_LH_Up()
+    IEnumerator InputAfter_PS4_LH_Up()
     {
-        for(int i = 0;i<2;i++)
+        for(int i = 0;i<1;i++)
 		{
-			yield return 0;
+			yield return new WaitForEndOfFrame();
 		}
         PS4_LH_Up = false;
     }
-    IEnumerator InputDelay_PS4Up()
+    IEnumerator InputAfter_PS4Up()
     {
-        for(int i = 0;i<2;i++)
+        for(int i = 0;i<1;i++)
 		{
-			yield return 0;
+			yield return new WaitForEndOfFrame();
 		}
         PS4_Up = false;
+    }
+    IEnumerator InputAfter_PS4_O()
+    {
+        for(int i = 0;i<1;i++)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+        PS4_O_Input = false;
     }
     IEnumerator InputDelay_x()
     {
@@ -164,25 +197,26 @@ public class InputManager : MonoBehaviour
     }
 
 
-    public void SwitchInputAbility()
+    public void SwitchState()
     {
-        if(!isInGameInput)
+        if(currentState != InputState.InGame)
         {
-            StartCoroutine(Do_afterFrame());
+            StartCoroutine(To_Ingame());
         }
         else
         {
-            isInGameInput = !isInGameInput;
+            currentState =InputState.MainMenu;
         }
 
         
     }
-    IEnumerator Do_afterFrame()
-	{
-		for(int i = 0;i<2;i++)
+    public IEnumerator To_Ingame()
+    {
+        for(int i = 0;i<2;i++)
 		{
 			yield return 0;
 		}
-        isInGameInput = !isInGameInput;
+        currentState = InputState.InGame;
     }
+
 }

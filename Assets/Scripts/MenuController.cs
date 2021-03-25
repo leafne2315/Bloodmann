@@ -31,10 +31,10 @@ public class MenuController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonDown("PS4-Option"))
+        if(Im.PS4_Option)
         {
             isOption=!isOption;
-            Im.SwitchInputAbility();
+            Im.SwitchState();
             pauseMenu.SetActive(isOption);
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(pauseFirstButton);
@@ -67,7 +67,7 @@ public class MenuController : MonoBehaviour
     public void Resume()
     {
         isOption=!isOption;
-        Im.SwitchInputAbility();
+        Im.SwitchState();
         pauseMenu.SetActive(isOption);
     }
 

@@ -12,7 +12,8 @@ public class SavePoint : MonoBehaviour
     public Sprite SavepointMenu_UI;
     public GameObject ActivateUI;
     public bool canActivate;
-
+    public GameObject ActiveUI_Pf;
+    public Transform RealWorldCanvas;
 
     void Awake()
     {
@@ -20,7 +21,7 @@ public class SavePoint : MonoBehaviour
     }
     void Start()
     {
-        ActivateUI.transform.position = transform.position + Vector3.forward*-2; 
+        ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2,Quaternion.identity,RealWorldCanvas);
         ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0,0,false);
     }
 
@@ -29,15 +30,18 @@ public class SavePoint : MonoBehaviour
     {    
         
     }
-    
-    void OnTriggerEnter(Collider other)
+    void GenerateUI()
+    {
+
+    }
+    void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Player"))
         {
             if(canActivate)
             {
                 showUI = true;
-                ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(1.0f,0.5f,false);
+                OpenActivateUI();
             }
         }
     }
@@ -46,11 +50,20 @@ public class SavePoint : MonoBehaviour
         if(other.CompareTag("Player"))
         {
             showUI = false;
-            ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0.0f,0.5f,false);
+            closeActivateUI();
         }
     }
     public void SavePointMenu_Open()
     {
         //open menu
+    }
+
+    public void closeActivateUI()
+    {
+        ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0.0f,0.5f,false);
+    }
+    public void OpenActivateUI()
+    {
+        ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(1.0f,0.5f,false);
     }
 }

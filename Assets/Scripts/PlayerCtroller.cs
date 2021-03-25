@@ -12,7 +12,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private GameManager GameManager;
 	private InputManager IM;
 	public GameObject inputmanager;
-	private SavingAndLoad SlManager;
+	private SavingAndLoad SLManager;
 	private Vector3 StartPos;
 	public GameObject Arrow;
 	public Image GasBar;
@@ -22,6 +22,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public int hp_Max = 100;
 	public int AidKitNum;
 	public int AidKitNum_Max;
+	public int Blood;
 	public float speed;
 	public float moveInput_X;
 	private float moveInput_Y;
@@ -103,7 +104,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle};
+	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -159,6 +160,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Recovery Settings")]
 	public float RecoveryTime;
 	[Header("Blood Collect Settings")]
+	public bool canCollect;
 	public float CollectTime;
 	private float bloodAmount = 0;
 	public bool CollectBegin;
@@ -166,6 +168,9 @@ public class PlayerCtroller : MonoBehaviour {
 	public GameObject pf_BloodUI;
 	public Image BloodBar;
 	private GameObject currentActivateBloodPoint;
+	private BloodPoint currentBp;
+	[Header("Rest Settings")]
+	public bool canRest;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -191,6 +196,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private ExternalForce Ef;
 	public Vector3 SavePointPos;
 	public bool noGravity;
+	private SavePoint currentSp;
 
 	void Awake()
 	{
@@ -199,7 +205,7 @@ public class PlayerCtroller : MonoBehaviour {
 		//OriginGravity = rb.gravityScale;
 		Ef = GetComponent<ExternalForce>();
 		IM = inputmanager.GetComponent<InputManager>();
-		SlManager = GameObject.Find("Save&Load").GetComponent<SavingAndLoad>();
+		SLManager = GameObject.Find("Save&Load").GetComponent<SavingAndLoad>();
 	}
 	void Start()
 	{
@@ -226,6 +232,8 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		//print(currentState);
 		HpCheck();
+		RestCheck();
+		BloodCollectCheck();
 
 		switch(currentState)
 		{
@@ -796,11 +804,27 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.BloodCollect:
 
+				rb.velocity = Vector3.zero;
+
 				if(CollectBegin)
 				{
 					CollectingBlood();
 				}
+
+			break;
+
+			case PlayerState.Rest:
+
 				rb.velocity = Vector3.zero;
+
+				if(IM.PS4_O_Input)
+				{
+					//change motion
+					currentState = PlayerState.Normal;
+					IM.currentState = InputManager.InputState.InGame;
+					
+					currentSp.canActivate = true;
+				}
 
 			break;
 
@@ -845,10 +869,11 @@ public class PlayerCtroller : MonoBehaviour {
 		CheckStability();
 		BooleanCorrectCheck();
 
-		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&&currentState!=PlayerState.Idle && IM.isInGameInput)
+		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&&currentState!=PlayerState.Rest && IM.isInGameInput)
 		{
 			getMoveInput();
 		}
+		
 
 		if(currentState!=PlayerState.Normal)
 		{
@@ -904,10 +929,7 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		}
 		*/
-		if(Input.GetKeyDown(KeyCode.A))
-		{
-			StartCollect();
-		}
+		
 	}
 	public void StartCollect()
 	{
@@ -915,6 +937,7 @@ public class PlayerCtroller : MonoBehaviour {
 		Vector3 UI_pos = new Vector3(WorldPos.x,WorldPos.y);
 		BloodUI = Instantiate(pf_BloodUI,UI_pos,Quaternion.identity,RealWorldUICanVas);
 		BloodBar = BloodUI.transform.GetChild(1).GetComponent<Image>();
+
 		CollectBegin = true;
 	}
 	void CollectingBlood()
@@ -922,21 +945,27 @@ public class PlayerCtroller : MonoBehaviour {
 		if(Timer<CollectTime)
 		{
 			Timer+=Time.deltaTime;
+
 			bloodAmount += (1/CollectTime)*Time.deltaTime;
-			
 			BloodBar.fillAmount = bloodAmount;
+
 			print(BloodBar.fillAmount);
 		}
 		else
 		{
 			Timer = 0;
+
+			Blood += currentBp.bloodStock;
+
+			IM.currentState = InputManager.InputState.InGame;
+
 			CollectBegin = false;
-			StartCoroutine(UI_Reset());
+			StartCoroutine(BloodCollectUI_Remove());
 			currentState = PlayerState.Normal;
-			currentActivateBloodPoint.GetComponent<BloodPoint>().canActivate = false;
+			currentBp.canActivate = false;
 		}
 	}
-	IEnumerator UI_Reset()
+	IEnumerator BloodCollectUI_Remove()
 	{
 		for(int i =0;i<BloodUI.transform.childCount;i++)
 		{
@@ -948,6 +977,40 @@ public class PlayerCtroller : MonoBehaviour {
 			yield return 0;
 		}
 		Destroy(BloodUI.gameObject);
+	}
+	void BloodCollectCheck()
+	{
+		if(canCollect)
+		{
+			if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
+			{
+				IM.currentState = InputManager.InputState.CollectingBlood;
+				currentState = PlayerState.BloodCollect;
+				
+				currentBp.closeActivateUI();
+				//採血動畫-->觸發startCollect
+				//以下測試用
+				StartCollect();
+			}
+		}
+	}
+	void RestCheck()
+	{
+		if(canRest)
+		{
+			if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
+			{
+				IM.currentState = InputManager.InputState.SavePointMenu;
+
+				SLManager.SaveFile();
+
+				currentSp.SavePointMenu_Open();
+				currentSp.closeActivateUI();
+				currentSp.canActivate = false;
+
+				currentState = PlayerState.Rest;
+			}
+		}
 	}
 	void HpCheck()
 	{
@@ -1411,31 +1474,31 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(other.GetComponent<SavePoint>().showUI)
 			{
-
-				if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
-				{
-					IM.currentState = InputManager.InputState.SavePointMenu;
-					SlManager.SaveFile();
-					other.GetComponent<SavePoint>().SavePointMenu_Open();
-					currentState = PlayerState.Idle;
-				}
+				canRest = true;
+				currentSp = other.GetComponent<SavePoint>();	
 			}
 		}
+		
 
 		if(other.CompareTag("BloodPoint"))
 		{
 			if(other.GetComponent<BloodPoint>().showUI)
 			{
-				if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
-				{
-					
-					currentState = PlayerState.BloodCollect;
-					currentActivateBloodPoint = other.gameObject;
-					
-					print("a");
-					//採血動畫
-				}
+				canCollect = true;
+				currentBp = other.transform.GetComponent<BloodPoint>();
 			}
+		}
+		
+	}
+	void OnTriggerExit(Collider other)
+	{
+		if(other.CompareTag("SavePoint"))
+		{
+			canRest = false;
+		}
+		if(other.CompareTag("BloodPoint"))
+		{
+			canCollect = false;
 		}
 	}
 
@@ -1535,7 +1598,6 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void getKnockDir()
 	{
-
 		if(getHitByRight)
 		{
 			KnockDir = new Vector3(-Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);

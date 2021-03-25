@@ -105,7 +105,549 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: evade(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Armature
+      parentName: evade(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: DEF_HIPS
+      parentName: Armature
+      position: {x: -0.00412863, y: -0.001419459, z: 0.053778157}
+      rotation: {x: 0.5602149, y: 0.369152, z: 0.4202603, w: 0.61095613}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF_SPINE
+      parentName: Armature
+      position: {x: -0.005004219, y: -0.0012522389, z: 0.06249627}
+      rotation: {x: 0.63662434, y: 0.4139272, z: 0.37829953, w: 0.5293989}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: DEF_CHEST
+      parentName: Armature
+      position: {x: -0.0037795168, y: -0.0021895, z: 0.0720549}
+      rotation: {x: 0.6876419, y: 0.45366204, z: 0.4214971, w: 0.37905088}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+    - name: DEF_SHOULDER.L
+      parentName: Armature
+      position: {x: 0.00056980934, y: -0.011511983, z: 0.086093284}
+      rotation: {x: 0.20164958, y: -0.44610068, z: 0.85964864, w: 0.14606811}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: DEF_ARM.L
+      parentName: Armature
+      position: {x: -0.0043678335, y: -0.017918956, z: 0.07798234}
+      rotation: {x: 0.08525446, y: -0.33487734, z: 0.9357073, w: 0.07099845}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+    - name: DEF_FORARM.L
+      parentName: Armature
+      position: {x: -0.0077242088, y: -0.0314463, z: 0.06712368}
+      rotation: {x: -0.17831744, y: -0.2976876, z: 0.9306034, w: -0.11645799}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF_WEAPON.L
+      parentName: Armature
+      position: {x: -0.0006144125, y: -0.046374638, z: 0.05846779}
+      rotation: {x: -0.097193286, y: -0.24690475, z: 0.9372898, w: -0.22600748}
+      scale: {x: 1, y: 1, z: 1}
+    - name: DEF_NECK
+      parentName: Armature
+      position: {x: 0.0012292849, y: -0.0071431114, z: 0.08692675}
+      rotation: {x: 0.67945135, y: 0.39079225, z: 0.46168923, w: 0.41529548}
+      scale: {x: 1.0000002, y: 1.0000001, z: 1.0000001}
+    - name: DEF_HEAD
+      parentName: Armature
+      position: {x: 0.0019054959, y: -0.00874515, z: 0.091166176}
+      rotation: {x: 0.7834161, y: 0.113129914, z: 0.06824769, w: 0.60729164}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1.0000004}
+    - name: DEF_SHOULDER.R
+      parentName: Armature
+      position: {x: 0.002654321, y: -0.0030737233, z: 0.088201895}
+      rotation: {x: -0.17120996, y: 0.25977913, z: -0.015002752, w: 0.950251}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1}
+    - name: DEF_ARM.R
+      parentName: Armature
+      position: {x: 0.0019619705, y: 0.0077045616, z: 0.08438532}
+      rotation: {x: -0.34596828, y: 0.18430163, z: 0.12607771, w: 0.9112866}
+      scale: {x: 1.0000002, y: 1.0000002, z: 1}
+    - name: DEF_FORARM.R
+      parentName: Armature
+      position: {x: -0.0043510664, y: 0.020581502, z: 0.074065685}
+      rotation: {x: -0.30274448, y: 0.12972169, z: -0.1760593, w: 0.9276428}
+      scale: {x: 1.0000004, y: 1.0903372, z: 1.0000002}
+    - name: DEF_HAND.R.002
+      parentName: Armature
+      position: {x: -0.00013584911, y: 0.033404063, z: 0.06374653}
+      rotation: {x: -0.31221724, y: 0.070828274, z: -0.2804478, w: 0.90490484}
+      scale: {x: 1.0591543, y: 1.1435406, z: 1.0535587}
+    - name: DEF_LITTLEFINGER_1.R
+      parentName: Armature
+      position: {x: 0.0011173113, y: 0.0405488, z: 0.057139404}
+      rotation: {x: -0.6826828, y: -0.04476502, z: -0.24135546, w: 0.6882498}
+      scale: {x: 1.058128, y: 1.0916436, z: 1.1082228}
+    - name: DEF_LITTLEFINGER_2.R
+      parentName: Armature
+      position: {x: 0.0023415817, y: 0.04055312, z: 0.05419863}
+      rotation: {x: 0.9513095, y: -0.0661622, z: 0.2178442, w: -0.20779002}
+      scale: {x: 1.05741, y: 1.0701108, z: 1.1297014}
+    - name: DEF_LITTLEFINGER_3.R
+      parentName: Armature
+      position: {x: 0.002207682, y: 0.039105766, z: 0.053510036}
+      rotation: {x: 0.958222, y: -0.12445358, z: 0.14967394, w: 0.20957023}
+      scale: {x: 1.0548846, y: 1.1420575, z: 1.0594342}
+    - name: DEF_RINGFINGER_1.R
+      parentName: Armature
+      position: {x: 0.0030041062, y: 0.040776007, z: 0.057429418}
+      rotation: {x: -0.689055, y: -0.0062737204, z: -0.2232801, w: 0.6894272}
+      scale: {x: 1.0569344, y: 1.0912461, z: 1.1097524}
+    - name: DEF_RINGFINGER_2.R
+      parentName: Armature
+      position: {x: 0.0039771604, y: 0.040774006, z: 0.05443602}
+      rotation: {x: 0.94823855, y: -0.07955464, z: 0.19384867, w: -0.23861583}
+      scale: {x: 1.0565171, y: 1.0665207, z: 1.1339241}
+    - name: DEF_RINGFINGER_3.R
+      parentName: Armature
+      position: {x: 0.0038009053, y: 0.039203968, z: 0.053570423}
+      rotation: {x: 0.9754358, y: -0.161992, z: 0.08465206, w: 0.12295411}
+      scale: {x: 1.0554545, y: 1.1330224, z: 1.0685291}
+    - name: DEF_MIDDLEFINGER_1.R
+      parentName: Armature
+      position: {x: 0.004326957, y: 0.040163986, z: 0.057915654}
+      rotation: {x: -0.6697367, y: 0.13894613, z: -0.24814174, w: 0.6859828}
+      scale: {x: 1.0602394, y: 1.0924197, z: 1.1054369}
+    - name: DEF_MIDDLEFINGER_2.R
+      parentName: Armature
+      position: {x: 0.004821716, y: 0.04028835, z: 0.05449828}
+      rotation: {x: 0.91574043, y: -0.2285337, z: 0.12632264, w: -0.30534306}
+      scale: {x: 1.058281, y: 1.0586585, z: 1.1396328}
+    - name: DEF_MIDDLEFINGER_3.R
+      parentName: Armature
+      position: {x: 0.004098578, y: 0.038938213, z: 0.053311013}
+      rotation: {x: 0.97448033, y: -0.20732248, z: -0.015163753, w: 0.08470894}
+      scale: {x: 1.0554973, y: 1.1295124, z: 1.0721968}
+    - name: DEF_FOREFINGER_1.R
+      parentName: Armature
+      position: {x: 0.005522006, y: 0.038802315, z: 0.05770032}
+      rotation: {x: -0.588183, y: 0.2283958, z: -0.25856915, w: 0.73144937}
+      scale: {x: 1.0604134, y: 1.1093686, z: 1.0882573}
+    - name: DEF_FOREFINGER_2.R
+      parentName: Armature
+      position: {x: 0.005846292, y: 0.039528325, z: 0.05462625}
+      rotation: {x: 0.8909341, y: -0.2979404, z: 0.114664674, w: -0.32298613}
+      scale: {x: 1.0606594, y: 1.056178, z: 1.1397228}
+    - name: DEF_FOREFINGER_3.R
+      parentName: Armature
+      position: {x: 0.0049711275, y: 0.038477566, z: 0.05348265}
+      rotation: {x: 0.93062615, y: -0.3408613, z: -0.1329326, w: 0.008804888}
+      scale: {x: 1.0614533, y: 1.1212808, z: 1.0749533}
+    - name: DEF_THUMB_1.R
+      parentName: Armature
+      position: {x: 0.0046921386, y: 0.034258224, z: 0.060480535}
+      rotation: {x: 0.1776391, y: -0.60993737, z: 0.642196, w: -0.42895815}
+      scale: {x: 1.0838602, y: 1.1071676, z: 1.0671955}
+    - name: DEF_THUMB_2.R
+      parentName: Armature
+      position: {x: 0.0055509717, y: 0.034880262, z: 0.05707899}
+      rotation: {x: -0.3006017, y: 0.7329099, z: -0.21615732, w: 0.57075185}
+      scale: {x: 1.0543201, y: 1.1316527, z: 1.0710979}
+    - name: DEF_THUMB_3.R
+      parentName: Armature
+      position: {x: 0.0050903712, y: 0.03705322, z: 0.05528048}
+      rotation: {x: -0.48601338, y: 0.7597381, z: 0.049762882, w: 0.42908356}
+      scale: {x: 1.0549691, y: 1.0698998, z: 1.132181}
+    - name: DEF_BUCKET
+      parentName: Armature
+      position: {x: -0.012001029, y: 0.0016164434, z: 0.061260864}
+      rotation: {x: -0.15599251, y: -0.11697221, z: 0.5470002, w: 0.8141096}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: DEF_WING_CORE
+      parentName: Armature
+      position: {x: -0.0122520495, y: 0.0016067248, z: 0.065608606}
+      rotation: {x: 0.053461876, y: 0.024149979, z: 0.55884576, w: 0.8271941}
+      scale: {x: 1.0000001, y: 0.9999998, z: 0.99999994}
+    - name: DEF_WING.L
+      parentName: Armature
+      position: {x: -0.01671826, y: -0.0014664365, z: 0.06620688}
+      rotation: {x: 0.10213236, y: 0.084590465, z: 0.76314914, w: 0.6324688}
+      scale: {x: 0.8828373, y: 0.9999998, z: 0.9999999}
+    - name: DEF_WING.R
+      parentName: Armature
+      position: {x: -0.013343798, y: 0.006893869, z: 0.06638543}
+      rotation: {x: 0.15454254, y: 0.060758334, z: 0.2785534, w: 0.9459562}
+      scale: {x: 0.99999994, y: 0.9999998, z: 0.9999999}
+    - name: DEF_LEG.L
+      parentName: Armature
+      position: {x: -0.0074413097, y: -0.0073070177, z: 0.049910784}
+      rotation: {x: 0.1963344, y: -0.3511911, z: 0.9150771, w: -0.027414238}
+      scale: {x: 0.99999994, y: 0.985628, z: 1.0000001}
+    - name: DEF_SHIN.L
+      parentName: Armature
+      position: {x: -0.009560239, y: -0.025466222, z: 0.034126528}
+      rotation: {x: 0.17757116, y: -0.56988794, z: 0.8018341, w: -0.027538044}
+      scale: {x: 0.999986, y: 0.9869743, z: 0.9997103}
+    - name: DEF_FOOT.L
+      parentName: Armature
+      position: {x: -0.013826277, y: -0.034871433, z: 0.0092233075}
+      rotation: {x: 0.07016029, y: -0.3481544, z: 0.92906475, w: -0.10346385}
+      scale: {x: 1, y: 1.0000001, z: 1.0000004}
+    - name: DEF_TOE.L
+      parentName: Armature
+      position: {x: -0.012242837, y: -0.04300051, z: 0.0019194585}
+      rotation: {x: 0.016703986, y: -0.1502985, z: 0.97531515, w: -0.16090903}
+      scale: {x: 1, y: 1.0000001, z: 1.0000004}
+    - name: DEF_LEG.R
+      parentName: Armature
+      position: {x: -0.0009786239, y: 0.0046942243, z: 0.05013204}
+      rotation: {x: -0.15163898, y: 0.51507986, z: -0.58105755, w: 0.61161304}
+      scale: {x: 1, y: 0.9679765, z: 1.0000001}
+    - name: DEF_SHIN.R
+      parentName: Armature
+      position: {x: 0.0121758515, y: 0.011306551, z: 0.03153318}
+      rotation: {x: -0.47433868, y: 0.70846134, z: -0.33031175, w: 0.40494382}
+      scale: {x: 0.9999691, y: 0.9705336, z: 0.9993602}
+    - name: DEF_FOOT.R
+      parentName: Armature
+      position: {x: 0.0014463996, y: 0.02010479, z: 0.0089356555}
+      rotation: {x: -0.23127896, y: 0.27221367, z: -0.5898747, w: 0.72419447}
+      scale: {x: 1.0000004, y: 1.0000002, z: 1.0000005}
+    - name: DEF_TOE.R
+      parentName: Armature
+      position: {x: 0.009490303, y: 0.022281433, z: 0.00169043}
+      rotation: {x: -0.04802835, y: 0.080922954, z: -0.67369103, w: 0.73299736}
+      scale: {x: 1.0000005, y: 1.0000004, z: 1.0000002}
+    - name: ROOT
+      parentName: Armature
+      position: {x: -1.2472226e-10, y: 0.02891229, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: TGT_HIPS_CORE
+      parentName: ROOT
+      position: {x: -0.00412863, y: -0.03033175, z: 0.053778157}
+      rotation: {x: 0.018460723, y: 0.001574406, z: 0.51280135, w: 0.85830736}
+      scale: {x: 1, y: 1, z: 1}
+    - name: TGT_HIPS
+      parentName: TGT_HIPS_CORE
+      position: {x: -0, y: -3.72529e-10, z: -0.0000000018766149}
+      rotation: {x: 0.658198, y: 0.036363363, z: 0.04148052, w: 0.75082123}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: TGT_SPINE
+      parentName: TGT_HIPS
+      position: {x: -1.4901161e-10, y: 0.008763571, z: -8.9406965e-10}
+      rotation: {x: 0.12667955, y: 0.0018438239, z: 0.011762073, w: 0.99187225}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: TGT_CHEST
+      parentName: TGT_SPINE
+      position: {x: -6.3329936e-10, y: 0.0096822465, z: -8.9406965e-10}
+      rotation: {x: 0.119874805, y: 0.091469325, z: 0.07556679, w: 0.9856739}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: TGT_SHOULDER.L
+      parentName: TGT_CHEST
+      position: {x: -0.0044720154, y: 0.016817112, z: 0.00029542245}
+      rotation: {x: -0.60202754, y: 0.2707749, z: 0.6625216, w: 0.35399023}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: TGT_ARM.L
+      parentName: TGT_SHOULDER.L
+      position: {x: -0.0000000037252903, y: 0.011454996, z: 0.000000009015202}
+      rotation: {x: 0.12767889, y: 0.09815366, z: 0.10513932, w: 0.9813306}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: TGT_FORARM.L
+      parentName: TGT_ARM.L
+      position: {x: -0, y: 0.017668182, z: 1.4901161e-10}
+      rotation: {x: 0.030357592, y: 0.18605615, z: 0.26013586, w: 0.94699043}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: TGT_WEAPON.L
+      parentName: TGT_FORARM.L
+      position: {x: -0.0013409909, y: 0.018609814, z: 0.00045323774}
+      rotation: {x: 0.020267129, y: -0.11521226, z: 0.08607421, w: 0.9893971}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: TGT_SHOULDER.R
+      parentName: TGT_CHEST
+      position: {x: 0.004472013, y: 0.016817113, z: 0.00029542102}
+      rotation: {x: 0.6020274, y: 0.27077523, z: 0.6625213, w: -0.35399055}
+      scale: {x: 1.0000002, y: 1.0000002, z: 0.99999994}
+    - name: TGT_ARM.R
+      parentName: TGT_SHOULDER.R
+      position: {x: 0.0000000043213366, y: 0.011454995, z: -0.0000000090897085}
+      rotation: {x: -0.20825276, y: -0.08837668, z: 0.075156234, w: 0.9711704}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: TGT_FORARM.R
+      parentName: TGT_ARM.R
+      position: {x: 0.0000000011920929, y: 0.017668195, z: -7.4505804e-11}
+      rotation: {x: 0.093851104, y: 0.04632778, z: -0.28831223, w: 0.9517992}
+      scale: {x: 1, y: 1.090337, z: 1.0000001}
+    - name: TGT_HAND.R.003
+      parentName: TGT_FORARM.R
+      position: {x: 7.4505804e-11, y: 0.015582635, z: -0.000000005578622}
+      rotation: {x: 0.0077944924, y: -0.018077303, z: -0.11961564, w: 0.9926251}
+      scale: {x: 1.0535461, y: 1.0535461, z: 1.0535463}
+    - name: TGT_LITTLEFINGER_1.R
+      parentName: TGT_HAND.R.003
+      position: {x: -0.002851832, y: 0.007998004, z: -0.0010604273}
+      rotation: {x: -0.37149015, y: -0.20755869, z: -0.08329627, w: 0.90109724}
+      scale: {x: 0.99999976, y: 1, z: 0.99999976}
+    - name: TGT_LITTLEFINGER_2.R
+      parentName: TGT_LITTLEFINGER_1.R
+      position: {x: -1.4901161e-10, y: 0.002918013, z: -1.11758706e-10}
+      rotation: {x: -0.5341327, y: -0.008207749, z: 0.006471202, w: 0.8453361}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: TGT_LITTLEFINGER_3.R
+      parentName: TGT_LITTLEFINGER_2.R
+      position: {x: -0.000000002682209, y: 0.0015030168, z: 0.0000000036507843}
+      rotation: {x: -0.4263169, y: -0.002610169, z: -0.051290017, w: 0.90311486}
+      scale: {x: 0.9999998, y: 0.99999994, z: 1}
+    - name: TGT_RINGFINGER_1.R
+      parentName: TGT_HAND.R.003
+      position: {x: -0.0014639242, y: 0.0087633, z: -0.00017335541}
+      rotation: {x: -0.38969186, y: -0.18019909, z: -0.05489721, w: 0.9014737}
+      scale: {x: 0.9999999, y: 1, z: 0.9999998}
+    - name: TGT_RINGFINGER_2.R
+      parentName: TGT_RINGFINGER_1.R
+      position: {x: -2.9802322e-10, y: 0.002884397, z: -0.0000000017136335}
+      rotation: {x: -0.5046932, y: -0.007020293, z: -0.006281585, w: 0.8632474}
+      scale: {x: 0.9999999, y: 1, z: 1.0000001}
+    - name: TGT_RINGFINGER_3.R
+      parentName: TGT_RINGFINGER_2.R
+      position: {x: 0.000000001490116, y: 0.0016891216, z: 5.9604643e-10}
+      rotation: {x: -0.38773352, y: -0.02725611, z: 0.0030725067, w: 0.92136335}
+      scale: {x: 1, y: 1.0000001, z: 1.0000001}
+    - name: TGT_MIDDLEFINGER_1.R
+      parentName: TGT_HAND.R.003
+      position: {x: -0.00008749217, y: 0.008720893, z: 0.0002786833}
+      rotation: {x: -0.4119865, y: -0.031311885, z: -0.026601795, w: 0.9102632}
+      scale: {x: 0.99999976, y: 1, z: 0.99999994}
+    - name: TGT_MIDDLEFINGER_2.R
+      parentName: TGT_MIDDLEFINGER_1.R
+      position: {x: 0.0000000011920929, y: 0.003162923, z: -0.0000000037252903}
+      rotation: {x: -0.45957398, y: -0.016513493, z: 0.022286285, w: 0.8877062}
+      scale: {x: 1.0000001, y: 0.99999994, z: 0.99999994}
+    - name: TGT_MIDDLEFINGER_3.R
+      parentName: TGT_MIDDLEFINGER_2.R
+      position: {x: -0, y: 0.0018305167, z: 0.0000000037252903}
+      rotation: {x: -0.41680917, y: 0.0021852923, z: -0.066286236, w: 0.90657127}
+      scale: {x: 0.9999998, y: 1, z: 1}
+    - name: TGT_FOREFINGER_1.R
+      parentName: TGT_HAND.R.003
+      position: {x: 0.0015527841, y: 0.008578703, z: -0.00020772367}
+      rotation: {x: -0.34847605, y: 0.071809724, z: 0.010527239, w: 0.9345036}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: TGT_FOREFINGER_2.R
+      parentName: TGT_FOREFINGER_1.R
+      position: {x: -0.0000000020861626, y: 0.0028622043, z: 0.000000004172325}
+      rotation: {x: -0.50775623, y: -0.004161442, z: -0.017562376, w: 0.86131173}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: TGT_FOREFINGER_3.R
+      parentName: TGT_FOREFINGER_2.R
+      position: {x: -4.4703483e-10, y: 0.001687821, z: 0}
+      rotation: {x: -0.4302307, y: 0.01018505, z: -0.001236295, w: 0.90266067}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: TGT_THUMB_1.R
+      parentName: TGT_HAND.R.003
+      position: {x: 0.0033014636, y: 0.0042303437, z: -0.0006142023}
+      rotation: {x: -0.18922883, y: 0.69720453, z: -0.27349323, w: 0.6350588}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: TGT_THUMB_2.R
+      parentName: TGT_THUMB_1.R
+      position: {x: -8.9406965e-10, y: 0.0032181318, z: -0.0000000011920929}
+      rotation: {x: -0.33475217, y: -0.22967124, z: 0.24336553, w: 0.88088894}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: TGT_THUMB_3.R
+      parentName: TGT_THUMB_2.R
+      position: {x: 0.00000000692904, y: 0.0025255703, z: 5.587935e-10}
+      rotation: {x: -0.3501976, y: 0.027121961, z: 0.0050240555, w: 0.93626964}
+      scale: {x: 1, y: 1, z: 1}
+    - name: TGT_HAND.R.004
+      parentName: TGT_HAND.R.003
+      position: {x: 0.000000003427267, y: 0.0060609924, z: 0.0000000036507843}
+      rotation: {x: -0.35494703, y: -0.00000013759846, z: -0.00000007720457, w: 0.9348864}
+      scale: {x: 1, y: 1, z: 1}
+    - name: TGT_NECK_CTRL
+      parentName: TGT_CHEST
+      position: {x: -0.0000000020489097, y: 0.016455952, z: 2.2351741e-10}
+      rotation: {x: -0.6467147, y: -0.000000004884155, z: 0.00000015873455, w: 0.762732}
+      scale: {x: 1, y: 1.0000001, z: 1}
+    - name: TGT_BUCKET
+      parentName: TGT_HIPS
+      position: {x: 0.000016859545, y: 0.008288382, z: -0.007647538}
+      rotation: {x: -0.802466, y: -0.00000003989779, z: -0.0000002081709, w: 0.59669787}
+      scale: {x: 1.0000001, y: 1, z: 1.0000002}
+    - name: TGT_WING_CORE
+      parentName: TGT_HIPS
+      position: {x: 0.0000000016391277, y: 0.012638466, z: -0.0074415444}
+      rotation: {x: -0.6268933, y: -0.000000019574259, z: -0.00000017803613, w: 0.7791051}
+      scale: {x: 1.0000001, y: 0.99999994, z: 1}
+    - name: TGT_WING.L
+      parentName: TGT_WING_CORE
+      position: {x: -0.0045087026, y: 0.0030507103, z: 0.0003377032}
+      rotation: {x: 0.0795135, y: 0.038421758, z: 0.27576402, w: 0.95716023}
+      scale: {x: 0.8828373, y: 1, z: 0.99999994}
+    - name: TGT_WING_CORE.L
+      parentName: TGT_WING.L
+      position: {x: 1.4901161e-10, y: 0.000000003390014, z: -0.000000005002048}
+      rotation: {x: -0.00000017011259, y: 0.000000054051274, z: 0.00000009592625,
+        w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: TGT_WING.R
+      parentName: TGT_WING_CORE
+      position: {x: 0.004508704, y: 0.0030507105, z: 0.0003377046}
+      rotation: {x: 0.104491785, y: -0.044059325, z: -0.29774174, w: 0.9478872}
+      scale: {x: 0.99999994, y: 1, z: 1}
+    - name: TGT_WING_CORE.R
+      parentName: TGT_WING.R
+      position: {x: -0.0000000040233132, y: -0.000000002980232, z: -0.000000002980232}
+      rotation: {x: -0.00000021047892, y: -0.000000061001636, z: -0.00000011851081,
+        w: 1}
+      scale: {x: 0.99999994, y: 0.9999999, z: 0.99999994}
+    - name: TGT_LEG.L
+      parentName: TGT_HIPS_CORE
+      position: {x: -0.006816251, y: 0, z: -0.0037593227}
+      rotation: {x: -0.012510499, y: -0.38517442, z: 0.8062683, w: 0.44879356}
+      scale: {x: 0.99999994, y: 0.98562807, z: 1.0000001}
+    - name: TGT_SHIN.L
+      parentName: TGT_LEG.L
+      position: {x: 0.0000000020861626, y: 0.024505645, z: 8.9406965e-10}
+      rotation: {x: -0.23938416, y: 0.00090777426, z: 0.052828096, w: 0.9694863}
+      scale: {x: 1.0001384, y: 0.9981336, z: 1.0028694}
+    - name: MCH_LEG.L
+      parentName: TGT_HIPS_CORE
+      position: {x: -0.006816251, y: 0, z: -0.0037593227}
+      rotation: {x: -0.012510607, y: -0.38517436, z: 0.8062682, w: 0.44879362}
+      scale: {x: 0.9856276, y: 0.9856281, z: 0.9856278}
+    - name: MCH_SHIN.L
+      parentName: MCH_LEG.L
+      position: {x: 0.0000000017881393, y: 0.02450565, z: 0.0000000038743018}
+      rotation: {x: -0.23935606, y: 0.00088967866, z: 0.052744564, w: 0.9694978}
+      scale: {x: 1.0013659, y: 1.0013659, z: 1.0013661}
+    - name: TGT_LEG.R
+      parentName: TGT_HIPS_CORE
+      position: {x: 0.00681625, y: -2.2351741e-10, z: -0.0037593315}
+      rotation: {x: -0.12360472, y: -0.50816786, z: 0.82210946, w: -0.22499633}
+      scale: {x: 1, y: 0.9679765, z: 1.0000001}
+    - name: TGT_SHIN.R
+      parentName: TGT_LEG.R
+      position: {x: -0.000000001490116, y: 0.024505645, z: 0.0000000017881393}
+      rotation: {x: -0.47041205, y: -0.0013787318, z: -0.10477521, w: 0.8762036}
+      scale: {x: 1.0010687, y: 0.9798762, z: 1.0219476}
+    - name: MCH_LEG.R
+      parentName: TGT_HIPS_CORE
+      position: {x: 0.00681625, y: -2.2351741e-10, z: -0.0037593315}
+      rotation: {x: -0.12360472, y: -0.5081678, z: 0.8221095, w: -0.2249963}
+      scale: {x: 0.967976, y: 0.9679765, z: 0.96797615}
+    - name: MCH_SHIN.R
+      parentName: MCH_LEG.R
+      position: {x: 0.0000000023841857, y: 0.024505649, z: 0.0000000035762786}
+      rotation: {x: -0.47022632, y: -0.0008042406, z: -0.10361919, w: 0.8764415}
+      scale: {x: 1.0026417, y: 1.0026422, z: 1.0026416}
+    - name: TGT_FOOT.L
+      parentName: ROOT
+      position: {x: -0.013826277, y: -0.06378373, z: 0.0092233075}
+      rotation: {x: 0.07016029, y: -0.3481544, z: 0.92906475, w: -0.10346385}
+      scale: {x: 1, y: 1.0000001, z: 1.0000004}
+    - name: TGT_TOE.L
+      parentName: TGT_FOOT.L
+      position: {x: -6.519258e-10, y: 0.011042433, z: -2.9802322e-10}
+      rotation: {x: 0.20948465, y: 0.01243834, z: 0.053314555, w: 0.9762782}
+      scale: {x: 1, y: 1, z: 1.0000001}
+    - name: TGT_FOOT.R
+      parentName: ROOT
+      position: {x: 0.0014463998, y: -0.008807502, z: 0.0089356555}
+      rotation: {x: -0.23127896, y: 0.27221367, z: -0.5898747, w: 0.72419447}
+      scale: {x: 1.0000004, y: 1.0000002, z: 1.0000005}
+    - name: TGT_TOE.R
+      parentName: TGT_FOOT.R
+      position: {x: 0.0000000019744038, y: 0.011042434, z: -7.4505804e-11}
+      rotation: {x: 0.2703985, y: -0.013448107, z: -0.04986509, w: 0.96136224}
+      scale: {x: 1.0000001, y: 0.9999999, z: 0.99999994}
+    - name: TGT_FOOT_LOC.L
+      parentName: ROOT
+      position: {x: -0.016503828, y: -0.06015216, z: 0.00084667734}
+      rotation: {x: 0.0045944694, y: -0.02334294, z: 0.9846654, w: -0.17282373}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: TGT_LEG_IK_POLE.L
+      parentName: TGT_FOOT_LOC.L
+      position: {x: 0.0027783955, y: 0.05735653, z: 0.016917348}
+      rotation: {x: -9.324008e-10, y: 0.04807399, z: -0.0000000031514051, w: 0.9988438}
+      scale: {x: 0.9999999, y: 0.99999994, z: 0.9999999}
+    - name: TGT_FOOT_ROT02.L
+      parentName: TGT_FOOT_LOC.L
+      position: {x: -0.000000001504959, y: -0.0005402581, z: 0.0016664619}
+      rotation: {x: -0.0000000931042, y: 0.7071068, z: 0.7071067, w: -0.00000009520973}
+      scale: {x: 1.0000001, y: 0.99999994, z: 0.99999994}
+    - name: TGT_FOOT_ROT01.L
+      parentName: TGT_FOOT_ROT02.L
+      position: {x: -3.2930983e-10, y: -7.636845e-10, z: 0.012983825}
+      rotation: {x: -0.7071068, y: -0.0000000129277975, z: -0.00000001975506, w: 0.7071067}
+      scale: {x: 0.9999999, y: 0.99999964, z: 0.99999994}
+    - name: TGT_FOOT_IK.L
+      parentName: TGT_FOOT_ROT01.L
+      position: {x: 0.0012725149, y: 0.008520554, z: 0.006907693}
+      rotation: {x: 0.0070629613, y: -0.3327795, z: 0.9411479, w: 0.05872412}
+      scale: {x: 1, y: 1.0000002, z: 1.0000005}
+    - name: TGT_FOOT_ROT.L
+      parentName: TGT_FOOT_LOC.L
+      position: {x: -9.1939e-10, y: -0.000012055859, z: 3.7252902e-11}
+      rotation: {x: 8.7311505e-11, y: 9.313227e-10, z: 1, w: -6.131366e-17}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: TGT_FOOT_LOC.R
+      parentName: ROOT
+      position: {x: -0.003008585, y: -0.007238512, z: 0.00067630154}
+      rotation: {x: 0.003177543, y: 0.041199423, z: -0.6866416, w: 0.7258209}
+      scale: {x: 0.99999994, y: 0.99999994, z: 1}
+    - name: TGT_FOOT_ROT02.R
+      parentName: TGT_FOOT_LOC.R
+      position: {x: -0.0000000035576522, y: -0.00054025755, z: 0.0016664619}
+      rotation: {x: -0.00000009761433, y: 0.7071068, z: 0.7071067, w: -0.000000090699594}
+      scale: {x: 1.0000002, y: 1, z: 0.99999994}
+    - name: TGT_FOOT_ROT01.R
+      parentName: TGT_FOOT_ROT02.R
+      position: {x: 7.264316e-10, y: 2.2351741e-10, z: 0.012983838}
+      rotation: {x: -0.7071068, y: -0.000000033091858, z: -0.000000031692466, w: 0.7071067}
+      scale: {x: 1.0000002, y: 0.9999999, z: 0.99999994}
+    - name: TGT_FOOT_IK.R
+      parentName: TGT_FOOT_ROT01.R
+      position: {x: -0.0012725149, y: 0.008520553, z: 0.0069076917}
+      rotation: {x: -0.007063191, y: -0.3327796, z: 0.9411479, w: -0.058724202}
+      scale: {x: 0.99999994, y: 1.0000002, z: 1.0000004}
+    - name: TGT_FOOT_ROT.R
+      parentName: TGT_FOOT_LOC.R
+      position: {x: 0.000000001983717, y: -0.0000120516115, z: 0}
+      rotation: {x: 1.1641532e-10, y: 5.5504375e-17, z: 1, w: 6.123234e-17}
+      scale: {x: 1, y: 0.99999994, z: 1}
+    - name: TGT_LEG_IK_POLE.R
+      parentName: TGT_FOOT_LOC.R
+      position: {x: 0.023409845, y: 0.053677935, z: 0.029498117}
+      rotation: {x: -8.741257e-10, y: -0.04807401, z: 2.913774e-11, w: 0.9988438}
+      scale: {x: 1, y: 0.99999994, z: 0.99999994}
+    - name: TGT_NECK_CTRL.001
+      parentName: Armature
+      position: {x: 0.0012292843, y: -0.0071431114, z: 0.08692675}
+      rotation: {x: 0.2793489, y: 0.073433965, z: 0.6148792, w: 0.73382235}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1}
+    - name: TGT_NECK
+      parentName: TGT_NECK_CTRL.001
+      position: {x: -1.4901161e-10, y: -0.0000000017136335, z: -9.685754e-10}
+      rotation: {x: 0.58897054, y: -0.032532904, z: 0.024168666, w: 0.80713767}
+      scale: {x: 1.0000001, y: 1.0000001, z: 1.0000001}
+    - name: TGT_HEAD_CTRL
+      parentName: TGT_NECK
+      position: {x: -0.0000000021979212, y: 0.0045822025, z: -0.0000000016391277}
+      rotation: {x: -0.7394001, y: 0.000000019020293, z: -0.0000004896847, w: 0.6732663}
+      scale: {x: 1, y: 0.9999999, z: 1}
+    - name: TGT_HEAD_CTRL.001
+      parentName: Armature
+      position: {x: 0.0019054959, y: -0.00874515, z: 0.091166176}
+      rotation: {x: 0.15038168, y: -0.07826518, z: 0.5997914, w: 0.7819912}
+      scale: {x: 1.0000002, y: 1.0000001, z: 1.0000001}
+    - name: TGT_HEAD
+      parentName: TGT_HEAD_CTRL.001
+      position: {x: -0.0000000023469329, y: -2.9802322e-10, z: 0.000000003594905}
+      rotation: {x: 0.59449464, y: -0.32362667, z: -0.3892061, w: 0.62478834}
+      scale: {x: 1, y: 0.99999994, z: 1.0000001}
+    - name: Plane.003
+      parentName: evade(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5

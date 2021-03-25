@@ -10,9 +10,14 @@ public class BloodPoint : MonoBehaviour
     private InputManager Im;
     public GameObject ActivateUI;
     public bool canActivate;
+    public int bloodStock;
+    public GameObject ActiveUI_Pf;
+    public Transform RealWorldCanvas;
     void Start()
     {
+        ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2,Quaternion.identity,RealWorldCanvas);
         ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0,0,false);
+        
         Im = GameObject.Find("InputManager").GetComponent<InputManager>();
     }
 
@@ -28,7 +33,7 @@ public class BloodPoint : MonoBehaviour
             if(canActivate)
             {
                 showUI = true;
-                ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(1.0f,0.5f,false);
+                OpenActivateUI();
             }
         }
     }
@@ -37,7 +42,15 @@ public class BloodPoint : MonoBehaviour
         if(other.CompareTag("Player"))
         {
             showUI = false;
-            ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0.0f,0.5f,false);
+            closeActivateUI();
         }
+    }
+    public void closeActivateUI()
+    {
+        ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0.0f,0.5f,false);
+    }
+    public void OpenActivateUI()
+    {
+        ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(1.0f,0.5f,false);
     }
 }
