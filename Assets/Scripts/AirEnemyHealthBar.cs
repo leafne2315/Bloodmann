@@ -21,6 +21,18 @@ public class AirEnemyHealthBar : MonoBehaviour
     
     void Update() 
     {
+         if(airEnemyScript.maxhealth-airEnemyScript.health >= 1)
+        {
+            airEnemyHPBar.enabled = true;
+            airEnemyHPBar.transform.GetChild(0).GetComponent<Image>().enabled = true;
+            //EnemyHPBase.enabled = true;
+        }
+        else
+        {
+            airEnemyHPBar.enabled = false;
+            airEnemyHPBar.transform.GetChild(0).GetComponent<Image>().enabled = false;
+            //EnemyHPBase.enabled = false;
+        }
         Vector3 airEnemyBarPos = Camera.main.WorldToScreenPoint(this.transform.position);
         airEnemyHPBar.transform.position = airEnemyBarPos;
     }

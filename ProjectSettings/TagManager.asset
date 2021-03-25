@@ -19,6 +19,8 @@ TagManager:
   - Spike
   - DeadObject
   - LilEnemy
+  - SavePoint
+  - BloodPoint
   layers:
   - Default
   - TransparentFX

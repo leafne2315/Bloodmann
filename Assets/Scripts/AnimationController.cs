@@ -7,7 +7,12 @@ public class AnimationController : MonoBehaviour
     // Start is called before the first frame update
     private PlayerCtroller playerCtroller;
     Animator PlayerAni;
+    private InputManager Im;
 
+    void Awake()
+    {
+        Im = GameObject.Find("InputManager").GetComponent<InputManager>();
+    }
     void Start()
     {
         playerCtroller =transform.parent.GetComponent<PlayerCtroller>();
@@ -36,7 +41,7 @@ public class AnimationController : MonoBehaviour
         else
             PlayerAni.SetBool("isFlymove",false);
 
-        if(Input.GetButtonDown("PS4-x")&&(playerCtroller.isGrounded||playerCtroller.isAttachWall))
+        if(Im.PS4_X_Input&&(playerCtroller.isGrounded||playerCtroller.isAttachWall))
         {
             PlayerAni.SetTrigger("Jump");
         }

@@ -19,6 +19,18 @@ public class RushEnemyUIController : MonoBehaviour
     
     void Update() 
     {
+        if(EnemyScript.MaxHp-EnemyScript.hp >= 1)
+        {
+            EnemyHPBar.enabled = true;
+            EnemyHPBar.transform.GetChild(0).GetComponent<Image>().enabled = true;
+            //EnemyHPBase.enabled = true;
+        }
+        else
+        {
+            EnemyHPBar.enabled = false;
+            EnemyHPBar.transform.GetChild(0).GetComponent<Image>().enabled = false;
+            //EnemyHPBase.enabled = false;
+        }
         Vector3 EnemyBarPos = Camera.main.WorldToScreenPoint(this.transform.position);
         EnemyHPBar.transform.position = EnemyBarPos;
     }

@@ -8,75 +8,96 @@ public class DropEnemyCtrller : MonoBehaviour
     public int maxHp = 5;
     public bool getHit;
     private tempGetHit tempGetHit;
-    public Vector3 isfallCheck;
     private Vector3 MovingDir;
-    public bool isfall;
     private Rigidbody rb;
     public RaycastHit hit;
     public GameObject Player;
+    public Transform DetectPos;
+    public Vector3 DetectRange;
     public EnemyState currentState;
     public float movingSpeed;
     public bool isGrounded;
     public bool isFacingRight;
     public bool addForce;
     public float checkRadius;
-    public Transform GroundCheck;
+    public Transform[] GroundCheckPos;
     public LayerMask WhatIsGround;
     public LayerMask WhatIsPlayer;
     private bool notDie = true;
     private float dieTimer = 0;
     public float dyingTime;
-    public enum EnemyState{OnWall, Moving, Dead}
+    public enum EnemyState{OnWall,Fall, Moving, Dead}
     // Start is called before the first frame update
     void Start()
     {
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
+        //transform.eulerAngles = new Vector3(0,0,180);
     }
 
+    void FixedUpdate() 
+    {   
+        if(currentState!=EnemyState.OnWall)
+        {
+            rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
+        }
+    }
     // Update is called once per frame
     void Update()
     {
         DieCheck();
         getHitCheck();
-        
-        isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
+        GroundCheck();
         
         switch(currentState)
         {
             case EnemyState.OnWall:
 
-            if(Physics.Raycast(transform.position, -transform.up, out hit, 10,WhatIsPlayer))
-            {
-                Debug.DrawLine(transform.position, hit.point, Color.yellow);
-                isfall = true;
-                rb.useGravity = true;
-                addForce = true;
-            }
-            else
-            {
-                Debug.DrawRay(transform.position, -transform.up * 10, Color.white);
-            }
+                if(Physics.CheckBox(DetectPos.position,DetectRange,Quaternion.identity,WhatIsPlayer))
+                {
+                    currentState = EnemyState.Fall;
+                    transform.eulerAngles = Vector3.zero;
 
-            if(isGrounded)
-            {
-                currentState = EnemyState.Moving;
-            }
+                    Debug.DrawLine(transform.position, hit.point, Color.yellow);
+                }
+                else
+                {
+                    Debug.DrawRay(transform.position, Vector3.down * 10, Color.white);
+                }
+
             break; 
 
+            case EnemyState.Fall:
+
+                rb.velocity = new Vector3(0.0f,rb.velocity.y,0.0f);
+
+                if(isGrounded)
+                {
+                    currentState = EnemyState.Moving;
+                }
+
+            break;
+
             case EnemyState.Moving:
-            rb.velocity = MovingDir*movingSpeed;
-           
-            if(Player.transform.position.x-transform.position.x>2 ||Player.transform.position.x-transform.position.x<-2)
-            {
-                GetMoveDir();
-                FacingCheck();
-            }            
+
+                rb.velocity = MovingDir*movingSpeed;
+            
+                if(Player.transform.position.x-transform.position.x>2 ||Player.transform.position.x-transform.position.x<-2)
+                {
+                    GetMoveDir();
+                    FacingCheck();
+                }
+
+                if(!isGrounded)
+                {
+                    currentState = EnemyState.Fall;
+                }
+
             break;
 
             case EnemyState.Dead:
-            rb.velocity = Vector3.zero;
+
+                rb.velocity = Vector3.zero;
 
                 if(dieTimer<dyingTime)
                 {
@@ -87,17 +108,29 @@ public class DropEnemyCtrller : MonoBehaviour
                     transform.GetChild(2).GetComponent<DropEnemyHealthBar>().DestroyUI();
                     Destroy(gameObject);
                 }
+
             break;
         }        
     }
-
-    void FixedUpdate() 
-    {   
-        if(addForce)
-        rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
+    void GroundCheck()
+    {
+        for(int i = 0;i<GroundCheckPos.Length;i++)
+        {
+            RaycastHit hit;
+            if(Physics.Raycast(GroundCheckPos[i].position,Vector3.down,out hit,0.2f,WhatIsGround))
+            {
+                isGrounded = true;
+                break;
+            }
+            else
+            {
+                isGrounded = false;
+            }
+            Debug.DrawRay(GroundCheckPos[i].position, Vector3.down *0.2f,Color.red);
+        }
     }
 
-     void getHitCheck()
+    void getHitCheck()
     {
         if(tempGetHit.isHit)
         {
@@ -168,13 +201,25 @@ public class DropEnemyCtrller : MonoBehaviour
             }   
         }
     }
-
-    public void PullTrigger(Collider c)
+    void OnTriggerEnter(Collider other)
     {
-        if(c.CompareTag("Player"))
+        if(other.CompareTag("Player"))
         {
-            Player.GetComponent<PlayerCtroller>().gettingHit();
+            other.GetComponent<PlayerCtroller>().gettingHit();
         }
     }
+    
+    void OnDrawGizmos()
+    {
+        Gizmos.DrawWireCube(DetectPos.position,2*DetectRange);
+    }
+
+    // public void PullTrigger(Collider c)
+    // {
+    //     if(c.CompareTag("Player"))
+    //     {
+    //         Player.GetComponent<PlayerCtroller>().gettingHit();
+    //     }
+    // }
    
 }

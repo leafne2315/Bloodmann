@@ -11,6 +11,7 @@ public class Load : MonoBehaviour
     public MenuController menuController;
     void Awake() 
     {
+        //gameObject.SetActive(true);
         DontDestroyOnLoad(transform.gameObject);
         //menuController.GetComponent<MenuController>(); 
     }
@@ -22,11 +23,11 @@ public class Load : MonoBehaviour
             FadeToLevel(1);
         }
 
-        if(menuController.isHomePage)
-        {
-            FadeToLevel(0);
-            animator.SetTrigger("FadeIn");
-        }
+        // if(menuController.isHomePage)
+        // {
+        //     FadeToLevel(0);
+        //     animator.SetTrigger("FadeIn");
+        // }
     }
 
     // public void FadeToNextLevel()
@@ -47,5 +48,7 @@ public class Load : MonoBehaviour
         isScene1 = false;
         
         animator.SetTrigger("FadeIn");
+        print("a");
+        //Destroy(gameObject);
     }
 }
