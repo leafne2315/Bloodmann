@@ -32,6 +32,10 @@ public class DropEnemyCtrller : MonoBehaviour
     {
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
+
+        Vector3 Scaler = transform.localScale;
+        Scaler.y*=-1;
+        transform.localScale = Scaler;
         //transform.eulerAngles = new Vector3(0,0,180);
     }
 
@@ -39,6 +43,8 @@ public class DropEnemyCtrller : MonoBehaviour
     {   
         if(currentState!=EnemyState.OnWall)
         {
+            
+
             rb.AddForce(Physics.gravity*5.0f,ForceMode.Acceleration);
         }
     }
@@ -56,8 +62,11 @@ public class DropEnemyCtrller : MonoBehaviour
                 if(Physics.CheckBox(DetectPos.position,DetectRange,Quaternion.identity,WhatIsPlayer))
                 {
                     currentState = EnemyState.Fall;
-                    transform.eulerAngles = Vector3.zero;
 
+                    Vector3 Scaler = transform.localScale;
+                    Scaler.y*=-1;
+                    transform.localScale = Scaler;
+                    
                     Debug.DrawLine(transform.position, hit.point, Color.yellow);
                 }
                 else
