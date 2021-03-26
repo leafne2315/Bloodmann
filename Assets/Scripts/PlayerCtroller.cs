@@ -163,6 +163,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 	[Header("Recovery Settings")]
 	public float RecoveryTime;
+	public bool isRecovery;
 	[Header("Blood Collect Settings")]
 	public bool canCollect;
 	public float CollectTime;
@@ -283,6 +284,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(IM.PS4_Up && AidKitNum>0)
 				{
 					currentState = PlayerState.Recovery;
+					isRecovery = true;
 					AidKitNum-=1;
 				}
 
@@ -566,7 +568,7 @@ public class PlayerCtroller : MonoBehaviour {
 							dashTimer = 0;
 							hitConfirm = false;
 							emission.enabled = false;
-
+							transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
 							
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
@@ -809,6 +811,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer = 0;
 					Recover();
+					isRecovery = false;
 					currentState = PlayerState.Normal; 
 				}
 

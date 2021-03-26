@@ -136,7 +136,7 @@ ModelImporter:
       name: Buzzer.001|01 attack after
       takeName: Buzzer.001|01 attack after
       internalID: 0
-      firstFrame: 0
+      firstFrame: 7
       lastFrame: 12
       wrapMode: 0
       orientationOffsetY: 0
@@ -165,7 +165,7 @@ ModelImporter:
       name: Buzzer.001|01 attack before
       takeName: Buzzer.001|01 attack before
       internalID: 0
-      firstFrame: 0
+      firstFrame: 3
       lastFrame: 8
       wrapMode: 0
       orientationOffsetY: 0
