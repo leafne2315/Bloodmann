@@ -230,7 +230,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash&&!noGravity)
+		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash&&!noGravity&&currentState!=PlayerState.Rest)
 		{
 			rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
 		}
@@ -837,6 +837,8 @@ public class PlayerCtroller : MonoBehaviour {
 					//change motion
 					currentState = PlayerState.Normal;
 					IM.currentState = InputManager.InputState.InGame;
+					PlayerAni.SetBool("isRest",false);
+					transform.position = new Vector3(transform.position.x,transform.position.y,0.0f); 
 					
 					currentSp.canActivate = true;
 				}
@@ -1022,6 +1024,8 @@ public class PlayerCtroller : MonoBehaviour {
 				currentSp.SavePointMenu_Open();
 				currentSp.closeActivateUI();
 				currentSp.canActivate = false;
+				transform.position = currentSp.RestPos.position;
+				PlayerAni.SetBool("isRest",true);
 
 				currentState = PlayerState.Rest;
 			}

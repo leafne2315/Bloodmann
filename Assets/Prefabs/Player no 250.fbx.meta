@@ -571,7 +571,7 @@ ModelImporter:
       name: Buzzer.001|reload
       takeName: Buzzer.001|reload
       internalID: 0
-      firstFrame: 0
+      firstFrame: 8
       lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0

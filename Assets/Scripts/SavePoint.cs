@@ -13,6 +13,7 @@ public class SavePoint : MonoBehaviour
     public bool canActivate;
     public GameObject ActiveUI_Pf;
     public Transform RealWorldCanvas;
+    public Transform RestPos;
 
     void Awake()
     {
@@ -20,8 +21,9 @@ public class SavePoint : MonoBehaviour
     }
     void Start()
     {
-        ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2,Quaternion.identity,RealWorldCanvas);
+        ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2 + Vector3.up*1,Quaternion.identity,RealWorldCanvas);
         ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0,0,false);
+        RestPos = transform.GetChild(0).transform;
     }
 
     // Update is called once per frame
