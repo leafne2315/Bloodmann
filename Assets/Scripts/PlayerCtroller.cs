@@ -972,6 +972,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			Timer = 0;
 
+			bloodAmount = 0;
 			Blood += currentBp.bloodStock;
 
 			IM.currentState = InputManager.InputState.InGame;

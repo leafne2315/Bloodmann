@@ -56,63 +56,64 @@ public class MovingEnemy : MonoBehaviour
         switch(currentState)
         {
             case EnemyState.Patrol:
-            rb.velocity = MovingDir*patrolSpeed;
-            DetectingPlayer();
-            FacingCheck();
-            if(PlayerDetect)
-            {
-                currentState = EnemyState.PreMoving;
-                rb.velocity = Vector3.zero;
-            }
+                rb.velocity = MovingDir*patrolSpeed;
+                DetectingPlayer();
+                FacingCheck();
+                if(PlayerDetect)
+                {
+                    currentState = EnemyState.PreMoving;
+                    rb.velocity = Vector3.zero;
+                }
             break;
             
             case EnemyState.PreMoving:
-            GetMoveDir();
-            FacingCheck();
-            if(PreMovingTimer<PreMovingTime)
-            {
-                PreMovingTimer+=Time.deltaTime;
-            }
-            else
-            {
-                PreMovingTimer = 0;
-                currentState = EnemyState.Moving;
-                isMoving = true;
-            }
+                GetMoveDir();
+                FacingCheck();
+                if(PreMovingTimer<PreMovingTime)
+                {
+                    PreMovingTimer+=Time.deltaTime;
+                }
+                else
+                {
+                    PreMovingTimer = 0;
+                    currentState = EnemyState.Moving;
+                    isMoving = true;
+                }
             break;
             
             case EnemyState.Moving:
             
-            rb.velocity = MovingDir*movingSpeed;
+                rb.velocity = MovingDir*movingSpeed;
 
-            DetectingPlayer();
-            if(PlayerDetect == true && MovingTimer == 0)
-            {
-                GetMoveDir();
-                FacingCheck();
-            }
-            
-            if(MovingTimer<MovingTime)
-            {
-                MovingTimer+=Time.deltaTime;
-            }
-            else
-            {
-                //rb.velocity = Vector3.zero;
-                MovingTimer = 0;
-                //currentState = EnemyState.PreMoving;
-            }
-            
-            if(!PlayerDetect && MovingTimer == 0)
-            {
-                isMoving = false;
-                currentState = EnemyState.Patrol;
-                rb.velocity = Vector3.zero;
-            }
+                DetectingPlayer();
+                if(PlayerDetect == true && MovingTimer == 0)
+                {
+                    GetMoveDir();
+                    FacingCheck();
+                }
+                
+                if(MovingTimer<MovingTime)
+                {
+                    MovingTimer+=Time.deltaTime;
+                }
+                else
+                {
+                    //rb.velocity = Vector3.zero;
+                    MovingTimer = 0;
+                    //currentState = EnemyState.PreMoving;
+                }
+                
+                if(!PlayerDetect && MovingTimer == 0)
+                {
+                    isMoving = false;
+                    currentState = EnemyState.Patrol;
+                    rb.velocity = Vector3.zero;
+                }
 
             break;
 
             case EnemyState.Repel:
+
              if(RepelTimer<RepelTime*0.3f)
                 {
                     RepelTimer += Time.deltaTime;
@@ -133,25 +134,25 @@ public class MovingEnemy : MonoBehaviour
 
             case EnemyState.Idle:
             //FacingCheck();
-            DetectingPlayer();
-            
-            // if(isMoving&&PlayerDetect==false)
-            // {
-            //     isIdle = false;
-            //     //MovingDir.x*= -1;
-            //     //FacingCheck();
-            //     currentState = EnemyState.PreMoving;
-            // }
+                DetectingPlayer();
+                
+                // if(isMoving&&PlayerDetect==false)
+                // {
+                //     isIdle = false;
+                //     //MovingDir.x*= -1;
+                //     //FacingCheck();
+                //     currentState = EnemyState.PreMoving;
+                // }
 
-            if(PlayerDetect==false)
-            {
-                currentState = EnemyState.Patrol;
-                isMoving = false;
-            }
+                if(PlayerDetect==false)
+                {
+                    currentState = EnemyState.Patrol;
+                    isMoving = false;
+                }
             
             break;
             case EnemyState.Dead:
-            rb.velocity = Vector3.zero;
+                rb.velocity = Vector3.zero;
 
                 if(dieTimer<dyingTime)
                 {
