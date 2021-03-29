@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     public bool PS4_Triangle_Input;
     public bool PS4_Square_Input;
     public bool PS4_Up;
+    public bool PS4_R2_KeyDown;
     private bool Up_Exit;
     public bool PS4_LH_Up;
     public float PS4_LH_axis;
@@ -50,6 +51,12 @@ public class InputManager : MonoBehaviour
                 else
                 {
                     PS4_Option = false;
+                }
+
+                if(Input.GetButtonDown("PS4-R2")&&!PS4_R2_KeyDown)
+                {
+                    PS4_R2_KeyDown = true;
+                    StartCoroutine(InputAfter_PS4_R2());
                 }
 
                 if(Input.GetButtonDown("PS4-x")&&!PS4_X_Input)
@@ -133,6 +140,14 @@ public class InputManager : MonoBehaviour
             LH_up_Exit = true;
         }
         
+    }
+    IEnumerator InputAfter_PS4_R2()
+    {
+        for(int i = 0;i<1;i++)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+        PS4_R2_KeyDown = false;
     }
     IEnumerator InputAfter_PS4_LH_Up()
     {

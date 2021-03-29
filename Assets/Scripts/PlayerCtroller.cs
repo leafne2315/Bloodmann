@@ -297,7 +297,7 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 				}
 
-				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input&&!isIneffective)//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
@@ -310,7 +310,7 @@ public class PlayerCtroller : MonoBehaviour {
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
 				}
-
+/*
 				if(isAttachWall&&!isGrounded&&canAttach)
 				{
 					if(AttachingObj!=null)
@@ -328,6 +328,7 @@ public class PlayerCtroller : MonoBehaviour {
 					
 					rb.velocity = Vector3.zero;
 				}
+*/
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.BugFly;
@@ -371,7 +372,7 @@ public class PlayerCtroller : MonoBehaviour {
 				rb.velocity = Vector3.zero;
 				RestoreGas();
 
-				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input&&!isIneffective)//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
 				
 					
@@ -446,7 +447,7 @@ public class PlayerCtroller : MonoBehaviour {
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
-				if(Input.GetMouseButtonDown(0)||IM.PS4_Triangle_Input&&!isIneffective)//->Dash
+				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
 					
 					dashTimer = 0; //重置dash 時間
@@ -508,7 +509,7 @@ public class PlayerCtroller : MonoBehaviour {
 					*/
 
 					dashTimer+=Time.deltaTime;
-					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-Triangle"))
+					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-R2"))
 					{
 						if(dashTimer<Dash_PreTime)//->Normal
 						{
@@ -550,15 +551,24 @@ public class PlayerCtroller : MonoBehaviour {
 							Flip();
 						}
 
-						if((isAttachWall||isGrounded) && dashTimer>0.1f)//撞牆
+						if((isAttachWall||isGrounded) && dashTimer>0.05f)//撞牆
 						{
 							rb.velocity = Vector3.zero;
 
 							emission.enabled = false;
 							dashTimer = 0; //重置dash 時間
-							currentState = PlayerState.Normal;
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
+
+							if(isGrounded)
+							{
+								currentState = PlayerState.Normal;
+							}
+							else if(isAttachWall&&canAttach)
+							{
+								currentState = PlayerState.Attach;	
+								PlayerAni.SetTrigger("Attach");
+							}
 						}
 
 						DashAttack();
@@ -591,9 +601,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 							dashTimer = 0; //重置dash 時間
 							emission.enabled = false;
-							currentState = PlayerState.Normal;
+							currentState = PlayerState.Attach;
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
+							PlayerAni.SetTrigger("Attach");
 						}		
 					}
 					else
@@ -1000,7 +1011,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		if(canCollect)
 		{
-			if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
+			if(IM.PS4_Triangle_Input && isGrounded && currentState == PlayerState.Normal)
 			{
 				IM.currentState = InputManager.InputState.CollectingBlood;
 				currentState = PlayerState.BloodCollect;
@@ -1016,7 +1027,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		if(canRest)
 		{
-			if(IM.PS4_LH_Up && isGrounded && currentState == PlayerState.Normal)
+			if(IM.PS4_Triangle_Input && isGrounded && currentState == PlayerState.Normal)
 			{
 				IM.currentState = InputManager.InputState.SavePointMenu;
 
@@ -1397,7 +1408,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		
 		FlyDir = Vector2.Lerp(FlyDir,new Vector2(moveInput_X,moveInput_Y),0.05f);
-		if(Input.GetButton("PS4-R2"))
+		if(Input.GetButton("PS4-R1"))
 		{
 			rb.velocity = FlyDir*40;
 			GasUse(15);
