@@ -34,6 +34,8 @@ public class PlayerCtroller : MonoBehaviour {
 	private ParticleSystem DashEffect;
  	public GameObject dashEffect;
 	private ParticleSystem.EmissionModule emission;
+	
+	
 	//偵測
 	[Header("Detect Settings")]
 	public bool isRolling;
@@ -48,6 +50,21 @@ public class PlayerCtroller : MonoBehaviour {
 	public LayerMask WhatIsGround;
 	public LayerMask WhatIsWall;
 	public LayerMask WhatIsJar;
+
+	[Header("Height Detect")]
+	private float LandDist;
+	private float HighestY;
+	public float DamageHeight;
+	public float PerDist;
+	private float damage;
+	public float LandDamage;
+	public float DamageUp;
+	public bool isLandDamage;
+	public float MaxLandDamage;
+
+	[Header("HeavyLanding Detect")]
+	public float LandingTime;
+
 	//
 	//跳躍
 	[Header("Jump Settings")]
@@ -108,7 +125,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest};
+	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest,HeavyLanding};
 	private bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -261,6 +278,18 @@ public class PlayerCtroller : MonoBehaviour {
 				
 				AccelControll();
 				LimitGSpeed();
+				HeightCheck();
+
+				if(isGrounded && isLandDamage)
+				{
+					damage = (int)((LandDist-DamageHeight)/PerDist)*DamageUp + LandDamage;
+					Mathf.Clamp(damage,0,MaxLandDamage);
+
+					hp = hp-(int)damage;
+
+					currentState = PlayerState.HeavyLanding;
+					LandDist = 0;
+				}
 				/*
 				if(Input.GetKey(KeyCode.W)||Input.GetButton("PS4-R2")&&!Out_Of_Gas)
 				{
@@ -551,8 +580,21 @@ public class PlayerCtroller : MonoBehaviour {
 							Flip();
 						}
 
-						if((isAttachWall||isGrounded) && dashTimer>0.05f)//撞牆
+						if(isGrounded && dashTimer>0.2f)
 						{
+							currentState = PlayerState.Normal;
+							rb.velocity = Vector3.zero;
+
+							emission.enabled = false;
+							dashTimer = 0; //重置dash 時間
+							isDash = false;
+							PlayerAni.SetBool("isDash",false);
+							print("Dashing Hit Ground");
+						}
+						else if(isAttachWall&&canAttach)
+						{
+							currentState = PlayerState.Attach;	
+							PlayerAni.SetTrigger("Attach");
 							rb.velocity = Vector3.zero;
 
 							emission.enabled = false;
@@ -560,15 +602,7 @@ public class PlayerCtroller : MonoBehaviour {
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
 
-							if(isGrounded)
-							{
-								currentState = PlayerState.Normal;
-							}
-							else if(isAttachWall&&canAttach)
-							{
-								currentState = PlayerState.Attach;	
-								PlayerAni.SetTrigger("Attach");
-							}
+							print("DashingTime Attach");
 						}
 
 						DashAttack();
@@ -593,8 +627,6 @@ public class PlayerCtroller : MonoBehaviour {
 						dashTimer+=Time.deltaTime;
 						rb.velocity = DashDir * Mathf.Lerp(dashSpeed,0.0f,(dashTimer-dashTime)/holdingTime);
 						
-							
-
 						if(isAttachWall)
 						{
 							rb.velocity = Vector2.zero;
@@ -605,6 +637,8 @@ public class PlayerCtroller : MonoBehaviour {
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
 							PlayerAni.SetTrigger("Attach");
+
+							print("HoldingTime Attach");
 						}		
 					}
 					else
@@ -613,9 +647,28 @@ public class PlayerCtroller : MonoBehaviour {
 						emission.enabled = false;
 						currentState = PlayerState.Normal;
 						isDash = false;
-						PlayerAni.SetBool("isDash",false);	
+						PlayerAni.SetBool("isDash",false);
+
+						print("No Attach");
 					}
 				}
+
+			break;
+
+			case PlayerState.HeavyLanding:
+
+				rb.velocity = Vector3.zero;
+
+				if(Timer<LandingTime)
+				{
+					Timer+=Time.deltaTime;
+				}
+				else
+				{
+					Timer = 0;
+					currentState = PlayerState.Normal;
+				}
+
 			break;
 			
 			case PlayerState.Rebound:
@@ -897,7 +950,8 @@ public class PlayerCtroller : MonoBehaviour {
 		CheckStability();
 		BooleanCorrectCheck();
 
-		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&&currentState!=PlayerState.Rest && IM.isInGameInput)
+		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&& currentState!=PlayerState.Rest 
+			&& currentState!=PlayerState.HeavyLanding && IM.isInGameInput)
 		{
 			getMoveInput();
 		}
@@ -906,6 +960,8 @@ public class PlayerCtroller : MonoBehaviour {
 		if(currentState!=PlayerState.Normal)
 		{
 			RealMovementReset();
+
+			HighestY = transform.position.y;
 		}
 		
 		//Debug.Log(rb.velocity.x);
@@ -938,6 +994,7 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 
+		RayToGround();
 		/*
 		if(Input.GetButtonDown("PS4-O"))//從任何階段進入Throw階段
 		{
@@ -957,6 +1014,45 @@ public class PlayerCtroller : MonoBehaviour {
 			
 		}
 		*/
+		
+	}
+	
+	void RayToGround()
+	{
+		RaycastHit hit;
+		if(Physics.Raycast(transform.position,Vector3.down,out hit,WhatIsGround))
+		{
+			
+			if(hit.distance>DamageHeight)
+			{
+				Debug.DrawLine(GroundCheck.position,hit.point,Color.red);
+			}
+			else
+			{
+				Debug.DrawLine(GroundCheck.position,hit.point,Color.green);
+			}
+			
+		}
+	}
+	
+	void HeightCheck()
+	{
+		if(HighestY<transform.position.y)
+		{
+			HighestY = transform.position.y;
+		}
+
+		LandDist = HighestY-transform.position.y;
+
+		if(LandDist>DamageHeight)
+		{
+			isLandDamage = true;
+		}
+		else
+		{
+			isLandDamage = false;
+		}
+
 		
 	}
 	public void StartCollect()
