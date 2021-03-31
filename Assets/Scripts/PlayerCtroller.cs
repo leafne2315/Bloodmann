@@ -27,6 +27,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float moveInput_X;
 	private float moveInput_Y;
 	private float JumpInput;
+	private Vector3 MoveDir;
 	public Rigidbody rb;
 	public Vector2 RealMovement;
 	public bool facingRight = true;
@@ -64,7 +65,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 	[Header("HeavyLanding Detect")]
 	public float LandingTime;
-
+	public float quickLandTime;
 	//
 	//跳躍
 	[Header("Jump Settings")]
@@ -111,6 +112,7 @@ public class PlayerCtroller : MonoBehaviour {
 	Vector3 BoundDir;
 	public float BoundTime;
 	public float ReboundAngle;
+	public float StabbingTime;
 	//
 	//被攻擊
 	[Header("UnderAttack Settings")]
@@ -126,7 +128,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public PlayerState currentState;
 	public PlayerState LastState;
 	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest,HeavyLanding};
-	private bool canAttach = true;
+	public bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
 	public bool isFlyAttack;
@@ -168,6 +170,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("AfterAttack Settings")]
 	public float AfterAttackTime;
 	[Header("Reload Settings")]
+	
 	public float ReloadTime;
 
 	[Header("Roll Settings")]
@@ -217,7 +220,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private float StableValue;
 	private ExternalForce Ef;
 	public Vector3 SavePointPos;
-	public bool noGravity;
+	public bool noGravity = false;
 	private SavePoint currentSp;
 
 	void Awake()
@@ -244,12 +247,18 @@ public class PlayerCtroller : MonoBehaviour {
 		GasBarBase.enabled = false;
 
 		emission = DashEffect.emission;
+
+		HighestY = transform.position.y;
 	}
 	void FixedUpdate()
 	{
 		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash&&!noGravity&&currentState!=PlayerState.Rest)
 		{
-			rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
+			if(!noGravity)
+			{
+				rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
+			}
+			
 		}
 		
 	}
@@ -259,6 +268,7 @@ public class PlayerCtroller : MonoBehaviour {
 		HpCheck();
 		RestCheck();
 		BloodCollectCheck();
+		checkAttackRemain();
 
 		switch(currentState)
 		{
@@ -269,27 +279,60 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.Normal:
 				
 				CheckStability();
-				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,moveInput_X * speed,StableValue) , rb.velocity.y);
+
+				if(moveInput_X!=0)
+				{
+					if(moveInput_X>0)
+					{
+						MoveDir = Vector3.right;
+					}
+					else
+					{
+						MoveDir = Vector3.left;
+					}
+				}
+				else
+				{
+					MoveDir = Vector3.zero;
+				}
+
+				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,MoveDir.x * speed,StableValue) , rb.velocity.y);
 				RealMovementFix();
 
 				
 				rb.velocity = RealMovement + Ef.OtherForce;
 				showflySpeed = rb.velocity.y;
 				
-				AccelControll();
+				//AccelControll();
 				LimitGSpeed();
 				HeightCheck();
 
-				if(isGrounded && isLandDamage)
+				if(isGrounded)
 				{
-					damage = (int)((LandDist-DamageHeight)/PerDist)*DamageUp + LandDamage;
-					Mathf.Clamp(damage,0,MaxLandDamage);
+					LandDist = HighestY-transform.position.y;
 
-					hp = hp-(int)damage;
+					if(LandDist>DamageHeight)
+					{
+						isLandDamage = true;
 
-					currentState = PlayerState.HeavyLanding;
-					LandDist = 0;
+						damage = (int)((LandDist-DamageHeight)/PerDist)*DamageUp + LandDamage;
+						Mathf.Clamp(damage,0,MaxLandDamage);
+
+						hp = hp-(int)damage;
+
+						currentState = PlayerState.HeavyLanding;
+						break;
+					}
+					else
+					{
+						isLandDamage = false;
+
+						HighestY = transform.position.y;
+					}
+
+					
 				}
+				
 				/*
 				if(Input.GetKey(KeyCode.W)||Input.GetButton("PS4-R2")&&!Out_Of_Gas)
 				{
@@ -317,7 +360,7 @@ public class PlayerCtroller : MonoBehaviour {
 					AidKitNum-=1;
 				}
 
-				if(IM.PS4_O_Input)
+				if(IM.PS4_O_Input)//->Roll
 				{
 					if(canRoll)
 					{
@@ -332,6 +375,8 @@ public class PlayerCtroller : MonoBehaviour {
 					dashTimer = 0; //重置dash 時間
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
+					PlayerAni.SetBool("DashPrepared",true);
+					
 
 					// rb.gravityScale = 0;
 					rb.velocity = Vector3.zero;
@@ -406,11 +451,13 @@ public class PlayerCtroller : MonoBehaviour {
 				
 					
 					currentState = PlayerState.Dash;
+					PlayerAni.SetBool("DashPrepared",true);
 					//rb.gravityScale = 2;
 					rb.velocity = Vector3.zero;
 					//StartCoroutine(dashCD_Count());
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
-					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;	
+					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
+						
 				}
 
 				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
@@ -482,6 +529,7 @@ public class PlayerCtroller : MonoBehaviour {
 					dashTimer = 0; //重置dash 時間
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
+					PlayerAni.SetBool("DashPrepared",true);
 	
 					// rb.gravityScale = 0;
 					rb.velocity = Vector3.zero;
@@ -543,7 +591,7 @@ public class PlayerCtroller : MonoBehaviour {
 						if(dashTimer<Dash_PreTime)//->Normal
 						{
 							currentState = PlayerState.Normal;
-								
+							PlayerAni.SetBool("DashPrepared",false);
 						}
 						else
 						{
@@ -551,9 +599,11 @@ public class PlayerCtroller : MonoBehaviour {
 
 							isDash = true;
 							PlayerAni.SetBool("isDash",true);
+							PlayerAni.SetBool("DashPrepared",false);
+							AttackRemain--;
 							//Mouse_DirCache();
 							GetDashDir();
-							AttackRemain--;
+							StartCoroutine(IntervalTime_Count());
 						}
 
 						dashTimer = 0;
@@ -580,33 +630,7 @@ public class PlayerCtroller : MonoBehaviour {
 							Flip();
 						}
 
-						if(isGrounded && dashTimer>0.2f)
-						{
-							currentState = PlayerState.Normal;
-							rb.velocity = Vector3.zero;
-
-							emission.enabled = false;
-							dashTimer = 0; //重置dash 時間
-							isDash = false;
-							PlayerAni.SetBool("isDash",false);
-							print("Dashing Hit Ground");
-						}
-						else if(isAttachWall&&canAttach)
-						{
-							currentState = PlayerState.Attach;	
-							PlayerAni.SetTrigger("Attach");
-							rb.velocity = Vector3.zero;
-
-							emission.enabled = false;
-							dashTimer = 0; //重置dash 時間
-							isDash = false;
-							PlayerAni.SetBool("isDash",false);
-
-							print("DashingTime Attach");
-						}
-
 						DashAttack();
-						
 						if(hitConfirm)
 						{
 							dashTimer = 0;
@@ -617,23 +641,61 @@ public class PlayerCtroller : MonoBehaviour {
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
 							getBoundDir();
-							rb.velocity = BoundDir*BoundSpeed;
+							rb.velocity = Vector3.zero;
 							
 							currentState = PlayerState.Rebound;
+							PlayerAni.SetBool("isStabbing",true);
+							
+							
+							break;
 						}	
+
+						if(isGrounded && dashTimer>0.2f)
+						{
+							currentState = PlayerState.Normal;
+							rb.velocity = Vector3.zero;
+							
+
+							emission.enabled = false;
+							dashTimer = 0; //重置dash 時間
+							isDash = false;
+							PlayerAni.SetBool("isDash",false);
+							print("Dashing Hit Ground");
+						}
+						else if(isAttachWall&&canAttach)
+						{
+							currentState = PlayerState.Attach;
+							canAttach = false;
+
+							PlayerAni.SetTrigger("Attach");
+							rb.velocity = Vector3.zero;
+							
+
+							emission.enabled = false;
+							dashTimer = 0; //重置dash 時間
+							isDash = false;
+							PlayerAni.SetBool("isDash",false);
+
+							print("DashingTime Attach");
+						}
+
+						
 					}
 					else if(dashTimer<dashTime+holdingTime)
 					{
 						dashTimer+=Time.deltaTime;
 						rb.velocity = DashDir * Mathf.Lerp(dashSpeed,0.0f,(dashTimer-dashTime)/holdingTime);
 						
-						if(isAttachWall)
+						if(isAttachWall&&canAttach)
 						{
 							rb.velocity = Vector2.zero;
+							
 
 							dashTimer = 0; //重置dash 時間
 							emission.enabled = false;
 							currentState = PlayerState.Attach;
+							canAttach = false;
+							
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
 							PlayerAni.SetTrigger("Attach");
@@ -644,6 +706,8 @@ public class PlayerCtroller : MonoBehaviour {
 					else
 					{
 						dashTimer = 0; //重置dash 時間
+						
+
 						emission.enabled = false;
 						currentState = PlayerState.Normal;
 						isDash = false;
@@ -659,9 +723,25 @@ public class PlayerCtroller : MonoBehaviour {
 
 				rb.velocity = Vector3.zero;
 
+				
+
 				if(Timer<LandingTime)
 				{
 					Timer+=Time.deltaTime;
+
+					if(Timer>=quickLandTime)
+					{
+						if(IM.PS4_O_Input)//->Roll
+						{
+							if(canRoll)
+							{
+								getMoveInput();
+								Roll();
+								currentState = PlayerState.Roll;
+								Timer = 0;
+							}
+						}
+					}
 				}
 				else
 				{
@@ -673,14 +753,30 @@ public class PlayerCtroller : MonoBehaviour {
 			
 			case PlayerState.Rebound:
 
-				if(Timer<BoundTime)
+				isInvincible = true;
+
+				if(Timer<StabbingTime)
 				{
+					noGravity = true;
+					rb.velocity = Vector3.zero;
+
 					Timer+=Time.deltaTime;
+					
+				}
+				else if(Timer<StabbingTime+BoundTime)
+				{
+					noGravity = false;
+					Timer+=Time.deltaTime;
+
+					rb.velocity = BoundDir*BoundSpeed;
 				}
 				else
 				{
 					Timer = 0;
 					currentState = PlayerState.Normal;
+					isInvincible = false;
+					PlayerAni.SetBool("Rebound",false);
+					print("a");
 				}
 
 			break;
@@ -945,13 +1041,13 @@ public class PlayerCtroller : MonoBehaviour {
 		isStill = (currentState == PlayerState.Attach||(currentState==PlayerState.Normal && isGrounded));
 		isRolling = currentState== PlayerState.Roll;
 
-		checkAttackRemain();
+		
 
 		CheckStability();
 		BooleanCorrectCheck();
 
 		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&& currentState!=PlayerState.Rest 
-			&& currentState!=PlayerState.HeavyLanding && IM.isInGameInput)
+			&& currentState!=PlayerState.HeavyLanding &&currentState!=PlayerState.Rebound && IM.isInGameInput)
 		{
 			getMoveInput();
 		}
@@ -1037,23 +1133,12 @@ public class PlayerCtroller : MonoBehaviour {
 	
 	void HeightCheck()
 	{
+		
 		if(HighestY<transform.position.y)
 		{
 			HighestY = transform.position.y;
 		}
 
-		LandDist = HighestY-transform.position.y;
-
-		if(LandDist>DamageHeight)
-		{
-			isLandDamage = true;
-		}
-		else
-		{
-			isLandDamage = false;
-		}
-
-		
 	}
 	public void StartCollect()
 	{
@@ -1158,14 +1243,33 @@ public class PlayerCtroller : MonoBehaviour {
 		canRoll = false;
 		StartCoroutine(RollCD_Count());
 		PlayerAni.SetTrigger("Roll");
-
-		if(facingRight)
+		
+		
+		if(moveInput_X!=0)
 		{
-			rb.velocity = Vector3.right*RollSpeed;
+			Vector3 rollDir;
+
+			if(moveInput_X>0)
+			{
+				rollDir = Vector3.right;
+			}
+			else
+			{
+				rollDir = Vector3.left;
+			}
+			
+			rb.velocity = rollDir*RollSpeed;
 		}
 		else
 		{
-			rb.velocity = Vector3.left*RollSpeed;
+			if(facingRight)
+			{
+				rb.velocity = Vector3.right*RollSpeed;
+			}
+			else
+			{
+				rb.velocity = Vector3.left*RollSpeed;
+			}
 		}
 	}
 	IEnumerator RollCD_Count()
@@ -1182,7 +1286,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = Vector3.down;
+				BoundDir = new Vector3(-Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
 			}
 			else
 			{
@@ -1193,7 +1297,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = Vector3.down;
+				BoundDir = new Vector3(Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
 			}
 			else
 			{
@@ -1365,7 +1469,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	IEnumerator IntervalTime_Count()
 	{
-		canAttach = false;
+
 		for(float i =0 ; i<=Attach_IntervalTime ; i+=Time.deltaTime)
 		{
 			yield return 0;
@@ -1529,6 +1633,7 @@ public class PlayerCtroller : MonoBehaviour {
 		PlayerAni.ResetTrigger("Attack");
 		PlayerAni.ResetTrigger("Roll");
 		PlayerAni.ResetTrigger("Attach");
+		
 	}
 	void ResetAllTimer()
 	{

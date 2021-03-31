@@ -64,4 +64,10 @@ public class AnimationController : MonoBehaviour
         PlayerAni.ResetTrigger("Roll");
         PlayerAni.ResetTrigger("Attach");
     }
+
+    public void ReboundStart()
+    {
+        PlayerAni.SetBool("Rebound",true);
+        PlayerAni.SetBool("isStabbing",false);
+    }
 }
