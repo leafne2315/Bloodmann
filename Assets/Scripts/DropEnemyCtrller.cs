@@ -7,6 +7,7 @@ public class DropEnemyCtrller : MonoBehaviour
     public int hp;
     public int maxHp = 5;
     public bool getHit;
+    private float Timer;
     private tempGetHit tempGetHit;
     private Vector3 MovingDir;
     private Rigidbody rb;
@@ -25,7 +26,7 @@ public class DropEnemyCtrller : MonoBehaviour
     private bool notDie = true;
     private float dieTimer = 0;
     public float dyingTime;
-    public enum EnemyState{OnWall,Fall, Moving, Dead}
+    public enum EnemyState{OnWall,Fall, Moving,GetStabbed, Dead}
     // Start is called before the first frame update
     void Start()
     {
@@ -158,6 +159,15 @@ public class DropEnemyCtrller : MonoBehaviour
             //     Timer = 0;
             //     RushBugAni.SetTrigger("Repel");
             // }
+        }
+    }
+    void GetStabbedCheck()
+    {
+        if(GetComponent<tempGetHit>().isStabbed)
+        {
+            currentState = EnemyState.GetStabbed;
+            Timer = 0;
+            //Stunn ani
         }
     }
     void GetMoveDir()

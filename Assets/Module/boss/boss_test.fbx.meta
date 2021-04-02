@@ -1,32 +1,11 @@
 fileFormatVersion: 2
-guid: 73f048bb27004ee4fafff284f63a2d98
+guid: fea3ec36a7472db4dba411ae93f58e09
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable:
   - first:
-      74: 5245962509617687760
-    second: FLYINGBUG|ATTACK
-  - first:
-      74: -2818436669005291981
-    second: FLYINGBUG|DIE
-  - first:
-      74: -3401195438015474827
-    second: FLYINGBUG|DIEING
-  - first:
-      74: -6668218999552459719
-    second: FLYINGBUG|IDLE
-  - first:
-      74: -7187410372011848982
-    second: FLYINGBUG|IDLE TO WALK
-  - first:
-      74: -3944727357039190256
-    second: FLYINGBUG|SHORT_ATTACK
-  - first:
-      74: -1962322330994467374
-    second: FLYINGBUG|WALK
-  - first:
-      74: 2989313274478928123
-    second: FLYINGBUG|WALK TO IDLE
+      74: 1669664034831594924
+    second: Armature.boss|OR
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -54,7 +33,36 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Armature.boss|OR
+      takeName: Armature.boss|OR
+      internalID: 0
+      firstFrame: 0
+      lastFrame: 50
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 1
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 0
   meshes:
     lODScreenPercentages: []
@@ -106,7 +114,7 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     globalScale: 1
-    rootMotionBoneName: 
+    rootMotionBoneName: DEF_HIPS
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1

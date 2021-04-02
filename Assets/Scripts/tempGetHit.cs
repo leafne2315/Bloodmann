@@ -7,6 +7,7 @@ public class tempGetHit : MonoBehaviour
     // Start is called before the first frame update
     public float KnockTimer;
     public bool isHit;
+    public bool isStabbed;
     Rigidbody rb;
     public Vector3 KnockDir;
     private Color OriginColor;
@@ -32,11 +33,21 @@ public class tempGetHit : MonoBehaviour
     {  
         
     }
+    /*
     public void KnockBack(float KnockPwr,Vector2 KnockDir)
 	{ 
         rb.AddForce(KnockDir*KnockPwr,ForceMode.VelocityChange);
 		isHit = false;
 	}
+    */
+    public IEnumerator StabbedTrigger()
+    {
+        isStabbed = true;
+        yield return 0 ;
+        
+        isStabbed = false;
+    }
+
     public IEnumerator HitTrigger(Vector3 HitDir)
     {
         isHit = true;

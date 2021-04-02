@@ -51,13 +51,16 @@ private Rigidbody rb;
     public float RepelForce;
     public float RepelTime;
     private float RepelTimer;
+    [Header("GetStabbed Settings")]
+    public float GetStabbedTime;
+
     [Header("Die Settings")]
     private float dieTimer;
     public float dyingTime = 1;
 
     [Header("Statement")]
     public EnemyState currentState;
-    public enum EnemyState{Idle,Patrol,InCombat,PreAttack,Attacking,AfterAttack,Die,WaitForTransfer,Repel}
+    public enum EnemyState{Idle,Patrol,InCombat,PreAttack,Attacking,AfterAttack,Die,WaitForTransfer,Repel,GetStabbed}
     [Header("IEnumerator Settings")]
     private IEnumerator StartAttackCoroutine;
     private IEnumerator AfterAttackCoroutine;
@@ -70,10 +73,16 @@ private Rigidbody rb;
     {
         MovingDir = transform.forward;
         rb = GetComponent<Rigidbody>();
+
+        GetStabbedTime = Player.GetComponent<PlayerCtroller>().StabbingTime;
     }
     void FixedUpdate()
     {
-        GravityInput();
+
+        if(currentState!= EnemyState.GetStabbed)
+        {
+            GravityInput();
+        }
         
         
         switch(currentState)
@@ -106,6 +115,7 @@ private Rigidbody rb;
     {
         FacingCheck();
         GetHitCheck();
+        GetStabbedCheck();
         DieCheck();
         //print(PlayerDetect);
         //print(currentState);
@@ -143,6 +153,7 @@ private Rigidbody rb;
             break;
             
             case EnemyState.Patrol:
+
                 DetectingPlayer();
                 PatrolDir();
                 rb.velocity = MovingDir*patrolSpeed;
@@ -202,6 +213,7 @@ private Rigidbody rb;
                 }
                 
             break;
+            
             case EnemyState.PreAttack:
 
                 if(Timer<PreAttackTime)
@@ -284,7 +296,24 @@ private Rigidbody rb;
 
             break;
 
+            case EnemyState.GetStabbed: 
+
+                if(Timer<GetStabbedTime)
+                {
+                    Timer+=Time.deltaTime;
+                }
+                else
+                {
+                    currentState = EnemyState.Repel;
+                    hp--;
+                    AttackCD_Count();
+                    Timer = 0;
+                }
+
+            break;
+
             case EnemyState.Die:
+
                 rb.velocity = Vector3.zero;
 
                 if(dieTimer<dyingTime)
@@ -321,6 +350,8 @@ private Rigidbody rb;
     }
     IEnumerator AttackCD_Count()
     {
+        canAttack = false;
+
         for(float i =0 ; i<=AttackCD ; i+=Time.deltaTime)
         {
             yield return 0;
@@ -441,6 +472,36 @@ private Rigidbody rb;
             }
         }
     }
+    void GetStabbedCheck()
+    {
+        if(GetComponent<tempGetHit>().isStabbed)
+        {
+
+            if(transform.position.x>Player.transform.position.x)
+            {
+                RepelDir = Vector3.right;
+            }
+            else
+            {
+                RepelDir = Vector3.left;
+            }
+
+            
+            
+            currentState = EnemyState.GetStabbed;
+            rb.velocity = Vector3.zero;
+
+            
+            Timer = 0;
+            StopCoroutinesExceptTiming();
+            
+            AttackCDCoroutine = AttackCD_Count();
+            StartCoroutine(AttackCDCoroutine);
+            
+    
+            //Stun ani
+        }
+    }
     void DieCheck()
     {
         if(hp<=0)
@@ -488,6 +549,8 @@ private Rigidbody rb;
             StopCoroutine(AfterAttackCoroutine);
         if(StartAttackCoroutine!=null)
             StopCoroutine(StartAttackCoroutine);
+        if(AttackCDCoroutine!=null)
+            StopCoroutine(AttackCDCoroutine);
     }
 
 }

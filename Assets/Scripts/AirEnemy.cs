@@ -52,7 +52,7 @@ public class AirEnemy : MonoBehaviour
 
     [Header("Statement Settings")]
     public EnemyState currentState;
-    public enum EnemyState{Patrol, Attacking, search, Dead}
+    public enum EnemyState{Patrol, Attacking, search, GetStabbed, Dead}
 
     [Header("Under Attack")]
     public bool getHit;
@@ -321,6 +321,15 @@ public class AirEnemy : MonoBehaviour
         else
         {
             getHit = false;
+        }
+    }
+    void GetStabbedCheck()
+    {
+        if(GetComponent<tempGetHit>().isStabbed)
+        {
+            currentState = EnemyState.GetStabbed;
+            Timer = 0;
+            //Stunn ani
         }
     }
     void ResetTimer()

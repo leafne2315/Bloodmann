@@ -15,6 +15,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private SavingAndLoad SLManager;
 	private Vector3 StartPos;
 	public GameObject Arrow;
+	public GameObject Player3D;
 	public Image GasBar;
 	public Image GasBarBase;
 	public Vector2 FlyDir;
@@ -35,7 +36,7 @@ public class PlayerCtroller : MonoBehaviour {
 	private ParticleSystem DashEffect;
  	public GameObject dashEffect;
 	private ParticleSystem.EmissionModule emission;
-	
+	[SerializeField]private Quaternion originalRotation;
 	
 	//偵測
 	[Header("Detect Settings")]
@@ -113,6 +114,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float BoundTime;
 	public float ReboundAngle;
 	public float StabbingTime;
+	public bool isDownStab;
 	//
 	//被攻擊
 	[Header("UnderAttack Settings")]
@@ -236,6 +238,7 @@ public class PlayerCtroller : MonoBehaviour {
 	void Start()
 	{
 		StartPos = transform.position;
+		originalRotation = Player3D.transform.localRotation;
 
 		KnockTimer = 0;
 		extraJumps = extraJumpValue;
@@ -598,11 +601,23 @@ public class PlayerCtroller : MonoBehaviour {
 							emission.enabled = true;
 
 							isDash = true;
+							
 							PlayerAni.SetBool("isDash",true);
 							PlayerAni.SetBool("DashPrepared",false);
-							AttackRemain--;
+							
 							//Mouse_DirCache();
 							GetDashDir();
+							if(facingRight)
+							{
+								
+								Player3D.transform.rotation = Quaternion.LookRotation(DashDir,Vector3.left);
+							}
+							else
+							{
+								Player3D.transform.rotation = Quaternion.LookRotation(DashDir,Vector3.right);
+							}
+							
+
 							StartCoroutine(IntervalTime_Count());
 						}
 
@@ -644,8 +659,10 @@ public class PlayerCtroller : MonoBehaviour {
 							rb.velocity = Vector3.zero;
 							
 							currentState = PlayerState.Rebound;
+							Bound();
+							Player3D.transform.localRotation = originalRotation;//reset rotate
 							PlayerAni.SetBool("isStabbing",true);
-							
+							AttackRemain--;
 							
 							break;
 						}	
@@ -653,8 +670,9 @@ public class PlayerCtroller : MonoBehaviour {
 						if(isGrounded && dashTimer>0.2f)
 						{
 							currentState = PlayerState.Normal;
+							Player3D.transform.localRotation = originalRotation;//reset rotate
 							rb.velocity = Vector3.zero;
-							
+							AttackRemain--;
 
 							emission.enabled = false;
 							dashTimer = 0; //重置dash 時間
@@ -662,10 +680,12 @@ public class PlayerCtroller : MonoBehaviour {
 							PlayerAni.SetBool("isDash",false);
 							print("Dashing Hit Ground");
 						}
-						else if(isAttachWall&&canAttach)
+						else if(isAttachWall&&canAttach&&!isGrounded)
 						{
 							currentState = PlayerState.Attach;
+							Player3D.transform.localRotation = originalRotation;//reset rotate
 							canAttach = false;
+							AttackRemain--;
 
 							PlayerAni.SetTrigger("Attach");
 							rb.velocity = Vector3.zero;
@@ -695,6 +715,8 @@ public class PlayerCtroller : MonoBehaviour {
 							emission.enabled = false;
 							currentState = PlayerState.Attach;
 							canAttach = false;
+							AttackRemain--;
+							Player3D.transform.localRotation = originalRotation;//reset rotate
 							
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
@@ -710,6 +732,8 @@ public class PlayerCtroller : MonoBehaviour {
 
 						emission.enabled = false;
 						currentState = PlayerState.Normal;
+						Player3D.transform.localRotation = originalRotation;//reset rotate
+						AttackRemain--;
 						isDash = false;
 						PlayerAni.SetBool("isDash",false);
 
@@ -754,7 +778,18 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.Rebound:
 
 				isInvincible = true;
-
+				if(Timer<BoundTime)
+				{
+					Timer+=Time.deltaTime;
+				}
+				else
+				{
+					currentState = PlayerState.Normal;
+					isInvincible = false;
+					PlayerAni.SetBool("isStabbing",false);
+					Timer = 0;
+				}
+				/*
 				if(Timer<StabbingTime)
 				{
 					noGravity = true;
@@ -769,6 +804,8 @@ public class PlayerCtroller : MonoBehaviour {
 					Timer+=Time.deltaTime;
 
 					rb.velocity = BoundDir*BoundSpeed;
+					rb.AddForce(BoundDir*BoundSpeed,ForceMode.)
+
 				}
 				else
 				{
@@ -778,6 +815,7 @@ public class PlayerCtroller : MonoBehaviour {
 					PlayerAni.SetBool("Rebound",false);
 					print("a");
 				}
+				*/
 
 			break;
 
@@ -1012,10 +1050,11 @@ public class PlayerCtroller : MonoBehaviour {
 
 		isGrounded = Physics.CheckSphere(GroundCheck.position,checkRadius,WhatIsGround);
 		//isAttachOnTop = Physics.CheckSphere(UpCheck.position,0.05f,WhatIsWall);
-		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall)||isAttachOnTop;
+		isAttachWall = Physics.CheckSphere(FrontCheck.position,0.05f,WhatIsWall);
 		
 		if(isAttachWall)
 		{
+			
 			if(isAttachOnTop)
 			{
 				Collider[] c = Physics.OverlapSphere(UpCheck.position,0.05f,WhatIsJar);
@@ -1112,7 +1151,10 @@ public class PlayerCtroller : MonoBehaviour {
 		*/
 		
 	}
-	
+	void Bound()
+	{
+		rb.AddForce(BoundDir*BoundSpeed,ForceMode.VelocityChange);
+	}
 	void RayToGround()
 	{
 		RaycastHit hit;
@@ -1286,7 +1328,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = new Vector3(-Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
+				BoundDir = Vector3.left;
 			}
 			else
 			{
@@ -1297,7 +1339,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = new Vector3(Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
+				BoundDir = Vector3.right;
 			}
 			else
 			{
@@ -1307,12 +1349,13 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void DashAttack()
 	{
-		Vector3 attackPos = transform.position + DashDir*2.0f;
+		Vector3 attackPos = transform.position + DashDir*1.5f;
 		Vector3 hitBox = new Vector3(0.25f,0.25f,0.5f); 
 		float angle = Vector3.SignedAngle(Vector3.right,DashDir,Vector3.forward);
 		Vector3 q = new Vector3(0,0,angle);
 		
 		
+
 		if(!isIneffective)
 		{
 			if(!hitConfirm)
@@ -1330,7 +1373,7 @@ public class PlayerCtroller : MonoBehaviour {
 					foreach(Collider c in hitObjs)
 					{
 						print("Hit"+c.name+"!!!!");
-						StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
+						StartCoroutine(c.GetComponent<tempGetHit>().StabbedTrigger());
 					}
 				}
 			}
@@ -1383,6 +1426,14 @@ public class PlayerCtroller : MonoBehaviour {
 			inAttacktime = true;
 			GameObject Ftx = Instantiate(AttackFTX,currentHitPos.position,AttackAngle);
 			Ftx.transform.SetParent(transform);
+	}
+	void getHitReset()
+	{
+		if(Player3D.transform.localRotation != originalRotation)
+		{
+			Player3D.transform.localRotation = originalRotation;
+		}
+			
 	}
 	void AttackHitCheck()
 	{	
@@ -1634,6 +1685,11 @@ public class PlayerCtroller : MonoBehaviour {
 		PlayerAni.ResetTrigger("Roll");
 		PlayerAni.ResetTrigger("Attach");
 		
+		
+		PlayerAni.SetBool("isStabbing",false);
+		PlayerAni.SetBool("Rebound",false);
+		PlayerAni.SetBool("DashPrepared",false);
+		PlayerAni.SetBool("isRecovery",false);
 	}
 	void ResetAllTimer()
 	{
@@ -1648,6 +1704,8 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			resetAniTrigger();
 			ResetAllTimer();
+			getHitReset();
+			PlayerAni.SetTrigger("getHit");
 
 			isInvincible = true;
 			hp -= 15;
