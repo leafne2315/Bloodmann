@@ -31,7 +31,7 @@ public class InputManager : MonoBehaviour
         {
             case InputState.MainMenu:
 
-                if(Input.GetButtonDown("PS4-Option"))
+                if(Input.GetButtonDown("PS4-Option")||Input.GetButtonDown("PS4-O"))
                 {
                     PS4_Option = true;
                 }

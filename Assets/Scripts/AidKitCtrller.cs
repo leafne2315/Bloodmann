@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
 public class AidKitCtrller : MonoBehaviour
 {
     private PlayerCtroller playerCtrScript;
     public GameObject Player;
-    public Text aidKitInt;
+    public TextMeshProUGUI aidKitInt;
     // Start is called before the first frame update
     void Start()
     {

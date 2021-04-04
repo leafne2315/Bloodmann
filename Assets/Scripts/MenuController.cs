@@ -69,6 +69,17 @@ public class MenuController : MonoBehaviour
             EventSystem.current.SetSelectedGameObject(null);
             EventSystem.current.SetSelectedGameObject(pauseSecondButton);
         }
+
+        if(isController && Im.PS4_Option)
+        {
+            isController = false;
+            pauseControllerImage.SetActive(false);
+            isOption=!isOption;
+            pauseMenu.SetActive(isOption);
+            Time.timeScale = 0f;
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(pauseSecondButton);
+        }
         
         //menuInputY = Input.GetAxis("PS4-UpDown");
     }

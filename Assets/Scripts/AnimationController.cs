@@ -15,7 +15,7 @@ public class AnimationController : MonoBehaviour
     }
     void Start()
     {
-        playerCtroller =transform.parent.GetComponent<PlayerCtroller>();
+        playerCtroller = transform.parent.parent.GetComponent<PlayerCtroller>();
         PlayerAni = GetComponent<Animator>();
     }
 
@@ -63,5 +63,11 @@ public class AnimationController : MonoBehaviour
         PlayerAni.ResetTrigger("Reload");
         PlayerAni.ResetTrigger("Roll");
         PlayerAni.ResetTrigger("Attach");
+    }
+
+    public void ReboundStart()
+    {
+        PlayerAni.SetBool("Rebound",true);
+        PlayerAni.SetBool("isStabbing",false);
     }
 }
