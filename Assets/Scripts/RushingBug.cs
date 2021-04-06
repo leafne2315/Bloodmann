@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class RushingBug : MonoBehaviour
 {
@@ -22,6 +23,7 @@ private Rigidbody rb;
     public float idleTime;
     private float idleTimer;
     public float patrolTime;
+    public bool isGrounded;
     private float patrolTimer;
     [Header("Detect Settings")]
     public Vector3 DetectPlayerlength;
@@ -235,7 +237,7 @@ private Rigidbody rb;
             break;
             case EnemyState.Attacking:
                 
-                bool isGrounded = Physics.CheckSphere(GroundCheck.position,GroundCheckRadius,WhatIsGround);
+                isGrounded = Physics.CheckSphere(GroundCheck.position,GroundCheckRadius,WhatIsGround);
                 bool HitBox = Physics.CheckSphere(transform.position,BodyRadius,WhatIsPlayer);
 
                 if(HitBox)
@@ -524,6 +526,11 @@ private Rigidbody rb;
         {
             other.GetComponent<PlayerCtroller>().gettingHit();
         }
+
+        if(other.CompareTag("Ground")&&isGrounded)
+		{
+			transform.GetChild(4).GetComponent<VisualEffect>().SendEvent("OnPlay");
+		}
     }
     void OnDrawGizmos()
     {

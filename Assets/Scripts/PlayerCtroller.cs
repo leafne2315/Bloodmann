@@ -233,6 +233,9 @@ public class PlayerCtroller : MonoBehaviour {
 	private SavePoint currentSp;
 	private HealthBar healthBarScript;
  	public GameObject healthBar;
+	public GameObject jumpDirtVFX;
+	public Transform jumpDirtPos;
+	public bool isGroundedFrame;
 
 	void Awake()
 	{
@@ -306,8 +309,27 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 				else
 				{
+					
 					MoveDir = Vector3.zero;
 				}
+
+				if(isGrounded&&RealMovement.x!=0)
+				{
+					transform.GetChild(3).GetComponent<VisualEffect>().enabled = true;
+					transform.GetChild(3).GetComponent<VisualEffect>().SendEvent("OnPlay");
+				}
+				else
+				{
+					transform.GetChild(3).GetComponent<VisualEffect>().SendEvent("OnStop");
+				}
+
+				if(!isGrounded)
+				{
+					transform.GetChild(3).GetComponent<VisualEffect>().enabled = false;
+				}
+
+				
+
 
 				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,MoveDir.x * speed,StableValue) , rb.velocity.y);
 				RealMovementFix();
@@ -341,9 +363,7 @@ public class PlayerCtroller : MonoBehaviour {
 						isLandDamage = false;
 
 						HighestY = transform.position.y;
-					}
-
-					
+					}		
 				}
 				
 				/*
@@ -359,7 +379,10 @@ public class PlayerCtroller : MonoBehaviour {
 				*/
 				if(Input.GetKeyDown(KeyCode.Space)||IM.PS4_X_Input && isGrounded == true)
 				{
+					transform.GetChild(4).GetComponent<VisualEffect>().SendEvent("OnPlay");
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
+					Instantiate(jumpDirtVFX, jumpDirtPos.position, Quaternion.identity);
+					IM.PS4_X_Input = false;
 				}
 
 				// if(isGrounded)
@@ -368,6 +391,7 @@ public class PlayerCtroller : MonoBehaviour {
 				// }
 				if(IM.PS4_Up && AidKitNum>0)
 				{
+					IM.PS4_Up = false;
 					currentState = PlayerState.Recovery;
 					isRecovery = true;
 					AidKitNum-=1;
@@ -377,6 +401,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					if(canRoll)
 					{
+						IM.PS4_O_Input = false;
 						Roll();
 						currentState = PlayerState.Roll;
 					}
@@ -1115,6 +1140,7 @@ public class PlayerCtroller : MonoBehaviour {
 		//Debug.Log(rb.velocity.y);
 		if(isGrounded == true)
 		{
+			
 			extraJumps = extraJumpValue;
 			JumpTimer = JumpTime;
 
@@ -1511,7 +1537,9 @@ public class PlayerCtroller : MonoBehaviour {
 		if(Mathf.Abs(RealMovement.x)<0.5f)
 		{
 			RealMovement.x = 0.0f;
+			
 		}
+	
 	}
 
 	void RealMovementReset()
@@ -1759,7 +1787,14 @@ public class PlayerCtroller : MonoBehaviour {
 	} 
 	void OnTriggerEnter(Collider other)
 	{
-		
+		if(other.CompareTag("Ground")&&isGrounded)
+		{
+			transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnPlay");
+		}
+		else
+		{
+			transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnStop");
+		}
 		// if(other.CompareTag("Enemy"))
 		// {
 		// 	if(!isInvincible)
@@ -1946,5 +1981,15 @@ public class PlayerCtroller : MonoBehaviour {
 
 		// Invoke("Resurrect",1.0f);
 	}
+
+	IEnumerator GroundedFrame()
+    {
+        for(int i = 0;i<1;i++)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+        isGroundedFrame = false;
+		//transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnPlay");
+    }
 	
 }

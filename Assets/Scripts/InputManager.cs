@@ -121,9 +121,6 @@ public class InputManager : MonoBehaviour
             
         }
 
-        
-
-
     }
     void LH()
     {
@@ -178,6 +175,10 @@ public class InputManager : MonoBehaviour
         
         for(float i =0 ; i<=Delaytime ; i+=Time.deltaTime)
         {
+            if(PS4_X_Input == false)
+            {
+                break;
+            }
             yield return 0;
         }
 
@@ -188,6 +189,10 @@ public class InputManager : MonoBehaviour
         
         for(float i =0 ; i<=Delaytime ; i+=Time.deltaTime)
         {
+            if(PS4_O_Input == false)
+            {
+                break;
+            }
             yield return 0;
         }
         PS4_O_Input = false;
@@ -197,15 +202,22 @@ public class InputManager : MonoBehaviour
         
         for(float i =0 ; i<=Delaytime ; i+=Time.deltaTime)
         {
+            if(PS4_Triangle_Input == false)
+            {
+                break;
+            }
             yield return 0;
         }
         PS4_Triangle_Input = false;
     }
     IEnumerator InputDelay_Square()
     {
-        
         for(float i =0 ; i<=Delaytime ; i+=Time.deltaTime)
         {
+            if(PS4_Square_Input == false)
+            {
+                break;
+            }
             yield return 0;
         }
         PS4_Square_Input = false;
