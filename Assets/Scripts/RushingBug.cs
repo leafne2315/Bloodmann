@@ -488,8 +488,6 @@ private Rigidbody rb;
                 RepelDir = Vector3.left;
             }
 
-            
-            
             currentState = EnemyState.GetStabbed;
             rb.velocity = Vector3.zero;
 

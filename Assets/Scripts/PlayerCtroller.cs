@@ -1319,10 +1319,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		hp+=recoveryAmount;
 	}
-	public float GetHealthNormalized()
-	{
-		return(float)hp/hp_Max;
-	}
+	
 	public void Damage(int damageAmount)
 	{
 		hp -= damageAmount;

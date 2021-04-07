@@ -11,40 +11,20 @@ public class ZagoBug : MonoBehaviour
     public bool isFacingRight = true;
     private tempGetHit tempGetHit;
     public GameObject Player;
-    public enum EnemyState{Patrol,PreMoving,Stop,Attacking,Repel,Dead,Idle,Fall}
+    public enum EnemyState{Move,Repel,Dead,Idle,Fall}
     public EnemyState currentState;
     private EnemyState LastState;
     public Vector3 MovingDir;
+    public float MovimgSpeed;
     private float timer;
-    public bool goAttack;
     public bool notDie = true;
 
     [Header("Detect Settings")]
-    public LayerMask PlayerLayer;
-    
-    public bool PlayerDetect;
     public bool isGroundCheck;
     public bool isWallCheck;
     public Transform CheckPoint;
     public float groundCheckLength;
     public LayerMask GroundLayer;
-    
-
-    [Header("Patrol Settings")]
-    public Vector3 PatrolDetectlength;
-    public float patrolSpeed;
-    public float patrolTime;
-    public float patrolRest;
-
-    [Header("Attacking Settings")]
-    public float AttackingSpeed;
-    public float AttackTime;
-    public Transform AttackPos;
-    public float AttackCD;
-    public Vector3 AttackDetectlength;
-    
-    [Header("Stop Settings")]
-    public float StopTime;
 
     [Header("Fall Settings")]
     public bool isLand;
@@ -59,6 +39,8 @@ public class ZagoBug : MonoBehaviour
     [Header("Die Settings")]
     private float dieTimer;
     public float dyingTime = 1;
+    [Header("Animation Setting")]
+    public Animator ZagoAni;
     void Start()
     {
         tempGetHit = GetComponent<tempGetHit>();
@@ -79,25 +61,16 @@ public class ZagoBug : MonoBehaviour
 
         switch(currentState)
         {
-            case EnemyState.Patrol:
+            case EnemyState.Move:
                 
-                if(timer<patrolTime)
-                {
-                    timer+=Time.deltaTime;
-
-                    rb.velocity = MovingDir*patrolSpeed;
-                }
-                else
-                {
-                    timer = 0;
-                    currentState = EnemyState.Stop;
-                }
+                rb.velocity = MovingDir*MovimgSpeed;
                 
                 GroundCheck();
                 if(!isGroundCheck)
                 {
                     MovingDir.x*=-1;
                 }
+
                 WallCheck();
                 if(isWallCheck)
                 {
@@ -105,81 +78,6 @@ public class ZagoBug : MonoBehaviour
                 }
                 
 
-                PatrolDetect();
-                if(PlayerDetect)
-                {
-                    if(Player.transform.position.x>transform.position.x)
-                    {
-                        MovingDir.x = 1;
-                    }
-                    else
-                    {
-                        MovingDir.x = -1;
-                    }
-
-                    currentState = EnemyState.Stop;
-                    goAttack = true;
-                }
-  
-
-            break;
-
-            case EnemyState.Attacking:
-
-                if(timer<AttackTime)
-                {
-                    rb.velocity = MovingDir*AttackingSpeed;
-                    timer += Time.deltaTime;
-                }
-                else
-                {
-                    timer = 0;
-                    rb.velocity = Vector3.zero;
-
-                    currentState = EnemyState.Stop;
-                    goAttack = false;
-                }
-
-            break;
-
-            case EnemyState.Stop:
-
-                if(timer<StopTime)
-                {
-                    rb.velocity = Vector3.zero;
-                    timer += Time.deltaTime;
-                }
-                else
-                {
-                    timer = 0;
-
-                    AttackDetect();
-                    if(PlayerDetect)
-                    {
-                        if(Player.transform.position.x>transform.position.x)
-                        {
-                            MovingDir.x = 1;
-                        }
-                        else
-                        {
-                            MovingDir.x = -1;
-                        }
-                        
-                        currentState = EnemyState.Stop;
-                        goAttack = true;
-                        StopTime = AttackCD;
-                    }
-                    
-
-                    if(goAttack)
-                    {
-                        currentState = EnemyState.Attacking;
-                    }
-                    else
-                    {
-                        currentState = EnemyState.Patrol;
-                    }
-                }
 
             break;
 
@@ -226,7 +124,7 @@ public class ZagoBug : MonoBehaviour
 
                 if(isLand)
                 {
-                    currentState = EnemyState.Patrol;
+                    currentState = EnemyState.Move;
                 }
 
             break;
@@ -253,28 +151,7 @@ public class ZagoBug : MonoBehaviour
             Flip();
         }
     }
-    void PatrolDetect()
-    {
-        if(Physics.CheckBox(AttackPos.position,PatrolDetectlength,Quaternion.identity,PlayerLayer))
-        {
-            PlayerDetect = true;
-        }
-        else
-        {
-            PlayerDetect = false;
-        }
-    }
-    void AttackDetect()
-    {
-        if(Physics.CheckBox(transform.position,AttackDetectlength,Quaternion.identity,PlayerLayer))
-        {
-            PlayerDetect = true;
-        }
-        else
-        {
-            PlayerDetect = false;
-        }
-    }
+    
     void GroundCheck()
     {
         RaycastHit hitGround;
@@ -308,6 +185,7 @@ public class ZagoBug : MonoBehaviour
             hp--;
             LastState = currentState;
             currentState = EnemyState.Repel;
+            ZagoAni.SetTrigger("getHit");
         }
     }
     void ButtonCheck()
@@ -350,14 +228,23 @@ public class ZagoBug : MonoBehaviour
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 
                 currentState = EnemyState.Dead;
+                ZagoAni.SetBool("Dead",true);
                 //Die animation
+
             }   
+        }
+    }
+    void OnTriggerEnter(Collider other) 
+    {
+        if(other.CompareTag("Player"))
+        {
+            Player.GetComponent<PlayerCtroller>().gettingHit();
         }
     }
     void OnDrawGizmos()
     {
-        Gizmos.DrawWireCube(AttackPos.position,2*PatrolDetectlength);
+        
         Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(transform.position,2*AttackDetectlength);
+        
     }
 }

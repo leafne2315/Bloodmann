@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    private float damageBarImageShrinkTime = 3f;
+    public float damageBarImageShrinkTime = 3f;
     //public float damageBarImageTime = 1.5f;
     //private float damageBarImageTimer;
     private float damageBarImageShrinkTimer;
@@ -19,27 +19,17 @@ public class HealthBar : MonoBehaviour
     {
         healthBar = GetComponent<Image>();
         playerCtrScript = Player.GetComponent<PlayerCtroller>();
-        SetHealth(playerCtrScript.GetHealthNormalized());
+        
         damageBarImage.fillAmount = healthBar.fillAmount;
-        // damageBarColor = damageBarImage.color;
-        // damageBarColor.a = 0f;
-        // damageBarImage.color = damageBarColor;
+        
     }
     
     void Update() 
     {
         
-        // if(damageBarColor.a > 0)
-        // {
-        //     damageBarImageTimer -= Time.deltaTime;
-        //     if(damageBarImageTimer < 0)
-        //     {
-        //         float fadeAmount = 5f;
-        //         damageBarColor.a -= fadeAmount*Time.deltaTime;
-        //         damageBarImage.color = damageBarColor;
-        //     }
-        // }
+        
         damageBarImageShrinkTimer -= Time.deltaTime;
+
         if(damageBarImageShrinkTimer <0)
         {
             if(healthBar.fillAmount<damageBarImage.fillAmount)
@@ -48,15 +38,16 @@ public class HealthBar : MonoBehaviour
                 damageBarImage.fillAmount -= shrinkSpeed * Time.deltaTime;
             }
         }
+
         if(healthBar.fillAmount>damageBarImage.fillAmount)
         {
             damageBarImage.fillAmount = healthBar.fillAmount;
         }
 
     }
-    private void LateUpdate()
+    void LateUpdate()
     {
-        SetHealth(playerCtrScript.GetHealthNormalized());
+        healthBar.fillAmount = (float)playerCtrScript.hp/(float)playerCtrScript.hp_Max;
     }
 
     public void Healing()
@@ -67,20 +58,10 @@ public class HealthBar : MonoBehaviour
     }
     public void Damaging()
     {
-        // if(damageBarColor.a<=0)
-        // {
-        //     damageBarImage.fillAmount = healthBar.fillAmount;
-        // }
-        // damageBarColor.a = 1;
-        // damageBarImage.color = damageBarColor;
-        // damageBarImageTimer = damageBarImageTime;
-        damageBarImageShrinkTimer = damageBarImageShrinkTime;  
+        damageBarImageShrinkTimer = damageBarImageShrinkTime;
     }
 
    
 
-    private void SetHealth(float healthNormalized)
-    {
-        healthBar.fillAmount = healthNormalized;
-    }
+    
 }
