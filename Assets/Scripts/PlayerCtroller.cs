@@ -235,6 +235,8 @@ public class PlayerCtroller : MonoBehaviour {
  	public GameObject healthBar;
 	public GameObject jumpDirtVFX;
 	public Transform jumpDirtPos;
+	public GameObject fallDirtVFX;
+	public Transform fallDirtPos;
 	public bool isGroundedFrame;
 
 	void Awake()
@@ -1789,11 +1791,12 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		if(other.CompareTag("Ground")&&isGrounded)
 		{
-			transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnPlay");
+			//transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnPlay");
+			Instantiate(fallDirtVFX, fallDirtPos.position, Quaternion.identity);
 		}
 		else
 		{
-			transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnStop");
+			//transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnStop");
 		}
 		// if(other.CompareTag("Enemy"))
 		// {

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    public float damageBarImageShrinkTime = 1.5f;
+    private float damageBarImageShrinkTime = 3f;
     //public float damageBarImageTime = 1.5f;
     //private float damageBarImageTimer;
     private float damageBarImageShrinkTimer;
@@ -44,7 +44,7 @@ public class HealthBar : MonoBehaviour
         {
             if(healthBar.fillAmount<damageBarImage.fillAmount)
             {
-                float shrinkSpeed = 0.7f;
+                float shrinkSpeed = 0.3f;
                 damageBarImage.fillAmount -= shrinkSpeed * Time.deltaTime;
             }
         }
