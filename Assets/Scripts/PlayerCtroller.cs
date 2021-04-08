@@ -233,10 +233,13 @@ public class PlayerCtroller : MonoBehaviour {
 	private SavePoint currentSp;
 	private HealthBar healthBarScript;
  	public GameObject healthBar;
+	[Header("VFX Setting")]
 	public GameObject jumpDirtVFX;
 	public Transform jumpDirtPos;
 	public GameObject fallDirtVFX;
 	public Transform fallDirtPos;
+	public GameObject rollVFX;
+	public Transform rollEffectPos;
 	public bool isGroundedFrame;
 
 	void Awake()
@@ -285,7 +288,7 @@ public class PlayerCtroller : MonoBehaviour {
 		//print(currentState);
 		HpCheck();
 		RestCheck();
-		BloodCollectCheck();
+		
 		checkAttackRemain();
 
 		switch(currentState)
@@ -297,6 +300,7 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.Normal:
 				
 				CheckStability();
+				BloodCollectCheck();
 
 				if(moveInput_X!=0)
 				{
@@ -314,24 +318,6 @@ public class PlayerCtroller : MonoBehaviour {
 					
 					MoveDir = Vector3.zero;
 				}
-
-				if(isGrounded&&RealMovement.x!=0)
-				{
-					transform.GetChild(3).GetComponent<VisualEffect>().enabled = true;
-					transform.GetChild(3).GetComponent<VisualEffect>().SendEvent("OnPlay");
-				}
-				else
-				{
-					transform.GetChild(3).GetComponent<VisualEffect>().SendEvent("OnStop");
-				}
-
-				if(!isGrounded)
-				{
-					transform.GetChild(3).GetComponent<VisualEffect>().enabled = false;
-				}
-
-				
-
 
 				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,MoveDir.x * speed,StableValue) , rb.velocity.y);
 				RealMovementFix();
@@ -355,8 +341,9 @@ public class PlayerCtroller : MonoBehaviour {
 						heightdamage = (int)((LandDist-DamageHeight)/PerDist)*DamageUp + LandDamage;
 						Mathf.Clamp(heightdamage,0,MaxLandDamage);
 
-						hp = hp-(int)heightdamage;
+						Damage((int)heightdamage);
 
+						PlayerAni.SetBool("isHeavyLanding",true);
 						currentState = PlayerState.HeavyLanding;
 						break;
 					}
@@ -397,6 +384,9 @@ public class PlayerCtroller : MonoBehaviour {
 					currentState = PlayerState.Recovery;
 					isRecovery = true;
 					AidKitNum-=1;
+
+					float amount = recoverAmount/(float)hp_Max;
+					healthBarScript.Healing(amount);
 				}
 
 				if(IM.PS4_O_Input)//->Roll
@@ -405,6 +395,7 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						IM.PS4_O_Input = false;
 						Roll();
+
 						currentState = PlayerState.Roll;
 					}
 				}
@@ -443,7 +434,7 @@ public class PlayerCtroller : MonoBehaviour {
 					rb.velocity = Vector3.zero;
 				}
 */
-				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1"))
+				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
 				{
 					currentState = PlayerState.BugFly;
 					if(isGrounded)
@@ -687,8 +678,10 @@ public class PlayerCtroller : MonoBehaviour {
 						{
 							dashTimer = 0;
 							hitConfirm = false;
+
 							emission.enabled = false;
 							transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
+							HitEffect();
 							
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
@@ -799,6 +792,7 @@ public class PlayerCtroller : MonoBehaviour {
 								getMoveInput();
 								Roll();
 								currentState = PlayerState.Roll;
+								PlayerAni.SetBool("isHeavyLanding",false);
 								Timer = 0;
 							}
 						}
@@ -808,6 +802,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer = 0;
 					currentState = PlayerState.Normal;
+					PlayerAni.SetBool("isHeavyLanding",false);
 				}
 
 			break;
@@ -1047,7 +1042,7 @@ public class PlayerCtroller : MonoBehaviour {
 					Timer = 0;
 					Recover(recoverAmount);
 					isRecovery = false;
-					healthBarScript.Healing();
+					
 					currentState = PlayerState.Normal; 
 				}
 
@@ -1125,7 +1120,7 @@ public class PlayerCtroller : MonoBehaviour {
 		BooleanCorrectCheck();
 
 		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&& currentState!=PlayerState.Rest 
-			&& currentState!=PlayerState.HeavyLanding &&currentState!=PlayerState.Rebound && IM.isInGameInput)
+			&& currentState!=PlayerState.HeavyLanding &&currentState!=PlayerState.Rebound &&currentState!=PlayerState.Dash && IM.isInGameInput)
 		{
 			getMoveInput();
 		}
@@ -1190,6 +1185,23 @@ public class PlayerCtroller : MonoBehaviour {
 		}
 		*/
 		
+	}
+	void HitEffect()
+	{
+		Vector3 HitEffectRightAngle;
+       	HitEffectRightAngle = new Vector3(0f,20f,40f);
+       	Vector3 HitEffectLeftAngle;
+       	HitEffectLeftAngle = new Vector3(0f,20f,-40f);
+
+       	if(facingRight)
+		{
+			transform.GetChild(7).GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectRightAngle);
+		}
+		else
+		{
+			transform.GetChild(7).GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectLeftAngle);
+		}
+		transform.GetChild(7).GetComponent<VisualEffect>().SendEvent("OnPlay");
 	}
 	void Bound()
 	{
@@ -1274,7 +1286,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		if(canCollect)
 		{
-			if(IM.PS4_Triangle_Input && isGrounded && currentState == PlayerState.Normal)
+			if(IM.PS4_Triangle_Input && isGrounded )
 			{
 				IM.currentState = InputManager.InputState.CollectingBlood;
 				currentState = PlayerState.BloodCollect;
@@ -1319,10 +1331,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		hp+=recoveryAmount;
 	}
-	public float GetHealthNormalized()
-	{
-		return(float)hp/hp_Max;
-	}
+	
 	public void Damage(int damageAmount)
 	{
 		hp -= damageAmount;
@@ -1343,10 +1352,14 @@ public class PlayerCtroller : MonoBehaviour {
 			if(moveInput_X>0)
 			{
 				rollDir = Vector3.right;
+
+				Instantiate(rollVFX, rollEffectPos.position, Quaternion.Euler(0,0,76));
 			}
 			else
 			{
 				rollDir = Vector3.left;
+
+				Instantiate(rollVFX, rollEffectPos.position, Quaternion.Euler(0,0,-76));
 			}
 			
 			rb.velocity = rollDir*RollSpeed;
@@ -1356,12 +1369,17 @@ public class PlayerCtroller : MonoBehaviour {
 			if(facingRight)
 			{
 				rb.velocity = Vector3.right*RollSpeed;
+
+				Instantiate(rollVFX, rollEffectPos.position, Quaternion.Euler(0,0,76));
 			}
 			else
 			{
 				rb.velocity = Vector3.left*RollSpeed;
+
+				Instantiate(rollVFX, rollEffectPos.position, Quaternion.Euler(0,0,-76));
 			}
 		}
+		
 	}
 	IEnumerator RollCD_Count()
 	{
@@ -1484,7 +1502,12 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			Player3D.transform.localRotation = originalRotation;
 		}
-			
+
+		if(isRecovery)
+		{
+			isRecovery = false;
+			healthBarScript.InterruptRecover();
+		}
 	}
 	void AttackHitCheck()
 	{	
@@ -1500,7 +1523,8 @@ public class PlayerCtroller : MonoBehaviour {
 			else
 			{
 				hitConfirm = true;
-				
+				HitEffect();
+
 				foreach(Collider c in hitObjs)
 				{
 					transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
@@ -1743,13 +1767,13 @@ public class PlayerCtroller : MonoBehaviour {
 		PlayerAni.SetBool("Rebound",false);
 		PlayerAni.SetBool("DashPrepared",false);
 		PlayerAni.SetBool("isRecovery",false);
+		PlayerAni.SetBool("isHeavyLanding",false);
 	}
 	void ResetAllTimer()
 	{
 		Timer = 0;
 		dashTimer = 0;
 		JumpTimer = 0;
-
 	}
 	public void gettingHit()
 	{

@@ -5,9 +5,13 @@ using UnityEngine.UI;
 
 public class HealthBar : MonoBehaviour
 {
-    private float damageBarImageShrinkTime = 3f;
+    public float damageShrinkTime = 3f;
+    public float shrinkSpeed;
     //public float damageBarImageTime = 1.5f;
     //private float damageBarImageTimer;
+    private float timer;
+    public bool isDamaging;
+    public bool isHealing;
     private float damageBarImageShrinkTimer;
     private PlayerCtroller playerCtrScript;
     public Image healthBar;
@@ -19,68 +23,53 @@ public class HealthBar : MonoBehaviour
     {
         healthBar = GetComponent<Image>();
         playerCtrScript = Player.GetComponent<PlayerCtroller>();
-        SetHealth(playerCtrScript.GetHealthNormalized());
+        
         damageBarImage.fillAmount = healthBar.fillAmount;
-        // damageBarColor = damageBarImage.color;
-        // damageBarColor.a = 0f;
-        // damageBarImage.color = damageBarColor;
+        
     }
     
     void Update() 
     {
         
-        // if(damageBarColor.a > 0)
-        // {
-        //     damageBarImageTimer -= Time.deltaTime;
-        //     if(damageBarImageTimer < 0)
-        //     {
-        //         float fadeAmount = 5f;
-        //         damageBarColor.a -= fadeAmount*Time.deltaTime;
-        //         damageBarImage.color = damageBarColor;
-        //     }
-        // }
-        damageBarImageShrinkTimer -= Time.deltaTime;
-        if(damageBarImageShrinkTimer <0)
+        if(isDamaging)
         {
-            if(healthBar.fillAmount<damageBarImage.fillAmount)
+            if(timer<damageShrinkTime)
             {
-                float shrinkSpeed = 0.3f;
-                damageBarImage.fillAmount -= shrinkSpeed * Time.deltaTime;
+                timer+=Time.deltaTime;
+            }
+            else
+            {
+                if(damageBarImage.fillAmount>healthBar.fillAmount)
+                {
+                    damageBarImage.fillAmount-=shrinkSpeed*Time.deltaTime;
+                }
+                else
+                {
+                    damageBarImage.fillAmount = healthBar.fillAmount;
+                    isDamaging = false;
+                    timer = 0;
+                }
             }
         }
-        if(healthBar.fillAmount>damageBarImage.fillAmount)
-        {
-            damageBarImage.fillAmount = healthBar.fillAmount;
-        }
-
     }
-    private void LateUpdate()
+    void LateUpdate()
     {
-        SetHealth(playerCtrScript.GetHealthNormalized());
+        healthBar.fillAmount = (float)playerCtrScript.hp/(float)playerCtrScript.hp_Max;
     }
 
-    public void Healing()
+    public void Healing(float fillAmount)
     {
-        float recoverySpeed = 0.7f;
-        healthBar.fillAmount += recoverySpeed *Time.deltaTime;
-        damageBarImage.fillAmount = healthBar.fillAmount;
+        damageBarImage.fillAmount += fillAmount; 
     }
     public void Damaging()
     {
-        // if(damageBarColor.a<=0)
-        // {
-        //     damageBarImage.fillAmount = healthBar.fillAmount;
-        // }
-        // damageBarColor.a = 1;
-        // damageBarImage.color = damageBarColor;
-        // damageBarImageTimer = damageBarImageTime;
-        damageBarImageShrinkTimer = damageBarImageShrinkTime;  
+        isDamaging = true;
     }
-
+    public void InterruptRecover()
+    {
+        damageBarImage.fillAmount = healthBar.fillAmount;
+    }
    
 
-    private void SetHealth(float healthNormalized)
-    {
-        healthBar.fillAmount = healthNormalized;
-    }
+    
 }

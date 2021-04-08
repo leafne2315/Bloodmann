@@ -8,8 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: pureblack
-    second: {fileID: 6147485909011808754, guid: 4ba360ec92d8f5a4abc5baad7ebb52b2,
-      type: 3}
+    second: {fileID: 2100000, guid: eb6836b2701da86478566fb1197a510c, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
