@@ -35,6 +35,12 @@ public class PlayerCtroller : MonoBehaviour {
 	public Image CoreHalo;
 	public Image GasBar;
 	public Image GasBarBase;
+	[Header("Collider Detail")]
+
+	private float OriginalHeight;
+	private Vector3 OriginalCenter;
+	public float RollingHeight;
+	public Vector3 RollingCenter;
 
 	[Header("Effect Settings")]
 	private ParticleSystem DashEffect;
@@ -252,6 +258,9 @@ public class PlayerCtroller : MonoBehaviour {
 		Ef = GetComponent<ExternalForce>();
 		IM = inputmanager.GetComponent<InputManager>();
 		SLManager = GameObject.Find("Save&Load").GetComponent<SavingAndLoad>();
+
+		OriginalCenter = GetComponent<CapsuleCollider>().center;
+		OriginalHeight = GetComponent<CapsuleCollider>().height;
 	}
 	void Start()
 	{
@@ -1054,6 +1063,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(CollectBegin)
 				{
+					PlayerAni.SetBool("CollectingBlood",true);
 					CollectingBlood();
 				}
 
@@ -1186,6 +1196,18 @@ public class PlayerCtroller : MonoBehaviour {
 		*/
 		
 	}
+	void LowerCollider()
+	{
+		CapsuleCollider cc = GetComponent<CapsuleCollider>();
+		GetComponent<CapsuleCollider>().height = RollingHeight;
+		GetComponent<CapsuleCollider>().center = RollingCenter;
+	}
+	void ResetCollider()
+	{
+		CapsuleCollider cc = GetComponent<CapsuleCollider>();
+		cc.height = OriginalHeight;
+		cc.center = OriginalCenter;
+	}
 	void HitEffect()
 	{
 		Vector3 HitEffectRightAngle;
@@ -1267,6 +1289,7 @@ public class PlayerCtroller : MonoBehaviour {
 			StartCoroutine(BloodCollectUI_Remove());
 			currentState = PlayerState.Normal;
 			currentBp.canActivate = false;
+			
 		}
 	}
 	IEnumerator BloodCollectUI_Remove()
@@ -1507,6 +1530,15 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			isRecovery = false;
 			healthBarScript.InterruptRecover();
+		}
+
+		if(CollectBegin)
+		{
+			CollectBegin = false;
+			IM.currentState = InputManager.InputState.InGame;
+
+			bloodAmount = 0;//顯示數值重置
+			StartCoroutine(BloodCollectUI_Remove());
 		}
 	}
 	void AttackHitCheck()

@@ -6,6 +6,7 @@ public class AnimationController : MonoBehaviour
 {
     // Start is called before the first frame update
     private PlayerCtroller playerCtroller;
+    public GameObject PlayerModule;
     Animator PlayerAni;
     private InputManager Im;
 
@@ -15,8 +16,8 @@ public class AnimationController : MonoBehaviour
     }
     void Start()
     {
-        playerCtroller = transform.parent.parent.GetComponent<PlayerCtroller>();
-        PlayerAni = GetComponent<Animator>();
+        playerCtroller = transform.GetComponent<PlayerCtroller>();
+        PlayerAni = PlayerModule.GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -28,6 +29,7 @@ public class AnimationController : MonoBehaviour
         PlayerAni.SetBool("isDash",playerCtroller.isAirDash);
         PlayerAni.SetBool("isGround",playerCtroller.isGrounded);
         PlayerAni.SetBool("isRecovery",playerCtroller.isRecovery);
+        PlayerAni.SetBool("CollectingBlood",playerCtroller.CollectBegin);
         if(playerCtroller.isAttachWall&&!playerCtroller.isGrounded&&!playerCtroller.isFlying)
         {
             PlayerAni.SetBool("isOnWall",true);
@@ -70,4 +72,5 @@ public class AnimationController : MonoBehaviour
         PlayerAni.SetBool("Rebound",true);
         PlayerAni.SetBool("isStabbing",false);
     }
+    
 }
