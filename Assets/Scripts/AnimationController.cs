@@ -26,7 +26,7 @@ public class AnimationController : MonoBehaviour
         PlayerAni.SetFloat("MoveX",Mathf.Abs(playerCtroller.RealMovement.x));
         PlayerAni.SetFloat("MoveY",playerCtroller.RealMovement.y);
         PlayerAni.SetBool("isFly",playerCtroller.isFlying);
-        PlayerAni.SetBool("isDash",playerCtroller.isAirDash);
+        
         PlayerAni.SetBool("isGround",playerCtroller.isGrounded);
         PlayerAni.SetBool("isRecovery",playerCtroller.isRecovery);
         PlayerAni.SetBool("CollectingBlood",playerCtroller.CollectBegin);

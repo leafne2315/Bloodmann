@@ -49,6 +49,7 @@ public class DropEnemyCtrller : MonoBehaviour
     {
         DieCheck();
         getHitCheck();
+        GetStabbedCheck();
         GroundCheck();
         
         switch(currentState)
@@ -143,31 +144,15 @@ public class DropEnemyCtrller : MonoBehaviour
     {
         if(tempGetHit.isHit)
         {
-            getHit = true;
-        }
-        else
-        {
-            getHit = false;
-        }
-
-        if(GetComponent<tempGetHit>().isHit)
-        {
             hp--;
-            // if(!isAttacking)
-            // {
-            //     currentState = EnemyState.Repel;
-            //     Timer = 0;
-            //     RushBugAni.SetTrigger("Repel");
-            // }
         }
+        
     }
     void GetStabbedCheck()
     {
-        if(GetComponent<tempGetHit>().isStabbed)
+        if(tempGetHit.isStabbed)
         {
-            currentState = EnemyState.GetStabbed;
-            Timer = 0;
-            //Stunn ani
+            hp--;
         }
     }
     void GetMoveDir()
@@ -223,7 +208,10 @@ public class DropEnemyCtrller : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerCtroller>().gettingHit();
+            if(notDie)
+            {
+                other.GetComponent<PlayerCtroller>().gettingHit();
+            }
         }
     }
     

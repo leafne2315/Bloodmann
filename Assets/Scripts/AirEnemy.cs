@@ -94,12 +94,9 @@ public class AirEnemy : MonoBehaviour
             }
             
         }
-        if(tempGetHit.isHit)
-        {
-            print("repel!!");
-            health--;
-            StartCoroutine(Repelling());
-        }
+
+        getHitCheck();
+        GetStabbedCheck();
 
         switch (currentState)
         {
@@ -316,20 +313,20 @@ public class AirEnemy : MonoBehaviour
     {
         if(tempGetHit.isHit)
         {
-            getHit = true;
-        }
-        else
-        {
-            getHit = false;
+            print("repel!!");
+            health--;
+            StartCoroutine(Repelling());
+            ResetTimer();
         }
     }
     void GetStabbedCheck()
     {
         if(GetComponent<tempGetHit>().isStabbed)
         {
-            currentState = EnemyState.GetStabbed;
-            Timer = 0;
-            //Stunn ani
+            print("repel!!");
+            health--;
+            StartCoroutine(Repelling());
+            ResetTimer();
         }
     }
     void ResetTimer()
@@ -359,6 +356,16 @@ public class AirEnemy : MonoBehaviour
         // {
         //     attackTimer+=Time.deltaTime; 
         // }
+    }
+    void OnTriggerEnter(Collider other) 
+    {
+        if(other.CompareTag("Player"))
+        {
+            if(notDie)
+            {
+                Player.GetComponent<PlayerCtroller>().gettingHit();
+            }
+        }
     }
 }
 

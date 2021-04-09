@@ -28,12 +28,13 @@ private Rigidbody rb;
     [Header("Detect Settings")]
     public Vector3 DetectPlayerlength;
     public float DetectPlayerRadius;
+    public Transform DetectPos;
     public LayerMask WhatIsPlayer;
     public bool PlayerDetect;
     public Transform GroundCheck;
     public float GroundCheckRadius = 0.1f;
     public LayerMask WhatIsGround;
-    public bool GetHit;
+    public Vector3 CombatingVision;
 
     [Header("Attack Settings")]
     public Vector3 AttackDir;
@@ -190,10 +191,9 @@ private Rigidbody rb;
             case EnemyState.InCombat:
                 
                 GetMoveDir();
-                DetectingPlayer();
                 MoveTowardPlayer();
 
-                if(PlayerInRange()&&canAttack)
+                if(PlayerInAttackRange()&&canAttack)
                 {
 
                     currentState = EnemyState.PreAttack;
@@ -203,9 +203,10 @@ private Rigidbody rb;
                     rb.velocity = Vector3.zero;
                     isAttacking = true;
                     get_AttackDir();
+                    break;
                 }
 
-                if(!PlayerDetect)
+                if(OutOfVisionDetect())
                 {
                     currentState = EnemyState.Idle;
                     rb.velocity = Vector3.zero;
@@ -308,7 +309,7 @@ private Rigidbody rb;
                 {
                     currentState = EnemyState.Repel;
                     hp--;
-                    AttackCD_Count();
+                    
                     Timer = 0;
                 }
 
@@ -341,7 +342,7 @@ private Rigidbody rb;
 
         for(int i = 0;i<frameNum;i++)
         {
-        yield return 0;
+            yield return 0;
         }
         isOverFrame = true;
     }
@@ -362,7 +363,7 @@ private Rigidbody rb;
     }
     void DetectingPlayer()
     {
-        if(Physics.CheckBox(transform.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
+        if(Physics.CheckBox(DetectPos.position,DetectPlayerlength,Quaternion.identity,WhatIsPlayer)||Physics.CheckSphere(transform.position,DetectPlayerRadius,WhatIsPlayer))
         {
             PlayerDetect = true;
             //print("checked");
@@ -373,7 +374,18 @@ private Rigidbody rb;
             //print("NotFound");
         }
     }
-    bool PlayerInRange()
+    bool OutOfVisionDetect()
+    {
+        if(Physics.CheckBox(transform.position,CombatingVision,Quaternion.identity,WhatIsPlayer))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    bool PlayerInAttackRange()
     {
         if(Physics.CheckBox(AttackPos.position,AttackRange,Quaternion.identity,WhatIsPlayer))
         {
@@ -478,7 +490,7 @@ private Rigidbody rb;
     {
         if(GetComponent<tempGetHit>().isStabbed)
         {
-
+            hp--;
             if(transform.position.x>Player.transform.position.x)
             {
                 RepelDir = Vector3.right;
@@ -488,20 +500,16 @@ private Rigidbody rb;
                 RepelDir = Vector3.left;
             }
 
-            
-            
-            currentState = EnemyState.GetStabbed;
+            currentState = EnemyState.Repel;
+            RushBugAni.SetTrigger("Repel");
             rb.velocity = Vector3.zero;
+            Timer = 0;
 
             
-            Timer = 0;
             StopCoroutinesExceptTiming();
-            
             AttackCDCoroutine = AttackCD_Count();
             StartCoroutine(AttackCDCoroutine);
-            
-    
-            //Stun ani
+
         }
     }
     void DieCheck()
@@ -524,7 +532,10 @@ private Rigidbody rb;
     {
         if(other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerCtroller>().gettingHit();
+            if(notDie)
+            {
+                other.GetComponent<PlayerCtroller>().gettingHit();
+            }
         }
 
         if(other.CompareTag("Ground")&&isGrounded)
@@ -535,10 +546,10 @@ private Rigidbody rb;
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position,2*DetectPlayerlength);
+        Gizmos.DrawWireCube(DetectPos.position,2*DetectPlayerlength);
         Gizmos.DrawWireSphere(transform.position,DetectPlayerRadius);
 
-        if(PlayerInRange())
+        if(PlayerInAttackRange())
         {
             Gizmos.color = Color.red;
         }
@@ -549,6 +560,12 @@ private Rigidbody rb;
         Gizmos.DrawWireCube(AttackPos.position,2*AttackRange);
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position,BodyRadius);
+
+        if(currentState == EnemyState.InCombat)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(transform.position,2*CombatingVision);
+        }
     }
     void StopCoroutinesExceptTiming()
     {

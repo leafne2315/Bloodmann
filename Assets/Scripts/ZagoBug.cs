@@ -56,6 +56,7 @@ public class ZagoBug : MonoBehaviour
     {
         FacingCheck();
         getHitCheck();
+        GetStabbedCheck();
         ButtonCheck();
         DieCheck();
 
@@ -188,6 +189,25 @@ public class ZagoBug : MonoBehaviour
             ZagoAni.SetTrigger("getHit");
         }
     }
+    void GetStabbedCheck()
+    {
+        if(GetComponent<tempGetHit>().isStabbed)
+        {
+            hp--;
+            if(transform.position.x>Player.transform.position.x)
+            {
+                RepelDir = Vector3.right;
+            }
+            else
+            {
+                RepelDir = Vector3.left;
+            }
+
+            currentState = EnemyState.Repel;
+            rb.velocity = Vector3.zero;
+
+        }
+    }
     void ButtonCheck()
     {
         for(int i = 0;i<Button.Length;i++)
@@ -228,8 +248,8 @@ public class ZagoBug : MonoBehaviour
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 
                 currentState = EnemyState.Dead;
-                ZagoAni.SetBool("Dead",true);
-                //Die animation
+                ZagoAni.SetTrigger("Dead");
+                
 
             }   
         }
@@ -238,7 +258,10 @@ public class ZagoBug : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            Player.GetComponent<PlayerCtroller>().gettingHit();
+            if(notDie)
+            {
+                Player.GetComponent<PlayerCtroller>().gettingHit();
+            }
         }
     }
     void OnDrawGizmos()

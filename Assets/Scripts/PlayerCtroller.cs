@@ -35,16 +35,16 @@ public class PlayerCtroller : MonoBehaviour {
 	public Image CoreHalo;
 	public Image GasBar;
 	public Image GasBarBase;
-	[Header("Collider Detail")]
 
-	private float OriginalHeight;
-	private Vector3 OriginalCenter;
+	[Header("Collider Detail")]
 	public float RollingHeight;
 	public Vector3 RollingCenter;
+	private float OriginalHeight;
+	private Vector3 OriginalCenter;
 
 	[Header("Effect Settings")]
-	private ParticleSystem DashEffect;
  	public GameObject dashEffect;
+	private ParticleSystem DashEffect;
 	private ParticleSystem.EmissionModule emission;
 	[SerializeField]private Quaternion originalRotation;
 	
@@ -595,19 +595,6 @@ public class PlayerCtroller : MonoBehaviour {
 
 			break;
 
-			case PlayerState.AirDash:
-
-				if(isAirDash)
-				{
-					rb.velocity = FlyDir.normalized*AirDashSpeed;
-				}
-				else
-				{
-					currentState = PlayerState.BugFly;
-				}
-
-			break;
-
 			case PlayerState.Dash:
 
 				if(!isDash)
@@ -877,6 +864,7 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 				else if(Timer<RollTime+AfterRollTime)
 				{
+					ResetCollider();
 					Timer+=Time.deltaTime;
 					rb.velocity = new Vector3(0.0f,rb.velocity.y,0.0f);
 				}
@@ -1366,7 +1354,7 @@ public class PlayerCtroller : MonoBehaviour {
 		canRoll = false;
 		StartCoroutine(RollCD_Count());
 		PlayerAni.SetTrigger("Roll");
-		
+		LowerCollider();
 		
 		if(moveInput_X!=0)
 		{
@@ -1489,8 +1477,11 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void getMoveInput()
 	{
-		moveInput_X = Input.GetAxis("PS4-L-Horizontal");
-		moveInput_Y = Input.GetAxis("PS4-L-Vertical");
+		if(IM.currentState == InputManager.InputState.InGame)
+		{
+			moveInput_X = Input.GetAxis("PS4-L-Horizontal");
+			moveInput_Y = Input.GetAxis("PS4-L-Vertical");
+		}
 	}
 	void AttackMove()
 	{
