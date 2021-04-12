@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SavingAndLoad : MonoBehaviour
 {
     // Start is called before the first frame update
     private int Hp;
+    [SerializeField]private int Scene_index;
     [SerializeField]private int Hp_Max;
     [SerializeField]private int AidKitNum;
     [SerializeField]private int Blood;
@@ -20,9 +22,11 @@ public class SavingAndLoad : MonoBehaviour
     public int Origin_Blood;
     public Vector3 StartPos;
     private PlayerCtroller playerCtrl;
+    private GameManager GM;
     void Awake()
     {
         playerCtrl = GameObject.Find("Player").GetComponent<PlayerCtroller>();
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
     void Start()
     {
@@ -38,6 +42,9 @@ public class SavingAndLoad : MonoBehaviour
         Hp_Max = playerCtrl.hp_Max;
         AidKitNum = playerCtrl.AidKitNum;
         SavePos = new Vector3(playerCtrl.transform.position.x,playerCtrl.transform.position.y,0.0f);
+
+        Scene scene = SceneManager.GetActiveScene();
+        Scene_index = scene.buildIndex;
 
         posX = SavePos.x;
         posY = SavePos.y;
@@ -56,6 +63,9 @@ public class SavingAndLoad : MonoBehaviour
     {
         GetPlayerData();
         //PlayerPrefs.SetInt("myHP",Hp);
+        
+        PlayerPrefs.SetInt("Scene_Index",Scene_index);
+
         PlayerPrefs.SetInt("myHP_Max",Hp_Max);
         PlayerPrefs.SetInt("AidKitNum",AidKitNum);
 
@@ -71,6 +81,7 @@ public class SavingAndLoad : MonoBehaviour
         //PlayerPrefs.GetInt("myHP",Hp);
         Hp_Max = PlayerPrefs.GetInt("myHP_Max");
         AidKitNum = PlayerPrefs.GetInt("AidKitNum");
+        Scene_index = PlayerPrefs.GetInt("Scene_Index");
 
         posX = PlayerPrefs.GetFloat("posX");
         posY = PlayerPrefs.GetFloat("posY");
@@ -91,6 +102,7 @@ public class SavingAndLoad : MonoBehaviour
         posY = SavePos.y;
         posZ = SavePos.z;
 
+        PlayerPrefs.SetInt("Scene_Index",1);
         PlayerPrefs.SetInt("myHP_Max",Hp_Max);
         PlayerPrefs.SetInt("AidKitNum",AidKitNum);
 

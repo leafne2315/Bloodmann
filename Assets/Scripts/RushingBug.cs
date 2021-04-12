@@ -148,6 +148,7 @@ private Rigidbody rb;
                 {
                     idleTimer = 0;
                     currentState = EnemyState.InCombat;
+                    
                     //RushBugAni.SetTrigger("ToMove");
                     RushBugAni.SetBool("Move", true);
                     RushBugAni.SetBool("Idle", false);
@@ -182,7 +183,7 @@ private Rigidbody rb;
                 {
                     patrolTimer = 0;
                     currentState = EnemyState.InCombat;
-                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SpiderDetect") as GameObject, transform.position, Quaternion.identity);
+                    
                     //RushBugAni.SetTrigger("ToMove");
                     RushBugAni.SetBool("Move", true);
                 }
@@ -200,6 +201,7 @@ private Rigidbody rb;
                     currentState = EnemyState.PreAttack;
                     RushBugAni.SetTrigger("Attack");
                     RushBugAni.SetBool("Move", false);
+                    
 
                     rb.velocity = Vector3.zero;
                     isAttacking = true;
@@ -230,6 +232,7 @@ private Rigidbody rb;
                     Timer = 0;
                     JumpAttack(AttackDir);
                     currentState = EnemyState.Attacking;
+                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SpiderDetect") as GameObject, transform.position, Quaternion.identity);
 
                     AttackCDCoroutine = AttackCD_Count();
                     StartCoroutine(AttackCDCoroutine);
@@ -326,7 +329,7 @@ private Rigidbody rb;
                 }
                 else
                 {
-                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SpiderGetHit") as GameObject, transform.position, Quaternion.identity);
+                    
                     transform.GetChild(2).GetComponent<RushEnemyUIController>().DestroyUI();
                     Destroy(gameObject);
                 }
@@ -525,6 +528,7 @@ private Rigidbody rb;
                 gameObject.tag = "DeadObject";
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 
+                GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SpiderGetHit") as GameObject, transform.position, Quaternion.identity);
                 currentState = EnemyState.Die;
                 RushBugAni.SetTrigger("Die");
             }   

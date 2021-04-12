@@ -476,6 +476,24 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+--- !u!1 &1535886539 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 169563780362364949, guid: 236e9681ec7ff124ebb4db819137f669,
+    type: 3}
+  m_PrefabInstance: {fileID: 169563780037888758}
+  m_PrefabAsset: {fileID: 0}
+--- !u!225 &1535886541
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1535886539}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1616678459
 GameObject:
   m_ObjectHideFlags: 0

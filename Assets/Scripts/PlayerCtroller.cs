@@ -421,6 +421,7 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
 					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PreDash") as GameObject, transform.position, Quaternion.identity);
+					transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 					dashTimer = 0; //重置dash 時間
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
@@ -497,7 +498,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
-				
+					transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PreDash") as GameObject, transform.position, Quaternion.identity);
 
 					currentState = PlayerState.Dash;
@@ -552,6 +553,11 @@ public class PlayerCtroller : MonoBehaviour {
 					StartCoroutine(IntervalTime_Count());
 				}
 
+				if(!isAttachWall)
+				{
+					currentState = PlayerState.Normal;
+				}
+
 			break;
 
 			case PlayerState.BugFly:
@@ -586,6 +592,7 @@ public class PlayerCtroller : MonoBehaviour {
 					//StartCoroutine(dashCD_Count());
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
+					transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 				}
 
 				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
@@ -623,6 +630,8 @@ public class PlayerCtroller : MonoBehaviour {
 					*/
 
 					dashTimer+=Time.deltaTime;
+
+
 					if(Input.GetMouseButtonUp(0)||Input.GetButtonUp("PS4-R2"))
 					{
 						if(dashTimer<Dash_PreTime)//->Normal
@@ -633,6 +642,7 @@ public class PlayerCtroller : MonoBehaviour {
 						else
 						{
 							emission.enabled = true;
+							transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnStop");
 							GameObject sfx = Instantiate(Resources.Load("SoundPrefab/Dash") as GameObject, transform.position, Quaternion.identity);
 
 							isDash = true;
@@ -652,7 +662,7 @@ public class PlayerCtroller : MonoBehaviour {
 								Player3D.transform.rotation = Quaternion.LookRotation(DashDir,Vector3.right);
 							}
 							
-
+							
 							StartCoroutine(IntervalTime_Count());
 						}
 
@@ -728,7 +738,7 @@ public class PlayerCtroller : MonoBehaviour {
 							PlayerAni.SetTrigger("Attach");
 							rb.velocity = Vector3.zero;
 							
-
+							// Debug.LogError("Attach!!");
 							emission.enabled = false;
 							dashTimer = 0; //重置dash 時間
 							isDash = false;
@@ -1552,6 +1562,8 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void getHitReset()
 	{
+		transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnStop");
+
 		if(Player3D.transform.localRotation != originalRotation)
 		{
 			Player3D.transform.localRotation = originalRotation;
@@ -1854,7 +1866,7 @@ public class PlayerCtroller : MonoBehaviour {
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
 			currentState = PlayerState.GetHit;
-			transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+			transform.Find("GetHitEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 			GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerGetHit") as GameObject, transform.position, Quaternion.identity);
 			//UI 關閉
 			emission.enabled = false;

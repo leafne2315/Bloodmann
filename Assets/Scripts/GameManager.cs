@@ -46,6 +46,10 @@ public class GameManager : MonoBehaviour
         //     SLmanager.LoadFile();
         // }
     }
+    void OnApplicationQuit()
+    {
+        SLmanager.ResetFile();   
+    }
 
     public void ReloadScene()
     {
