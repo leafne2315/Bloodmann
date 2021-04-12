@@ -251,6 +251,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public GameObject rollVFX;
 	public Transform rollEffectPos;
 	public bool isGroundedFrame;
+	public AudioSource playerWalkSFX;
+	public bool isPlayerWalkSFXPlaying;
 
 	void Awake()
 	{
@@ -337,6 +339,25 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 
 				RealMovement = new Vector2(Mathf.Lerp(rb.velocity.x,MoveDir.x * speed,StableValue) , rb.velocity.y);
+
+				if(RealMovement.x!=0 &&!isPlayerWalkSFXPlaying&&isGrounded)
+				{
+					isPlayerWalkSFXPlaying = true;
+					playerWalkSFX.Play();
+				}
+				else if(RealMovement.x == 0)
+				{
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
+				}
+
+				if(!isGrounded)
+				{
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
+				}
+
+				
 				RealMovementFix();
 
 				
@@ -362,6 +383,8 @@ public class PlayerCtroller : MonoBehaviour {
 
 						PlayerAni.SetBool("isHeavyLanding",true);
 						currentState = PlayerState.HeavyLanding;
+						isPlayerWalkSFXPlaying = false;
+						playerWalkSFX.Stop();
 						break;
 					}
 					else
@@ -426,7 +449,8 @@ public class PlayerCtroller : MonoBehaviour {
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
 					PlayerAni.SetBool("DashPrepared",true);
-					
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
 
 					// rb.gravityScale = 0;
 					rb.velocity = Vector3.zero;
@@ -465,6 +489,8 @@ public class PlayerCtroller : MonoBehaviour {
 					{
 						FlyDir = rb.velocity.normalized;
 					}
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
 				}
 
 				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
@@ -474,6 +500,8 @@ public class PlayerCtroller : MonoBehaviour {
 					//StartCoroutine(AttackCD_Count());
 					currentState = PlayerState.PreAttack;
 					PlayerAni.SetTrigger("Attack");
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
 					
 				}
 
@@ -486,6 +514,8 @@ public class PlayerCtroller : MonoBehaviour {
 						currentState = PlayerState.Reloading;
 						PlayerAni.SetTrigger("Reload");
 					}
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
 				}
 
 			break;
