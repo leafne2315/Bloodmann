@@ -70,6 +70,7 @@ public class DropEnemyCtrller : MonoBehaviour
                 {
                     currentState = EnemyState.Fall;
 
+                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SlimeDrop") as GameObject, transform.position, Quaternion.identity);
                     Vector3 Scaler = transform.localScale;
                     Scaler.y*=-1;
                     transform.localScale = Scaler;

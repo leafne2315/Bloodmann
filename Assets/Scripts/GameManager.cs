@@ -6,6 +6,14 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     // Start is called before the first frame update
+    private SavingAndLoad SLmanager;
+    public GameObject SaveLoad;
+    
+    void Awake()
+    {
+        //SLmanager = SaveLoad.GetComponent<SavingAndLoad>();
+        SLmanager = GameObject.Find("Save&Load").GetComponent<SavingAndLoad>();
+    }
     void Start()
     {
         
@@ -22,6 +30,21 @@ public class GameManager : MonoBehaviour
         {
             Application.Quit();
         }
+
+        if(Input.GetKeyDown(KeyCode.Delete))
+        {
+            SLmanager.ResetFile();
+        }
+
+        // if(Input.GetKeyDown(KeyCode.S))
+        // {
+        //     SLmanager.SaveFile();
+        // }
+
+        // if(Input.GetKeyDown(KeyCode.L))
+        // {
+        //     SLmanager.LoadFile();
+        // }
     }
 
     public void ReloadScene()
@@ -29,4 +52,6 @@ public class GameManager : MonoBehaviour
         Scene scene = SceneManager.GetActiveScene(); 
         SceneManager.LoadScene(scene.name);
     } 
+
+    
 }

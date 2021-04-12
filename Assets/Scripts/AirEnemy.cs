@@ -110,6 +110,7 @@ public class AirEnemy : MonoBehaviour
 
                 if(SeePlayer)
                 {
+                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/FlyingBugDetect") as GameObject, transform.position, Quaternion.identity);
                     currentState = EnemyState.Attacking;
                     FlyBugAni.SetTrigger("StartMoving");
                     MovingDir = (Player.transform.position-transform.position).normalized;
@@ -228,7 +229,7 @@ public class AirEnemy : MonoBehaviour
                 }
                 else
                 {
-                    
+                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/FlyingBugGetHit") as GameObject, transform.position, Quaternion.identity);
                     transform.GetChild(2).GetComponent<AirEnemyHealthBar>().DestroyUI();
                     Destroy(gameObject);
                 }
@@ -269,6 +270,7 @@ public class AirEnemy : MonoBehaviour
 		{
 			yield return 0;
 		}
+        GameObject sfx = Instantiate(Resources.Load("SoundPrefab/FlyingBugAttack") as GameObject, transform.position, Quaternion.identity);
         GameObject AttackObj = Instantiate(AttackPf,GeneratePos.position,Quaternion.identity);
         Vector3 ShootDir = (Player.transform.position-GeneratePos.position).normalized;
         AttackObj.GetComponent<AirEnemyAttack>().attackDir = ShootDir;

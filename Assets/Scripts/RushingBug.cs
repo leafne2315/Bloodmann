@@ -182,6 +182,7 @@ private Rigidbody rb;
                 {
                     patrolTimer = 0;
                     currentState = EnemyState.InCombat;
+                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SpiderDetect") as GameObject, transform.position, Quaternion.identity);
                     //RushBugAni.SetTrigger("ToMove");
                     RushBugAni.SetBool("Move", true);
                 }
@@ -325,6 +326,7 @@ private Rigidbody rb;
                 }
                 else
                 {
+                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/SpiderGetHit") as GameObject, transform.position, Quaternion.identity);
                     transform.GetChild(2).GetComponent<RushEnemyUIController>().DestroyUI();
                     Destroy(gameObject);
                 }

@@ -12,12 +12,11 @@ public class Load : MonoBehaviour
     void Awake() 
     {
         //gameObject.SetActive(true);
-        DontDestroyOnLoad(transform.gameObject);
         //menuController.GetComponent<MenuController>(); 
     }
     void Update()
     {
-        if(Input.anyKeyDown && isScene1)
+        if(Input.anyKeyDown)
         {
             //FadeToNextLevel();
             FadeToLevel(1);
@@ -38,17 +37,13 @@ public class Load : MonoBehaviour
     public void FadeToLevel (int levelIndex)
     {
         levelToLoad = levelIndex;
-        animator.SetTrigger("FadeOut");
+        animator.Play("BlackFadeOut");
     }
 
     public void OnFadeComplete()
     {
         SceneManager.LoadScene(levelToLoad);
         //SceneManager.LoadScene(1);
-        isScene1 = false;
-        
-        animator.SetTrigger("FadeIn");
-        print("a");
         //Destroy(gameObject);
     }
 }

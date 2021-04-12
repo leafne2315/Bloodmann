@@ -8,6 +8,7 @@ using System;
 
 public class PlayerCtroller : MonoBehaviour {
 	public GameObject GM;
+	private LevelLoader LevelLoader;
 	public Transform RealWorldUICanVas;
 	private GameManager GameManager;
 	private InputManager IM;
@@ -139,7 +140,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest,HeavyLanding};
+	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest,HeavyLanding,Die};
 	public bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -211,6 +212,9 @@ public class PlayerCtroller : MonoBehaviour {
 	private BloodPoint currentBp;
 	[Header("Rest Settings")]
 	public bool canRest;
+
+	[Header("Die Settings")]
+	public float TimeToReset;
 	//
 	[Header("Throwing Settings")]
 	public ThrowingCurve ThrowScript;
@@ -250,6 +254,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 	void Awake()
 	{
+		LevelLoader = GameObject.Find("LevelLoder").GetComponent<LevelLoader>();
 		healthBarScript = healthBar.GetComponent<HealthBar>();
 		DashEffect = GetComponentInChildren<ParticleSystem>();
 		GameManager = GM.GetComponent<GameManager>();
@@ -264,7 +269,8 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Start()
 	{
-		StartPos = transform.position;
+		SLManager.LoadFile();
+
 		originalRotation = Player3D.transform.localRotation;
 
 		KnockTimer = 0;
@@ -303,6 +309,8 @@ public class PlayerCtroller : MonoBehaviour {
 		switch(currentState)
 		{
 			case PlayerState.Idle:
+
+				
 
 			break;
 
@@ -377,7 +385,7 @@ public class PlayerCtroller : MonoBehaviour {
 				*/
 				if(Input.GetKeyDown(KeyCode.Space)||IM.PS4_X_Input && isGrounded == true)
 				{
-					transform.GetChild(4).GetComponent<VisualEffect>().SendEvent("OnPlay");
+					transform.Find("JumpEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
 					Instantiate(jumpDirtVFX, jumpDirtPos.position, Quaternion.identity);
 					IM.PS4_X_Input = false;
@@ -393,6 +401,7 @@ public class PlayerCtroller : MonoBehaviour {
 					currentState = PlayerState.Recovery;
 					isRecovery = true;
 					AidKitNum-=1;
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerHealing") as GameObject, transform.position, Quaternion.identity);
 
 					float amount = recoverAmount/(float)hp_Max;
 					healthBarScript.Healing(amount);
@@ -411,7 +420,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
-					
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PreDash") as GameObject, transform.position, Quaternion.identity);
 					dashTimer = 0; //重置dash 時間
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
@@ -489,7 +498,8 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
 				
-					
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PreDash") as GameObject, transform.position, Quaternion.identity);
+
 					currentState = PlayerState.Dash;
 					PlayerAni.SetBool("DashPrepared",true);
 					//rb.gravityScale = 2;
@@ -623,6 +633,7 @@ public class PlayerCtroller : MonoBehaviour {
 						else
 						{
 							emission.enabled = true;
+							GameObject sfx = Instantiate(Resources.Load("SoundPrefab/Dash") as GameObject, transform.position, Quaternion.identity);
 
 							isDash = true;
 							
@@ -676,8 +687,9 @@ public class PlayerCtroller : MonoBehaviour {
 							hitConfirm = false;
 
 							emission.enabled = false;
-							transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
+							transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 							HitEffect();
+							GameObject sfx = Instantiate(Resources.Load("SoundPrefab/DashATKHit") as GameObject, transform.position, Quaternion.identity);
 							
 							isDash = false;
 							PlayerAni.SetBool("isDash",false);
@@ -951,6 +963,7 @@ public class PlayerCtroller : MonoBehaviour {
 					Timer = 0;
 					currentState = PlayerState.Attack;
 					AttackMove();
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerATK") as GameObject, transform.position, Quaternion.identity);
 				}
 
 
@@ -1020,6 +1033,7 @@ public class PlayerCtroller : MonoBehaviour {
 				else
 				{
 					Timer = 0;
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/DashReload") as GameObject, transform.position, Quaternion.identity);
 					AttackRemain = FullRemain;
 					currentState = PlayerState.Normal;
 				}
@@ -1038,6 +1052,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer = 0;
 					Recover(recoverAmount);
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerAfterHealing") as GameObject, transform.position, Quaternion.identity);
 					isRecovery = false;
 					
 					currentState = PlayerState.Normal; 
@@ -1067,10 +1082,28 @@ public class PlayerCtroller : MonoBehaviour {
 					currentState = PlayerState.Normal;
 					IM.currentState = InputManager.InputState.InGame;
 					PlayerAni.SetBool("isRest",false);
-					transform.position = new Vector3(transform.position.x,transform.position.y,0.0f); 
+					transform.position = new Vector3(transform.position.x,transform.position.y,0.0f);
 					
 					currentSp.canActivate = true;
 					currentSp.SavePointMenu_Close();
+				}
+
+			break;
+
+			case PlayerState.Die:
+
+				if(Timer<TimeToReset)
+				{
+					//wait time
+					Timer+= Time.deltaTime;
+
+				}
+				else
+				{
+					//fade scene
+					LevelLoader.ReloadScene();
+					print("reload");
+					currentState = PlayerState.Idle;
 				}
 
 			break;
@@ -1118,7 +1151,8 @@ public class PlayerCtroller : MonoBehaviour {
 		BooleanCorrectCheck();
 
 		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&& currentState!=PlayerState.Rest 
-			&& currentState!=PlayerState.HeavyLanding &&currentState!=PlayerState.Rebound &&currentState!=PlayerState.Dash && IM.isInGameInput)
+			&& currentState!=PlayerState.HeavyLanding &&currentState!=PlayerState.Rebound &&currentState!=PlayerState.Dash 
+			&&currentState!=PlayerState.Die &&currentState!=PlayerState.Idle && IM.isInGameInput)
 		{
 			getMoveInput();
 		}
@@ -1205,13 +1239,13 @@ public class PlayerCtroller : MonoBehaviour {
 
        	if(facingRight)
 		{
-			transform.GetChild(7).GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectRightAngle);
+			transform.Find("HitEffect").GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectRightAngle);
 		}
 		else
 		{
-			transform.GetChild(7).GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectLeftAngle);
+			transform.Find("HitEffect").GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectLeftAngle);
 		}
-		transform.GetChild(7).GetComponent<VisualEffect>().SendEvent("OnPlay");
+		transform.Find("HitEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 	}
 	void Bound()
 	{
@@ -1251,6 +1285,7 @@ public class PlayerCtroller : MonoBehaviour {
 		BloodUI = Instantiate(pf_BloodUI,UI_pos,Quaternion.identity,RealWorldUICanVas);
 		BloodBar = BloodUI.transform.GetChild(1).GetComponent<Image>();
 
+		GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerCollectBlood") as GameObject, transform.position, Quaternion.identity);
 		CollectBegin = true;
 	}
 	void CollectingBlood()
@@ -1319,6 +1354,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 				SLManager.SaveFile();
 
+				hp = hp_Max;
+				healthBarScript.damageBarImage.fillAmount = 1;
+				healthBarScript.healthBar.fillAmount = 1;
+
 				currentSp.SavePointMenu_Open();
 				currentSp.closeActivateUI();
 				currentSp.canActivate = false;
@@ -1355,7 +1394,8 @@ public class PlayerCtroller : MonoBehaviour {
 		StartCoroutine(RollCD_Count());
 		PlayerAni.SetTrigger("Roll");
 		LowerCollider();
-		
+		GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerRoll") as GameObject, transform.position, Quaternion.identity);
+
 		if(moveInput_X!=0)
 		{
 			Vector3 rollDir;
@@ -1547,10 +1587,11 @@ public class PlayerCtroller : MonoBehaviour {
 			{
 				hitConfirm = true;
 				HitEffect();
+				GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerATK_Monster") as GameObject, transform.position, Quaternion.identity);
 
 				foreach(Collider c in hitObjs)
 				{
-					transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
+					transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 					print("Hit"+c.name+"!!!!");
 					StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
 				}
@@ -1813,8 +1854,8 @@ public class PlayerCtroller : MonoBehaviour {
 			StartCoroutine(ReviveTime_Count());
 			LastState = currentState;
 			currentState = PlayerState.GetHit;
-			transform.GetChild(1).GetComponent<VisualEffect>().SendEvent("OnPlay");
-
+			transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+			GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerGetHit") as GameObject, transform.position, Quaternion.identity);
 			//UI 關閉
 			emission.enabled = false;
    			Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
@@ -1840,6 +1881,8 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			//transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnPlay");
 			Instantiate(fallDirtVFX, fallDirtPos.position, Quaternion.identity);
+			//落第
+			GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerLanding") as GameObject, transform.position, Quaternion.identity);
 		}
 		else
 		{
@@ -1970,7 +2013,7 @@ public class PlayerCtroller : MonoBehaviour {
 		// }
 		if(other.collider.CompareTag("Sea"))
 		{
-			transform.position = SavePointPos;
+			
 			Damage(damageAmount);
 		}
 		if(other.collider.CompareTag("Spike"))
@@ -2018,20 +2061,12 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	public void Die()
 	{
-		hp = hp_Max;
-		transform.position = SavePointPos;
-		//GameManager.ReloadScene();
+		gameObject.tag = "DeadObject";
+        gameObject.layer = LayerMask.NameToLayer("DeadObject");
 
-		// gameObject.SetActive(false);
-		// rb.velocity = Vector2.zero;
-		// currentGas = 100;
-		// Out_Of_Gas = false;
-		// transform.position = StartPos;
-		// currentState = PlayerState.Idle;
-
-		// Invoke("Resurrect",1.0f);
+		currentState = PlayerState.Die;
+		rb.velocity = Vector3.zero;
 	}
-
 	IEnumerator GroundedFrame()
     {
         for(int i = 0;i<1;i++)

@@ -61,7 +61,7 @@ public class SoundEnemy : MonoBehaviour
             {   
                 redDetectTime = 100;  
                 //player死亡重置位置        
-                PlayerCtroller.Die();
+                //PlayerCtroller.Die();
                 //敵人重置位置
                 transform.position = soundenemyStartPos;
                 redDetectTime = 0;
