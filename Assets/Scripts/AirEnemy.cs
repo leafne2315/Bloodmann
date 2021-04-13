@@ -63,6 +63,8 @@ public class AirEnemy : MonoBehaviour
     private bool notDie = true;
     private float dieTimer = 0;
     public float dyingTime;
+    public bool isFlyingBugSFXPlaying;
+    public AudioSource flyingBugSFX;
     //private GameObject newEnemyAttack;
     void Start()
     {
@@ -94,6 +96,17 @@ public class AirEnemy : MonoBehaviour
             }
             
         }
+
+        if(!isFlyingBugSFXPlaying&&notDie)
+		{
+			isFlyingBugSFXPlaying = true;
+			flyingBugSFX.Play();
+		}
+		else if(!notDie)
+		{
+			isFlyingBugSFXPlaying = false;
+			flyingBugSFX.Stop();
+		}
 
         getHitCheck();
         GetStabbedCheck();

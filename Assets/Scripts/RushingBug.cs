@@ -68,6 +68,8 @@ private Rigidbody rb;
     private IEnumerator StartAttackCoroutine;
     private IEnumerator AfterAttackCoroutine;
     private IEnumerator AttackCDCoroutine;
+    public bool isSpiderSFXPlaying;
+    public AudioSource spiderSFX;
     void Awake()
     {
         
@@ -158,6 +160,16 @@ private Rigidbody rb;
             
             case EnemyState.Patrol:
 
+                if(!isSpiderSFXPlaying&&notDie)
+                {
+                    isSpiderSFXPlaying = true;
+                    spiderSFX.Play();
+                }
+                else if(!notDie)
+                {
+                    isSpiderSFXPlaying = false;
+                    spiderSFX.Stop();
+                }
                 DetectingPlayer();
                 PatrolDir();
                 rb.velocity = MovingDir*patrolSpeed;
@@ -167,6 +179,8 @@ private Rigidbody rb;
                 }
                 else
                 {
+                    isSpiderSFXPlaying = false;
+                    spiderSFX.Stop();
                     rb.velocity = Vector3.zero;
                     patrolTimer = 0;
                     currentState = EnemyState.Idle;
@@ -181,6 +195,8 @@ private Rigidbody rb;
 
                 if(PlayerDetect)
                 {
+                    isSpiderSFXPlaying = false;
+                    spiderSFX.Stop();
                     patrolTimer = 0;
                     currentState = EnemyState.InCombat;
                     
@@ -485,6 +501,8 @@ private Rigidbody rb;
 
             if(!isAttacking)
             {
+                isSpiderSFXPlaying = false;
+                spiderSFX.Stop();
                 currentState = EnemyState.Repel;
                 Timer = 0;
                 RushBugAni.SetTrigger("Repel");
@@ -504,7 +522,8 @@ private Rigidbody rb;
             {
                 RepelDir = Vector3.left;
             }
-
+            isSpiderSFXPlaying = false;
+            spiderSFX.Stop();
             currentState = EnemyState.Repel;
             RushBugAni.SetTrigger("Repel");
             rb.velocity = Vector3.zero;
@@ -524,7 +543,8 @@ private Rigidbody rb;
             if(notDie)
             {   
                 notDie = false;
-
+                isSpiderSFXPlaying = false;
+                spiderSFX.Stop();
                 gameObject.tag = "DeadObject";
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 

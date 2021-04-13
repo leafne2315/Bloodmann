@@ -38,6 +38,8 @@ public class MovingEnemy : MonoBehaviour
     public float MovingTimer;
     public bool isMoving;
     public bool isIdle;
+    public bool isSpiderSFXPlaying;
+    public AudioSource spiderSFX;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +66,7 @@ public class MovingEnemy : MonoBehaviour
                     currentState = EnemyState.PreMoving;
                     rb.velocity = Vector3.zero;
                 }
+
             break;
             
             case EnemyState.PreMoving:
@@ -82,6 +85,17 @@ public class MovingEnemy : MonoBehaviour
             break;
             
             case EnemyState.Moving:
+
+                 if(!isSpiderSFXPlaying&&notDie)
+                {
+                    isSpiderSFXPlaying = true;
+                    spiderSFX.Play();
+                }
+                else if(!notDie)
+                {
+                    isSpiderSFXPlaying = false;
+                    spiderSFX.Stop();
+                }
             
                 rb.velocity = MovingDir*movingSpeed;
 
@@ -105,6 +119,8 @@ public class MovingEnemy : MonoBehaviour
                 
                 if(!PlayerDetect && MovingTimer == 0)
                 {
+                    isSpiderSFXPlaying = false;
+                    spiderSFX.Stop();
                     isMoving = false;
                     currentState = EnemyState.Patrol;
                     rb.velocity = Vector3.zero;
@@ -226,6 +242,8 @@ public class MovingEnemy : MonoBehaviour
             }
             if(isMoving)
             {
+                isSpiderSFXPlaying = false;
+                spiderSFX.Stop();
                 MovingTimer = 0;
                 isMoving = false;
                 rb.velocity = Vector3.zero;
@@ -250,6 +268,8 @@ public class MovingEnemy : MonoBehaviour
     {
          if(GetComponent<tempGetHit>().isHit)
         {
+            isSpiderSFXPlaying = false;
+            spiderSFX.Stop();
             hp--;
             get_RepelDir();
             // if(!isAttacking)
@@ -351,7 +371,9 @@ public class MovingEnemy : MonoBehaviour
         if(hp<=0)
         {
             if(notDie)
-            {   
+            {  
+                isSpiderSFXPlaying = false;
+                spiderSFX.Stop(); 
                 notDie = false;
 
                 gameObject.tag = "DeadObject";

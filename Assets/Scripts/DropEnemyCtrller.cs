@@ -26,6 +26,8 @@ public class DropEnemyCtrller : MonoBehaviour
     private bool notDie = true;
     private float dieTimer = 0;
     public float dyingTime;
+    public bool isSlimeSFXPlaying;
+    public AudioSource slimeSFX;
     public enum EnemyState{OnWall,Fall, Moving,GetStabbed, Dead}
     // Start is called before the first frame update
     void Start()
@@ -90,6 +92,17 @@ public class DropEnemyCtrller : MonoBehaviour
             break;
 
             case EnemyState.Moving:
+
+                if(!isSlimeSFXPlaying&&notDie)
+                {
+                    isSlimeSFXPlaying = true;
+                    slimeSFX.Play();
+                }
+                else if(!notDie)
+                {
+                    isSlimeSFXPlaying = false;
+                    slimeSFX.Stop();
+                }
 
                 rb.velocity = MovingDir*movingSpeed;
             
@@ -196,7 +209,8 @@ public class DropEnemyCtrller : MonoBehaviour
             if(notDie)
             {   
                 notDie = false;
-
+                isSlimeSFXPlaying = false;
+                slimeSFX.Stop();
                 gameObject.tag = "DeadObject";
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
                 

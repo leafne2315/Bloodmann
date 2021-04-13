@@ -253,6 +253,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isGroundedFrame;
 	public AudioSource playerWalkSFX;
 	public bool isPlayerWalkSFXPlaying;
+	public AudioSource playerFlySFX;
+	public bool isPlayerFlySFXPlaying;
 
 	void Awake()
 	{
@@ -380,7 +382,7 @@ public class PlayerCtroller : MonoBehaviour {
 						Mathf.Clamp(heightdamage,0,MaxLandDamage);
 
 						Damage((int)heightdamage);
-
+						GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerLandingHard") as GameObject, transform.position, Quaternion.identity);
 						PlayerAni.SetBool("isHeavyLanding",true);
 						currentState = PlayerState.HeavyLanding;
 						isPlayerWalkSFXPlaying = false;
@@ -592,6 +594,17 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.BugFly:
 
+				if(!isPlayerFlySFXPlaying&&!isGrounded)
+				{
+					isPlayerFlySFXPlaying = true;
+					playerFlySFX.Play();
+				}
+				else if(isGrounded)
+				{
+					isPlayerFlySFXPlaying = false;
+					playerFlySFX.Stop();
+				}
+
 				FlyMovement();
 				/*
 				if(Input.GetButtonDown("PS4-Triangle")&&canAirDash)
@@ -606,12 +619,14 @@ public class PlayerCtroller : MonoBehaviour {
 				if(Input.GetKeyDown(KeyCode.V)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.Normal;
+					isPlayerFlySFXPlaying = false;
+					playerFlySFX.Stop();
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
 				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
-					
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PreDash") as GameObject, transform.position, Quaternion.identity);
 					dashTimer = 0; //重置dash 時間
 					// dashSpeed = 0;
 					currentState = PlayerState.Dash;
@@ -623,6 +638,8 @@ public class PlayerCtroller : MonoBehaviour {
 					Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = true;
 					Arrow.GetComponent<ArrowShow>().LastDir = Vector3.up;
 					transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+					isPlayerFlySFXPlaying = false;
+					playerFlySFX.Stop();
 				}
 
 				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
@@ -633,11 +650,15 @@ public class PlayerCtroller : MonoBehaviour {
 					PlayerAni.SetTrigger("Attack");
 
 					isFlyAttack = true;
+					isPlayerFlySFXPlaying = false;
+					playerFlySFX.Stop();
 				}
 
 				if(Out_Of_Gas)
 				{
 					currentState = PlayerState.Normal;
+					isPlayerFlySFXPlaying = false;
+					playerFlySFX.Stop();
 				}
 
 			break;

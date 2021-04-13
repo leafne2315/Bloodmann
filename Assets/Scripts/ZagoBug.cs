@@ -41,6 +41,8 @@ public class ZagoBug : MonoBehaviour
     public float dyingTime = 1;
     [Header("Animation Setting")]
     public Animator ZagoAni;
+    public bool isZagoSFXPlaying;
+    public AudioSource zagoBugSFX;
     void Start()
     {
         tempGetHit = GetComponent<tempGetHit>();
@@ -76,6 +78,17 @@ public class ZagoBug : MonoBehaviour
                 if(isWallCheck)
                 {
                     MovingDir.x*=-1;
+                }
+
+                if(!isZagoSFXPlaying&&notDie)
+                {
+                    isZagoSFXPlaying = true;
+                    zagoBugSFX.Play();
+                }
+                else if(!notDie)
+                {
+                    isZagoSFXPlaying = false;
+                    zagoBugSFX.Stop();
                 }
                 
 
@@ -116,6 +129,9 @@ public class ZagoBug : MonoBehaviour
                     transform.GetChild(0).GetComponent<MovingEnemyHealthBar>().DestroyUI();
                     Destroy(gameObject);
                 }
+                
+                isZagoSFXPlaying = false;
+                zagoBugSFX.Stop();
 
             break;
 
@@ -182,6 +198,8 @@ public class ZagoBug : MonoBehaviour
     {
         if(GetComponent<tempGetHit>().isHit)
         {
+            isZagoSFXPlaying = false;
+            zagoBugSFX.Stop();
             get_RepelDir();
             hp--;
             LastState = currentState;
