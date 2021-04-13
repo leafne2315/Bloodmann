@@ -71,6 +71,7 @@ public class AirEnemy : MonoBehaviour
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
         ChangePatrolDir();
+        flyingBugSFX.Play();
         //attackTimer = 3;
     }
     
@@ -91,22 +92,15 @@ public class AirEnemy : MonoBehaviour
                 gameObject.tag = "DeadObject";
                 gameObject.layer = LayerMask.NameToLayer("DeadObject");
 
+                flyingBugSFX.Stop();
+                GameObject sfx = Instantiate(Resources.Load("SoundPrefab/FlyingBugGetHit") as GameObject, transform.position, Quaternion.identity);
                 currentState = EnemyState.Dead;
                 FlyBugAni.SetTrigger("Die");
             }
             
         }
 
-        if(!isFlyingBugSFXPlaying&&notDie)
-		{
-			isFlyingBugSFXPlaying = true;
-			flyingBugSFX.Play();
-		}
-		else if(!notDie)
-		{
-			isFlyingBugSFXPlaying = false;
-			flyingBugSFX.Stop();
-		}
+        
 
         getHitCheck();
         GetStabbedCheck();
@@ -242,7 +236,7 @@ public class AirEnemy : MonoBehaviour
                 }
                 else
                 {
-                    GameObject sfx = Instantiate(Resources.Load("SoundPrefab/FlyingBugGetHit") as GameObject, transform.position, Quaternion.identity);
+                    
                     transform.GetChild(2).GetComponent<AirEnemyHealthBar>().DestroyUI();
                     Destroy(gameObject);
                 }

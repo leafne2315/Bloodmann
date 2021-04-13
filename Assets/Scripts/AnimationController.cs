@@ -44,10 +44,11 @@ public class AnimationController : MonoBehaviour
         else
             PlayerAni.SetBool("isFlymove",false);
 
-        if(Im.PS4_X_Input&&(playerCtroller.isGrounded||playerCtroller.isAttachWall))
-        {
-            PlayerAni.SetTrigger("Jump");
-        }
+        // if(Im.PS4_X_Input&&(playerCtroller.isGrounded||playerCtroller.isAttachWall))
+        // {
+        //     PlayerAni.SetTrigger("Jump");
+        //     print("jump");
+        // }
 
         if(Input.GetAxis("PS4-L-Horizontal")!=0.0f)
         {

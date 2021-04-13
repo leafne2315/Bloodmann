@@ -229,7 +229,6 @@ AnimatorState:
   - {fileID: -7841126121686861008}
   - {fileID: 7449621876948618682}
   - {fileID: 994147845706928871}
-  - {fileID: 482054656855469962}
   - {fileID: 1660628327509802584}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
@@ -601,9 +600,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
+  m_TransitionDuration: 0.16041668
   m_TransitionOffset: 0
-  m_ExitTime: 0
+  m_ExitTime: 7.040519e-10
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -1497,7 +1496,7 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 3
     m_ConditionEvent: MoveY
-    m_EventTreshold: -0.5
+    m_EventTreshold: -0.1
   - m_ConditionMode: 2
     m_ConditionEvent: isFly
     m_EventTreshold: 0
@@ -1530,14 +1529,14 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: isFly
-    m_Type: 4
+  - m_Name: MoveY
+    m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
-  - m_Name: MoveY
-    m_Type: 1
+  - m_Name: isFly
+    m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
@@ -1778,31 +1777,6 @@ AnimatorStateTransition:
   m_TransitionOffset: 0
   m_ExitTime: 0.6656327
   m_HasExitTime: 1
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &482054656855469962
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: isGround
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 4991013431609028996}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0.08999999
-  m_TransitionOffset: 0
-  m_ExitTime: 0.85
-  m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -2317,9 +2291,9 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
+  - {fileID: -5428367529098285801}
   - {fileID: -1193029528230582907}
   - {fileID: -4833960219756720306}
-  - {fileID: -5428367529098285801}
   - {fileID: 4178281870216929198}
   - {fileID: 5336611406353031122}
   - {fileID: 5144593310241701685}
@@ -2847,19 +2821,16 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 4
     m_ConditionEvent: MoveY
-    m_EventTreshold: -0.1
-  - m_ConditionMode: 2
-    m_ConditionEvent: isFly
-    m_EventTreshold: 0
+    m_EventTreshold: 0.1
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 3436966557023889487}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.08590685
+  m_TransitionDuration: 0.08252013
   m_TransitionOffset: 0
-  m_ExitTime: 0.72655815
+  m_ExitTime: 0.8910687
   m_HasExitTime: 0
   m_HasFixedDuration: 1
   m_InterruptionSource: 0

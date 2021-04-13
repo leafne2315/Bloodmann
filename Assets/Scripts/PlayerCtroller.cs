@@ -31,6 +31,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public Rigidbody rb;
 	public Vector2 RealMovement;
 	public bool facingRight = true;
+	public bool TouchGroundOnce;
 
 	[Header("UI")]
 	public Image CoreHalo;
@@ -355,8 +356,18 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(!isGrounded)
 				{
-					isPlayerWalkSFXPlaying = false;
-					playerWalkSFX.Stop();
+					if(isPlayerFlySFXPlaying)
+					{
+						isPlayerWalkSFXPlaying = false;
+						playerWalkSFX.Stop();
+						
+					}
+
+					if(TouchGroundOnce)
+					{
+						TouchGroundOnce = false;
+					}
+
 				}
 
 				
@@ -396,6 +407,14 @@ public class PlayerCtroller : MonoBehaviour {
 						HighestY = transform.position.y;
 					}		
 				}
+
+				if(isGrounded&&!TouchGroundOnce)
+				{
+					TouchGroundOnce = true;
+					Instantiate(fallDirtVFX, fallDirtPos.position, Quaternion.identity);
+					//落地
+					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerLanding") as GameObject, transform.position, Quaternion.identity);
+				}
 				
 				/*
 				if(Input.GetKey(KeyCode.W)||Input.GetButton("PS4-R2")&&!Out_Of_Gas)
@@ -413,6 +432,7 @@ public class PlayerCtroller : MonoBehaviour {
 					transform.Find("JumpEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
 					Instantiate(jumpDirtVFX, jumpDirtPos.position, Quaternion.identity);
+					PlayerAni.SetTrigger("Jump");
 					IM.PS4_X_Input = false;
 				}
 
@@ -558,6 +578,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(IM.PS4_X_Input)
 				{
+					PlayerAni.SetTrigger("Jump");
 					if(!isAttachOnTop)
 					{
 						if(!facingRight)
@@ -689,6 +710,7 @@ public class PlayerCtroller : MonoBehaviour {
 						{
 							currentState = PlayerState.Normal;
 							PlayerAni.SetBool("DashPrepared",false);
+							transform.Find("GasooEffect").GetComponent<VisualEffect>().SendEvent("OnStop");
 						}
 						else
 						{
@@ -1507,7 +1529,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = Vector3.left;
+				BoundDir = new Vector3(-Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
 			}
 			else
 			{
@@ -1518,7 +1540,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(DashDir.y>0.5f)
 			{
-				BoundDir = Vector3.right;
+				BoundDir = new Vector3(Mathf.Cos(ReboundAngle*Mathf.Deg2Rad),Mathf.Sin(ReboundAngle*Mathf.Deg2Rad),0);
 			}
 			else
 			{
@@ -1940,17 +1962,7 @@ public class PlayerCtroller : MonoBehaviour {
 	} 
 	void OnTriggerEnter(Collider other)
 	{
-		if(other.CompareTag("Ground")&&isGrounded)
-		{
-			//transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnPlay");
-			Instantiate(fallDirtVFX, fallDirtPos.position, Quaternion.identity);
-			//落第
-			GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerLanding") as GameObject, transform.position, Quaternion.identity);
-		}
-		else
-		{
-			//transform.GetChild(6).GetComponent<VisualEffect>().SendEvent("OnStop");
-		}
+		
 		// if(other.CompareTag("Enemy"))
 		// {
 		// 	if(!isInvincible)
