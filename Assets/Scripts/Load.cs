@@ -19,7 +19,7 @@ public class Load : MonoBehaviour
         if(Input.anyKeyDown)
         {
             //FadeToNextLevel();
-            FadeToLevel(2);
+            FadeToLevel(1);
         }
 
         // if(menuController.isHomePage)

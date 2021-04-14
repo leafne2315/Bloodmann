@@ -242,6 +242,8 @@ public class PlayerCtroller : MonoBehaviour {
 	public Vector3 SavePointPos;
 	public bool noGravity = false;
 	private SavePoint currentSp;
+	private TranSceneCtrller currentTs;
+	public bool canGoScene;
 	private HealthBar healthBarScript;
  	public GameObject healthBar;
 	[Header("VFX Setting")]
@@ -274,7 +276,9 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Start()
 	{
-		//SLManager.LoadFile();
+		SLManager.SaveFile();
+
+		StartCoroutine(DelayForStart());
 
 		originalRotation = Player3D.transform.localRotation;
 
@@ -308,6 +312,7 @@ public class PlayerCtroller : MonoBehaviour {
 		//print(currentState);
 		HpCheck();
 		RestCheck();
+		ChangeSceneCheck();
 		
 		checkAttackRemain();
 
@@ -1431,7 +1436,7 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		if(canRest)
 		{
-			if(IM.PS4_Triangle_Input && isGrounded && currentState == PlayerState.Normal)
+			if(IM.PS4_Triangle_Input && isGrounded)
 			{
 				IM.currentState = InputManager.InputState.SavePointMenu;
 
@@ -1448,6 +1453,20 @@ public class PlayerCtroller : MonoBehaviour {
 				PlayerAni.SetBool("isRest",true);
 
 				currentState = PlayerState.Rest;
+			}
+		}
+	}
+	void ChangeSceneCheck()
+	{
+		if(canGoScene)
+		{
+			if(IM.PS4_Triangle_Input && isGrounded)
+			{
+				currentState = PlayerState.Idle;
+				
+				currentTs.ChangeScene();
+
+				print("Go other Scene");
 			}
 		}
 	}
@@ -1998,7 +2017,6 @@ public class PlayerCtroller : MonoBehaviour {
 				currentSp = other.GetComponent<SavePoint>();	
 			}
 		}
-		
 
 		if(other.CompareTag("BloodPoint"))
 		{
@@ -2006,6 +2024,15 @@ public class PlayerCtroller : MonoBehaviour {
 			{
 				canCollect = true;
 				currentBp = other.transform.GetComponent<BloodPoint>();
+			}
+		}
+
+		if(other.CompareTag("TransScene"))
+		{
+			if(other.GetComponent<TranSceneCtrller>().showUI)
+			{
+				canGoScene = true;
+				currentTs = other.GetComponent<TranSceneCtrller>();
 			}
 		}
 		
@@ -2061,6 +2088,12 @@ public class PlayerCtroller : MonoBehaviour {
 	// 		}
 	// 	}
 	// }
+	IEnumerator DelayForStart()
+	{
+		currentState = PlayerState.Idle;
+		yield return new WaitForSeconds(2.5f);
+		currentState = PlayerState.Normal;
+	}
 	private void OnCollisionEnter(Collision other)
 	{
 		// if(other.collider.CompareTag("VisionEnemy"))

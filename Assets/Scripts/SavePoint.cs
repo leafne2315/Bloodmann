@@ -48,10 +48,6 @@ public class SavePoint : MonoBehaviour
         // }
 
     }
-    void GenerateUI()
-    {
-
-    }
     void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Player"))

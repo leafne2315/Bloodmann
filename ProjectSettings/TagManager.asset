@@ -21,6 +21,7 @@ TagManager:
   - LilEnemy
   - SavePoint
   - BloodPoint
+  - TransScene
   layers:
   - Default
   - TransparentFX
