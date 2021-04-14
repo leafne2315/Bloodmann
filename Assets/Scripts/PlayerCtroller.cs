@@ -274,7 +274,7 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Start()
 	{
-		SLManager.LoadFile();
+		//SLManager.LoadFile();
 
 		originalRotation = Player3D.transform.localRotation;
 
