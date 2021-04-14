@@ -286,7 +286,7 @@ public class PlayerCtroller : MonoBehaviour {
 		KnockTimer = 0;
 		extraJumps = extraJumpValue;
 		JumpTimer = JumpTime;
-		currentState = PlayerState.Normal;
+		//currentState = PlayerState.Normal;
 		currentGas = Gas_MaxValue;
 		Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
 		GasBar.enabled = false;
@@ -2094,7 +2094,7 @@ public class PlayerCtroller : MonoBehaviour {
 	IEnumerator DelayForStart()
 	{
 		currentState = PlayerState.Idle;
-		yield return new WaitForSeconds(2.5f);
+		yield return new WaitForSeconds(1.8f);
 		currentState = PlayerState.Normal;
 	}
 	private void OnCollisionEnter(Collision other)
