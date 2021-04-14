@@ -276,7 +276,8 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Start()
 	{
-		SLManager.SaveFile();
+		SLManager.LoadPlayerDetail();
+		SLManager.SavePlayerSavePos();
 
 		StartCoroutine(DelayForStart());
 
@@ -1440,7 +1441,7 @@ public class PlayerCtroller : MonoBehaviour {
 			{
 				IM.currentState = InputManager.InputState.SavePointMenu;
 
-				SLManager.SaveFile();
+				SLManager.SavePlayerSavePos();
 
 				hp = hp_Max;
 				healthBarScript.damageBarImage.fillAmount = 1;
@@ -1462,9 +1463,11 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			if(IM.PS4_Triangle_Input && isGrounded)
 			{
+				IM.PS4_Triangle_Input = false;
 				currentState = PlayerState.Idle;
 				
 				currentTs.ChangeScene();
+				SLManager.SavePlayerDetail();
 
 				print("Go other Scene");
 			}

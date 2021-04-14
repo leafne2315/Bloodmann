@@ -9,9 +9,11 @@ public class AutoChangeScene : MonoBehaviour
     private LevelLoader LvLoader;
     private int SceneIndex;
     public int NextScene;
+    private SavingAndLoad SLmanager;
     void Awake()
     {
         LvLoader = GameObject.Find("LevelLoder").GetComponent<LevelLoader>();
+        SLmanager = GameObject.Find("Save&Load").GetComponent<SavingAndLoad>();
     }
     void Start()
     {
@@ -27,6 +29,7 @@ public class AutoChangeScene : MonoBehaviour
         if(other.CompareTag("Player"))
         {
             ChangeScene();
+            SLmanager.SavePlayerDetail();
         }
     }
     void ChangeScene()

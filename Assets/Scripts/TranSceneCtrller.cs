@@ -67,6 +67,7 @@ public class TranSceneCtrller : MonoBehaviour
             case 1:
 
                 StartCoroutine(LvLoader.LoadLevelWithDelay(NextScene,5.0f));
+                GameObject sfx = Instantiate(Resources.Load("SoundPrefab/Elevator") as GameObject, transform.position, Quaternion.identity);
                 //play Elevator Sound
 
             break;

@@ -40,55 +40,68 @@ public class SavingAndLoad : MonoBehaviour
     {
         Hp = playerCtrl.hp;
         Hp_Max = playerCtrl.hp_Max;
-        AidKitNum = playerCtrl.AidKitNum;
-        SavePos = new Vector3(playerCtrl.transform.position.x,playerCtrl.transform.position.y,0.0f);
+        AidKitNum = playerCtrl.AidKitNum;  
 
         Scene scene = SceneManager.GetActiveScene();
-        Scene_index = scene.buildIndex;
+        Scene_index = scene.buildIndex; 
+    }
+    void GetPlayerSavePos()
+    {
 
+        SavePos = new Vector3(playerCtrl.transform.position.x,playerCtrl.transform.position.y,0.0f);
         posX = SavePos.x;
         posY = SavePos.y;
         posZ = SavePos.z;
     }
-    void LoadPlayerData()
+    
+    public void SavePlayerDetail()
     {
-        playerCtrl.hp = Hp_Max;
-        playerCtrl.hp_Max = Hp_Max;
-        playerCtrl.AidKitNum = AidKitNum;
+        Hp = playerCtrl.hp;
+        Hp_Max = playerCtrl.hp_Max;
+        AidKitNum = playerCtrl.AidKitNum;
 
-        SavePos = new Vector3(posX,posY,posZ);
-        playerCtrl.transform.position = SavePos;
-    }
-    public void SaveFile()
-    {
-        GetPlayerData();
-        //PlayerPrefs.SetInt("myHP",Hp);
-        
-        PlayerPrefs.SetInt("Scene_Index",Scene_index);
-
+        PlayerPrefs.SetInt("myHP",Hp);
         PlayerPrefs.SetInt("myHP_Max",Hp_Max);
         PlayerPrefs.SetInt("AidKitNum",AidKitNum);
+
+        print("Save Detail");
+    }
+    public void SavePlayerSavePos()
+    {
+        SavePos = new Vector3(playerCtrl.transform.position.x,playerCtrl.transform.position.y,0.0f);
+        posX = SavePos.x;
+        posY = SavePos.y;
+        posZ = SavePos.z;
 
         PlayerPrefs.SetFloat("posX",posX);
         PlayerPrefs.SetFloat("posY",posY);
         PlayerPrefs.SetFloat("posZ",posZ);
 
-        PlayerPrefs.Save();
-        print("Save");
+        print("Save Position");
     }
-    public void LoadFile()
+    
+    public void LoadPlayerDetail()
     {
-        //PlayerPrefs.GetInt("myHP",Hp);
+        Hp = PlayerPrefs.GetInt("myHP");
         Hp_Max = PlayerPrefs.GetInt("myHP_Max");
         AidKitNum = PlayerPrefs.GetInt("AidKitNum");
-        Scene_index = PlayerPrefs.GetInt("Scene_Index");
 
+        playerCtrl.hp = Hp_Max;
+        playerCtrl.hp_Max = Hp_Max;
+        playerCtrl.AidKitNum = AidKitNum;
+
+        print("Load Detail");
+    }
+    public void LoadPlayerSavePos()
+    {
         posX = PlayerPrefs.GetFloat("posX");
         posY = PlayerPrefs.GetFloat("posY");
         posZ = PlayerPrefs.GetFloat("posZ");
-        LoadPlayerData();
 
-        print("Load");
+        SavePos = new Vector3(posX,posY,posZ);
+        playerCtrl.transform.position = SavePos;
+
+        print("Load Position");
     }
     public void ResetFile()
     {
@@ -102,6 +115,7 @@ public class SavingAndLoad : MonoBehaviour
         posY = SavePos.y;
         posZ = SavePos.z;
 
+        PlayerPrefs.SetInt("myHP",Hp_Max);
         PlayerPrefs.SetInt("Scene_Index",1);
         PlayerPrefs.SetInt("myHP_Max",Hp_Max);
         PlayerPrefs.SetInt("AidKitNum",AidKitNum);
