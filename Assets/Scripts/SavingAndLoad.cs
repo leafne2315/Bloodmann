@@ -15,6 +15,7 @@ public class SavingAndLoad : MonoBehaviour
     [SerializeField]private float posY;
     [SerializeField]private float posZ;
     [SerializeField]private Vector3 SavePos;
+    
 
     [Header("Game Reset")]
     public int Origin_Hp_Max;
@@ -35,23 +36,6 @@ public class SavingAndLoad : MonoBehaviour
     void Update()
     {
         
-    }
-    void GetPlayerData()
-    {
-        Hp = playerCtrl.hp;
-        Hp_Max = playerCtrl.hp_Max;
-        AidKitNum = playerCtrl.AidKitNum;  
-
-        Scene scene = SceneManager.GetActiveScene();
-        Scene_index = scene.buildIndex; 
-    }
-    void GetPlayerSavePos()
-    {
-
-        SavePos = new Vector3(playerCtrl.transform.position.x,playerCtrl.transform.position.y,0.0f);
-        posX = SavePos.x;
-        posY = SavePos.y;
-        posZ = SavePos.z;
     }
     
     public void SavePlayerDetail()
@@ -86,7 +70,9 @@ public class SavingAndLoad : MonoBehaviour
         Hp_Max = PlayerPrefs.GetInt("myHP_Max");
         AidKitNum = PlayerPrefs.GetInt("AidKitNum");
 
-        playerCtrl.hp = Hp_Max;
+        
+        playerCtrl.hp = Hp;
+        
         playerCtrl.hp_Max = Hp_Max;
         playerCtrl.AidKitNum = AidKitNum;
 

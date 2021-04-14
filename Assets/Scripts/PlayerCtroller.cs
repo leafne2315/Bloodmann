@@ -276,8 +276,14 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void Start()
 	{
+		if(GameData.DeadOnce)
+		{
+			SLManager.LoadPlayerSavePos();
+			GameData.DeadOnce = false;
+		}
 		SLManager.LoadPlayerDetail();
 		SLManager.SavePlayerSavePos();
+		SLManager.SavePlayerDetail();
 
 		StartCoroutine(DelayForStart());
 
@@ -2177,6 +2183,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 		currentState = PlayerState.Die;
 		rb.velocity = Vector3.zero;
+		GameData.DeadOnce = true;
 	}
 	IEnumerator GroundedFrame()
     {

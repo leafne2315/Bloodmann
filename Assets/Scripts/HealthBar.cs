@@ -23,9 +23,9 @@ public class HealthBar : MonoBehaviour
     {
         healthBar = GetComponent<Image>();
         playerCtrScript = Player.GetComponent<PlayerCtroller>();
-        
-        damageBarImage.fillAmount = healthBar.fillAmount;
-        
+
+        healthBar.fillAmount = (float)playerCtrScript.hp/(float)playerCtrScript.hp_Max;
+        damageBarImage.fillAmount = healthBar.fillAmount;   
     }
     
     void Update() 
