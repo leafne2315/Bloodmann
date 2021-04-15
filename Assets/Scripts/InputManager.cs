@@ -11,13 +11,14 @@ public class InputManager : MonoBehaviour
     public bool PS4_Square_Input;
     public bool PS4_Up;
     public bool PS4_R2_KeyDown;
+    public bool PS4_L1_KeyDown;
     private bool Up_Exit;
     public bool PS4_LH_Up;
     public float PS4_LH_axis;
     public bool LH_up_Exit = true;
     public float Delaytime;
     public bool isInGameInput;
-    public enum InputState{MainMenu,InGame,SavePointMenu,CollectingBlood}
+    public enum InputState{MainMenu,InGame,SavePointMenu,CollectingBlood,Teaching}
     public InputState currentState;
     void Start()
     {
@@ -53,7 +54,13 @@ public class InputManager : MonoBehaviour
                     PS4_Option = false;
                 }
 
-                if(Input.GetButtonDown("PS4-R2")&&!PS4_R2_KeyDown)
+                if(Input.GetButtonDown("PS4-L1")&&!PS4_L1_KeyDown && GameData.CanFly)
+                {
+                    PS4_L1_KeyDown = true;
+                    StartCoroutine(InputAfter_PS4_L1());
+                }
+
+                if(Input.GetButtonDown("PS4-R2")&&!PS4_R2_KeyDown && GameData.CanDash)
                 {
                     PS4_R2_KeyDown = true;
                     StartCoroutine(InputAfter_PS4_R2());
@@ -65,7 +72,7 @@ public class InputManager : MonoBehaviour
                     StartCoroutine(InputDelay_x());
                 }
 
-                if(Input.GetButtonDown("PS4-O")&& !PS4_O_Input)
+                if(Input.GetButtonDown("PS4-O")&& !PS4_O_Input && GameData.CanRoll)
                 {
                     PS4_O_Input = true;
                     StartCoroutine(InputDelay_O());
@@ -77,13 +84,13 @@ public class InputManager : MonoBehaviour
                     StartCoroutine(InputDelay_Tria());
                 }
 
-                if(Input.GetButtonDown("PS4-Square")&& !PS4_Square_Input)
+                if(Input.GetButtonDown("PS4-Square")&& !PS4_Square_Input &&GameData.CanAttack)
                 {
                     PS4_Square_Input = true;
                     StartCoroutine(InputDelay_Square());
                 }
 
-                if(Input.GetAxis("PS4-UpDown")>0.3f && Up_Exit)
+                if(Input.GetAxis("PS4-UpDown")>0.3f && Up_Exit && GameData.CanRecover)
                 {
                     PS4_Up = true;
                     StartCoroutine(InputAfter_PS4Up());
@@ -118,7 +125,9 @@ public class InputManager : MonoBehaviour
 
             break;
 
-            
+            case InputState.Teaching:
+
+            break;
         }
 
     }
@@ -145,6 +154,14 @@ public class InputManager : MonoBehaviour
 			yield return new WaitForEndOfFrame();
 		}
         PS4_R2_KeyDown = false;
+    }
+    IEnumerator InputAfter_PS4_L1()
+    {
+        for(int i = 0;i<1;i++)
+		{
+			yield return new WaitForEndOfFrame();
+		}
+        PS4_L1_KeyDown = false;
     }
     IEnumerator InputAfter_PS4_LH_Up()
     {

@@ -18,10 +18,11 @@ public class MenuController : MonoBehaviour
     public bool isController;
     private InputManager Im;
     public GameObject InputManager;
+    private GameManager GM;
     // Start is called before the first frame update
     void Awake()
     {
-        
+        GM = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
     void Start()
     {
@@ -52,11 +53,11 @@ public class MenuController : MonoBehaviour
         
         if(isOption||isController)
         {
-           Time.timeScale = 0f;
+           GM.isMenuPause = true;
         }
         else
         {
-           Time.timeScale = 1f;
+           GM.isMenuPause = false;
         }
 
         if(isController && Input.GetButtonDown("PS4-O"))

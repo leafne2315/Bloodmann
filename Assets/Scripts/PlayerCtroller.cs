@@ -327,7 +327,13 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			case PlayerState.Idle:
 
+				rb.velocity = Vector3.zero;
 				
+				if(isPlayerWalkSFXPlaying)
+				{
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
+				}
 
 			break;
 
@@ -515,7 +521,7 @@ public class PlayerCtroller : MonoBehaviour {
 					rb.velocity = Vector3.zero;
 				}
 */
-				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
+				if(Input.GetKeyDown(KeyCode.C)||IM.PS4_L1_KeyDown&&!Out_Of_Gas)
 				{
 					currentState = PlayerState.BugFly;
 					if(isGrounded)
@@ -579,7 +585,7 @@ public class PlayerCtroller : MonoBehaviour {
 						
 				}
 
-				if(Input.GetKeyDown(KeyCode.C)||Input.GetButtonDown("PS4-L1")&&!Out_Of_Gas)
+				if(Input.GetKeyDown(KeyCode.C)||IM.PS4_L1_KeyDown&&!Out_Of_Gas)
 				{
 					if(AttachingObj!=null)
 					{

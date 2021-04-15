@@ -8,7 +8,9 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     private SavingAndLoad SLmanager;
     public GameObject SaveLoad;
-    
+    [SerializeField]private bool isGamePause;
+    public bool isMenuPause;
+    public bool isTeachPause;
     void Awake()
     {
         //SLmanager = SaveLoad.GetComponent<SavingAndLoad>();
@@ -36,6 +38,17 @@ public class GameManager : MonoBehaviour
             SLmanager.ResetFile();
         }
 
+
+        isGamePause = isMenuPause||isTeachPause;
+
+        if(isGamePause)
+        {
+            Time.timeScale = 0.0f;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+        }
         // if(Input.GetKeyDown(KeyCode.S))
         // {
         //     SLmanager.SaveFile();
