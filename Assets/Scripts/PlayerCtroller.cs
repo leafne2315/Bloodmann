@@ -368,12 +368,16 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(!isGrounded)
 				{
-					if(isPlayerFlySFXPlaying)
-					{
-						isPlayerWalkSFXPlaying = false;
-						playerWalkSFX.Stop();
+
+					isPlayerWalkSFXPlaying = false;
+					playerWalkSFX.Stop();
+					// if(isPlayerFlySFXPlaying)
+					// {
+					// 	print("a");
+					// 	isPlayerWalkSFXPlaying = false;
+					// 	playerWalkSFX.Stop();
 						
-					}
+					// }
 
 					if(TouchGroundOnce)
 					{
