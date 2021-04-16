@@ -63,6 +63,7 @@ public class OpenDevice : MonoBehaviour
     
     public IEnumerator OpenDoor()
     {
+        GameData.isDoorOpen = true;
         LvLoader.FadeOut();
         yield return new WaitForSeconds(1.5f);
         //相機換過去

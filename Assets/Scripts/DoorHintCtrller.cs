@@ -21,7 +21,7 @@ public class DoorHintCtrller : MonoBehaviour
     }
     void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player")&& !isActivate)
+        if(other.CompareTag("Player")&& !isActivate && !GameData.isDoorOpen)
         {
             isActivate = true;
             StartCoroutine(ShowingUI());

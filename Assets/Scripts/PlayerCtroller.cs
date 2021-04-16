@@ -1287,7 +1287,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 		if(!isAttacking&&!isRolling && currentState!=PlayerState.Roll && currentState!=PlayerState.Recovery&& currentState!=PlayerState.Rest 
 			&& currentState!=PlayerState.HeavyLanding &&currentState!=PlayerState.Rebound &&currentState!=PlayerState.Dash 
-			&&currentState!=PlayerState.Die &&currentState!=PlayerState.Idle && IM.isInGameInput)
+			&&currentState!=PlayerState.Die &&currentState!=PlayerState.Idle && currentState!=PlayerState.RunToBoss && IM.isInGameInput)
 		{
 			getMoveInput();
 		}

@@ -11,6 +11,7 @@ public static class GameData
     public static bool CanRecover = true;
     public static bool FirstBlood;
     public static bool CanAttack = true;
+    public static bool isDoorOpen;
 
     public static void ResetBool()
     {
@@ -19,6 +20,6 @@ public static class GameData
         CanDash = false;
         CanRoll = false;
         FirstBlood = false;
-
+        isDoorOpen = false;
     }
 }
