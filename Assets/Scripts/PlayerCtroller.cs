@@ -347,6 +347,12 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.RunToBoss:
 
+				if(transform.localScale.x<0)
+				{
+					Vector3 scale = new Vector3(1,1,1);
+					transform.localScale = scale;
+				}
+
 				if(Timer<RunTime)
 				{
 					Timer+=Time.deltaTime;
