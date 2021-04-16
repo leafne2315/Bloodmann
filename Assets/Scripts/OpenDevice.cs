@@ -81,6 +81,8 @@ public class OpenDevice : MonoBehaviour
         LvLoader.FadeIn();
         yield return new WaitForSeconds(1.0f);
         playerScript.currentState = PlayerCtroller.PlayerState.Normal;
+        playerScript.canOpenDoor = false;
+        Destroy(gameObject);
     }
 
     void changeCamTo2()

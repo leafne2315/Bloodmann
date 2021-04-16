@@ -1529,7 +1529,7 @@ public class PlayerCtroller : MonoBehaviour {
 				currentState = PlayerState.Idle;
 				currentOD.closeActivateUI();
 				currentOD.canActivate = false;
-
+				canOpenDoor = false;
 				StartCoroutine(currentOD.OpenDoor());
 			}
 		}
