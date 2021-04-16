@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class TextMeshProTyper : MonoBehaviour
 {
-    TextMeshPro textMesh;
+    TextMeshProUGUI textMesh;
     public string[] textCharacter;
     public bool isActive;
     public float time;
@@ -14,7 +15,7 @@ public class TextMeshProTyper : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        textMesh = GetComponent<TextMeshPro>();
+        textMesh = GetComponent<TextMeshProUGUI>();
         textCharacter = new string[textMesh.text.Length];
         for(int i = 0; i < textMesh.text.Length; i++)
         {

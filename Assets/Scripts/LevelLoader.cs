@@ -49,4 +49,13 @@ public class LevelLoader : MonoBehaviour
         yield return new WaitForSeconds(DelayTime);
         SceneManager.LoadScene(levelIndex);
     }
+
+    public void FadeIn()
+    {
+        FadingAnimator.Play("Level_FadeIn");
+    }
+    public void FadeOut()
+    {
+        FadingAnimator.Play("Level_FadeOut");
+    }
 }

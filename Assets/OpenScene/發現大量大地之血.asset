@@ -67,9 +67,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.8333333
+    - _ScaleRatioB: 0.6770833
+    - _ScaleRatioC: 0.6770833
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0
@@ -113,9 +113,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: "\u767C\u73FE\u5927\u91CF\u5927\u5730\u4E4B\u8840"
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: -2139521578
   material: {fileID: -2858758573927998878}
-  materialHashCode: 0
+  materialHashCode: -2068212579
   m_Version: 1.1.0
   m_SourceFontFileGUID: bcf2bb088db083d4ab03cdd9e4da27f4
   m_SourceFontFile_EditorRef: {fileID: 0}

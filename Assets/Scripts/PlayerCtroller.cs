@@ -141,7 +141,7 @@ public class PlayerCtroller : MonoBehaviour {
 	[Header("Statement Settings")]
 	public PlayerState currentState;
 	public PlayerState LastState;
-	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest,HeavyLanding,Die};
+	public enum PlayerState{Normal,GetHit,Dash,Rebound,Attach,BugFly,AirDash,PreAttack,Attack,AfterAttack,Reloading,Roll,Throw,Recovery,BloodCollect,Idle,Rest,HeavyLanding,Die,RunToBoss};
 	public bool canAttach = true;
 	public bool isFlying;
 	public bool isStill;
@@ -244,6 +244,8 @@ public class PlayerCtroller : MonoBehaviour {
 	private SavePoint currentSp;
 	private TranSceneCtrller currentTs;
 	public bool canGoScene;
+	private OpenDevice currentOD;
+	public bool canOpenDoor;
 	private HealthBar healthBarScript;
  	public GameObject healthBar;
 	[Header("VFX Setting")]
@@ -258,6 +260,10 @@ public class PlayerCtroller : MonoBehaviour {
 	public bool isPlayerWalkSFXPlaying;
 	public AudioSource playerFlySFX;
 	public bool isPlayerFlySFXPlaying;
+	[Header("RunToBoss Settings")]
+	public float RunTime;
+	private PreBossCntrller preBossCntrl;
+	
 
 	void Awake()
 	{
@@ -317,9 +323,11 @@ public class PlayerCtroller : MonoBehaviour {
 	void Update()
 	{
 		//print(currentState);
-		HpCheck();
-		RestCheck();
-		ChangeSceneCheck();
+		if(currentState!=PlayerState.Die )
+		{
+			HpCheck();	
+		}
+		
 		
 		checkAttackRemain();
 
@@ -328,7 +336,7 @@ public class PlayerCtroller : MonoBehaviour {
 			case PlayerState.Idle:
 
 				rb.velocity = Vector3.zero;
-				
+
 				if(isPlayerWalkSFXPlaying)
 				{
 					isPlayerWalkSFXPlaying = false;
@@ -337,10 +345,32 @@ public class PlayerCtroller : MonoBehaviour {
 
 			break;
 
+			case PlayerState.RunToBoss:
+
+				if(Timer<RunTime)
+				{
+					Timer+=Time.deltaTime;
+					rb.velocity = new Vector3(speed,rb.velocity.y,0.0f);
+					
+				}
+				else
+				{
+					currentState = PlayerState.Idle;
+					PlayerAni.Play("Player3D|Idle");
+					//do thing
+					preBossCntrl.isActivate = true;
+					
+				}
+
+			break;
+
 			case PlayerState.Normal:
 				
 				CheckStability();
 				BloodCollectCheck();
+				RestCheck();
+				ChangeSceneCheck();
+				OpenDoorCheck();
 
 				if(moveInput_X!=0)
 				{
@@ -1208,7 +1238,7 @@ public class PlayerCtroller : MonoBehaviour {
 					//fade scene
 					LevelLoader.ReloadScene();
 					print("reload");
-					currentState = PlayerState.Idle;
+					
 				}
 
 			break;
@@ -1489,6 +1519,21 @@ public class PlayerCtroller : MonoBehaviour {
 			}
 		}
 	}
+	void OpenDoorCheck()
+	{
+		if(canOpenDoor)
+		{
+			if(IM.PS4_Triangle_Input && isGrounded)
+			{
+				IM.PS4_Triangle_Input = false;
+				currentState = PlayerState.Idle;
+				currentOD.closeActivateUI();
+				currentOD.canActivate = false;
+
+				StartCoroutine(currentOD.OpenDoor());
+			}
+		}
+	}
 	void HpCheck()
 	{
 		hp = Mathf.Clamp(hp,0,100);
@@ -1507,6 +1552,11 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		hp -= damageAmount;
 		healthBarScript.Damaging();
+
+		if(!GameData.FirstBlood)
+		{
+			GameData.FirstBlood = true;
+		}
 	}
 	void Roll()
 	{
@@ -1923,6 +1973,10 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		
 		FlyDir = Vector2.Lerp(FlyDir,new Vector2(moveInput_X,moveInput_Y),0.05f);
+
+		rb.velocity = FlyDir*flySpeed;
+		GasUse(GasUsingValue);
+		/*
 		if(Input.GetButton("PS4-R1"))
 		{
 			rb.velocity = FlyDir*40;
@@ -1932,7 +1986,7 @@ public class PlayerCtroller : MonoBehaviour {
 		{
 			rb.velocity = FlyDir*flySpeed;
 			GasUse(GasUsingValue);
-		}
+		}*/
 	}
 	IEnumerator HitTrigger()
     {
@@ -2000,31 +2054,12 @@ public class PlayerCtroller : MonoBehaviour {
 	} 
 	void OnTriggerEnter(Collider other)
 	{
-		
-		// if(other.CompareTag("Enemy"))
-		// {
-		// 	if(!isInvincible)
-		// 	{
-		// 		//print(other.name);
-
-		// 		if(other.transform.position.x>transform.position.x)
-		// 		{
-		// 			getHitByRight = true;
-		// 		}
-		// 		else
-		// 		{
-		// 			getHitByRight = false;
-		// 		}
-		// 		getKnockDir();
-		// 		hp -= 15.0f;
-
-		// 		isInvincible = true;
-		// 		StartCoroutine(ReviveTime_Count());
-		// 		LastState = currentState;
-		// 		currentState = PlayerState.GetHit;
-		// 	}
-			
-		// }
+		if(other.CompareTag("TriggerBoss"))
+		{
+			currentState = PlayerState.RunToBoss;
+			preBossCntrl = other.GetComponent<PreBossCntrller>();
+			PlayerAni.Play("Player3D|RunToBoss");
+		}
 	}
 	void OnTriggerStay(Collider other)
 	{
@@ -2054,6 +2089,16 @@ public class PlayerCtroller : MonoBehaviour {
 				currentTs = other.GetComponent<TranSceneCtrller>();
 			}
 		}
+		if(other.CompareTag("DoorOpen"))
+		{
+			if(other.GetComponent<OpenDevice>().showUI)
+			{
+				canOpenDoor = true;
+				currentOD = other.GetComponent<OpenDevice>();
+			}
+		}
+		
+		
 		
 	}
 	void OnTriggerExit(Collider other)
@@ -2190,6 +2235,8 @@ public class PlayerCtroller : MonoBehaviour {
 	{
 		gameObject.tag = "DeadObject";
         gameObject.layer = LayerMask.NameToLayer("DeadObject");
+
+		PlayerAni.SetTrigger("Death");
 
 		currentState = PlayerState.Die;
 		rb.velocity = Vector3.zero;

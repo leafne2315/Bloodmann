@@ -22,7 +22,7 @@ public class TranSceneCtrller : MonoBehaviour
     } 
     void Start()
     {
-        ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2,Quaternion.identity,RealWorldCanvas);
+        ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2 + Vector3.up*1.0f,Quaternion.identity,RealWorldCanvas);
         ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0,0,false);
         SceneIndex = SceneManager.GetActiveScene().buildIndex;
         

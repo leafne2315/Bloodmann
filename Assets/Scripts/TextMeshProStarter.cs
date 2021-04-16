@@ -20,4 +20,8 @@ public class TextMeshProStarter : MonoBehaviour
             textMeshProTyperScript.isActive = true;
         }
     }
+    public void ActivateType()
+    {
+        textMeshProTyperScript.isActive = true;
+    }
 }
