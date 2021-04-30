@@ -26,7 +26,17 @@ public class AirEnemyAttack : MonoBehaviour
 
         if(other.CompareTag("Player"))
         {
-            other.GetComponent<PlayerCtroller>().gettingHit();
+            PlayerCtroller p = other.GetComponent<PlayerCtroller>();
+
+            if(transform.position.x> other.transform.position.x)
+            {
+                p.getHitByRight = true;
+            }
+            else
+            {
+                p.getHitByRight = false;
+            }
+            p.gettingHit();
 
             if(!other.GetComponent<PlayerCtroller>().isInvincible)
             {

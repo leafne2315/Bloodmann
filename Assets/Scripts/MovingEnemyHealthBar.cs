@@ -47,7 +47,7 @@ public class MovingEnemyHealthBar : MonoBehaviour
     }
     public void DestroyUI()
     {
-        Destroy(EnemyHPBar.gameObject);
+        Destroy(EnemyHPBar.gameObject,1.5f);
         print("Done");
     }
 }

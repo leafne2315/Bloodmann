@@ -508,7 +508,7 @@ ModelImporter:
       name: Buzzer.001|heal after
       takeName: Buzzer.001|heal after
       internalID: 0
-      firstFrame: 0
+      firstFrame: 10
       lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0
@@ -567,7 +567,7 @@ ModelImporter:
       takeName: Buzzer.001|heal middle
       internalID: 0
       firstFrame: 0
-      lastFrame: 40
+      lastFrame: 35
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

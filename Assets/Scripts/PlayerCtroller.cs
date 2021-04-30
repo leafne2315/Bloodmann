@@ -92,6 +92,8 @@ public class PlayerCtroller : MonoBehaviour {
 	//
 	//飛行
 	[Header("Flying Settings")] 
+	public float FlyCheckTime;
+	private float checkflyTimer;
 	public float flyPw;
     public float acel;
 	public float flySpeed;
@@ -135,7 +137,7 @@ public class PlayerCtroller : MonoBehaviour {
 	public float KnockDuration;
 	public float KnockPwr;
 	private Vector3 KnockDir;
-	private bool getHitByRight;
+	public bool getHitByRight;
 	//
 	//狀態控制
 	[Header("Statement Settings")]
@@ -249,6 +251,9 @@ public class PlayerCtroller : MonoBehaviour {
 	private HealthBar healthBarScript;
  	public GameObject healthBar;
 	[Header("VFX Setting")]
+	public GameObject hitVFX;
+	public GameObject BloodVFX;
+	public Transform hitEffectGenPos;
 	public GameObject jumpDirtVFX;
 	public Transform jumpDirtPos;
 	public GameObject fallDirtVFX;
@@ -287,6 +292,13 @@ public class PlayerCtroller : MonoBehaviour {
 			SLManager.LoadPlayerSavePos();
 			GameData.DeadOnce = false;
 		}
+
+		if(!GameData.isGameStart)
+		{
+			SLManager.ResetFile();
+			GameData.isGameStart = true;
+		}
+
 		SLManager.LoadPlayerDetail();
 		SLManager.SavePlayerSavePos();
 		SLManager.SavePlayerDetail();
@@ -310,13 +322,17 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void FixedUpdate()
 	{
-		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash&&!noGravity&&currentState!=PlayerState.Rest)
+		if(currentState!=PlayerState.BugFly&&currentState!=PlayerState.Attach&&currentState!=PlayerState.Dash&&currentState!=PlayerState.Rest &&!isAttacking )
 		{
 			if(!noGravity)
 			{
 				rb.AddForce(Physics.gravity*4.5f,ForceMode.Acceleration);
 			}
-			
+		}
+
+		if(isAttacking)
+		{
+			rb.AddForce(Physics.gravity*2.5f,ForceMode.Acceleration);
 		}
 		
 	}
@@ -413,12 +429,12 @@ public class PlayerCtroller : MonoBehaviour {
 
 					isPlayerWalkSFXPlaying = false;
 					playerWalkSFX.Stop();
+
 					// if(isPlayerFlySFXPlaying)
 					// {
 					// 	print("a");
 					// 	isPlayerWalkSFXPlaying = false;
-					// 	playerWalkSFX.Stop();
-						
+					// 	playerWalkSFX.Stop();						
 					// }
 
 					if(TouchGroundOnce)
@@ -485,13 +501,36 @@ public class PlayerCtroller : MonoBehaviour {
 					GasUse(0);
 				}
 				*/
-				if(Input.GetKeyDown(KeyCode.Space)||IM.PS4_X_Input && isGrounded == true)
+				if(Input.GetKeyDown(KeyCode.Space)||IM.PS4_X_Input)
 				{
-					transform.Find("JumpEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
-					rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
-					Instantiate(jumpDirtVFX, jumpDirtPos.position, Quaternion.identity);
-					PlayerAni.SetTrigger("Jump");
-					IM.PS4_X_Input = false;
+					if(isGrounded)
+					{
+						transform.Find("JumpEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+						rb.velocity =  new Vector2 (moveInput_X*speed,JumpForce);
+						Instantiate(jumpDirtVFX, jumpDirtPos.position, Quaternion.identity);
+						PlayerAni.SetTrigger("Jump");
+						IM.PS4_X_Input = false;
+					}
+					else
+					{
+						if(!Out_Of_Gas)
+						{
+							currentState = PlayerState.BugFly;
+							checkflyTimer = 0;
+
+							if(isGrounded)
+							{
+								FlyDir = new Vector2(moveInput_X,moveInput_Y).normalized;
+							}
+							else
+							{
+								FlyDir = rb.velocity.normalized;
+							}
+
+							isPlayerWalkSFXPlaying = false;
+							playerWalkSFX.Stop();
+						}
+					}
 				}
 
 				// if(isGrounded)
@@ -557,6 +596,34 @@ public class PlayerCtroller : MonoBehaviour {
 					rb.velocity = Vector3.zero;
 				}
 */
+
+				if(Input.GetButton("PS4-x")&&!Out_Of_Gas)
+				{
+					if(checkflyTimer<FlyCheckTime)
+					{
+						checkflyTimer += Time.deltaTime;
+					}
+					else
+					{
+						checkflyTimer = 0;
+
+						currentState = PlayerState.BugFly;
+
+						if(isGrounded)
+						{
+
+							FlyDir = new Vector2(moveInput_X,moveInput_Y).normalized;
+						}
+						else
+						{
+							FlyDir = rb.velocity.normalized;
+						}
+
+						isPlayerWalkSFXPlaying = false;
+						playerWalkSFX.Stop();
+					}
+				}
+				/*
 				if(Input.GetKeyDown(KeyCode.C)||IM.PS4_L1_KeyDown&&!Out_Of_Gas)
 				{
 					currentState = PlayerState.BugFly;
@@ -572,7 +639,9 @@ public class PlayerCtroller : MonoBehaviour {
 					isPlayerWalkSFXPlaying = false;
 					playerWalkSFX.Stop();
 				}
+				*/
 
+				
 				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
 				{
 					rb.velocity = Vector3.zero;
@@ -584,6 +653,7 @@ public class PlayerCtroller : MonoBehaviour {
 					playerWalkSFX.Stop();
 					
 				}
+				
 
 				if(Input.GetButtonDown("PS4-L2")&&isGrounded)
 				{
@@ -636,7 +706,9 @@ public class PlayerCtroller : MonoBehaviour {
 
 				if(IM.PS4_X_Input)
 				{
+					IM.PS4_X_Input = false;
 					PlayerAni.SetTrigger("Jump");
+					
 					if(!isAttachOnTop)
 					{
 						if(!facingRight)
@@ -695,6 +767,7 @@ public class PlayerCtroller : MonoBehaviour {
 					canAirDash = false;
 				}
 				*/
+				/*
 				if(Input.GetKeyDown(KeyCode.V)||Input.GetButtonDown("PS4-L1"))
 				{
 					currentState = PlayerState.Normal;
@@ -703,6 +776,16 @@ public class PlayerCtroller : MonoBehaviour {
 					//rb.gravityScale = OriginGravity;
 					//FlyDir = Vector2.zero;
 				}
+				*/
+				if(!Input.GetButton("PS4-x"))//非按住
+				{
+					currentState = PlayerState.Normal;
+					isPlayerFlySFXPlaying = false;
+					playerFlySFX.Stop();
+					//rb.gravityScale = OriginGravity;
+					//FlyDir = Vector2.zero;
+				}
+				
 				if(Input.GetMouseButtonDown(0)||IM.PS4_R2_KeyDown&&!isIneffective)//->Dash
 				{	
 					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PreDash") as GameObject, transform.position, Quaternion.identity);
@@ -721,6 +804,7 @@ public class PlayerCtroller : MonoBehaviour {
 					playerFlySFX.Stop();
 				}
 
+				/*飛行普攻
 				if(IM.PS4_Square_Input||Input.GetKeyDown(KeyCode.Z))
 				{
 
@@ -732,6 +816,7 @@ public class PlayerCtroller : MonoBehaviour {
 					isPlayerFlySFXPlaying = false;
 					playerFlySFX.Stop();
 				}
+				*/
 
 				if(Out_Of_Gas)
 				{
@@ -828,7 +913,7 @@ public class PlayerCtroller : MonoBehaviour {
 							hitConfirm = false;
 
 							emission.enabled = false;
-							transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+							
 							HitEffect();
 							GameObject sfx = Instantiate(Resources.Load("SoundPrefab/DashATKHit") as GameObject, transform.position, Quaternion.identity);
 							
@@ -1089,10 +1174,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.PreAttack:
 
-				if(isFlyAttack)
-				{
-					FlyMovement();
-				}
+				// if(isFlyAttack)
+				// {
+				// 	FlyMovement();
+				// }
 
 				if(Timer<PreAttackTime)
 				{
@@ -1112,10 +1197,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.Attack:
 				
-				if(isFlyAttack)
-				{
-					FlyMovement();
-				}
+				// if(isFlyAttack)
+				// {
+				// 	FlyMovement();
+				// }
 
 				if(Timer<AttackTime)
 				{
@@ -1136,10 +1221,10 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.AfterAttack:
 
-				if(isFlyAttack)
-				{
-					FlyMovement();
-				}
+				// if(isFlyAttack)
+				// {
+				// 	FlyMovement();
+				// }
 
 				if(Timer<AfterAttackTime)
 				{
@@ -1193,7 +1278,7 @@ public class PlayerCtroller : MonoBehaviour {
 				{
 					Timer = 0;
 					Recover(recoverAmount);
-					GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerAfterHealing") as GameObject, transform.position, Quaternion.identity);
+					
 					isRecovery = false;
 					
 					currentState = PlayerState.Normal; 
@@ -1203,7 +1288,9 @@ public class PlayerCtroller : MonoBehaviour {
 
 			case PlayerState.BloodCollect:
 
+				canCollect = false;
 				rb.velocity = Vector3.zero;
+				
 
 				if(CollectBegin)
 				{
@@ -1373,6 +1460,10 @@ public class PlayerCtroller : MonoBehaviour {
 	}
 	void HitEffect()
 	{
+		//transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+		GameObject bloodEffect = Instantiate(BloodVFX,hitEffectGenPos.position,Quaternion.identity);
+		GameObject hitEffect = Instantiate(hitVFX,hitEffectGenPos.position,Quaternion.identity);
+
 		Vector3 HitEffectRightAngle;
        	HitEffectRightAngle = new Vector3(0f,20f,40f);
        	Vector3 HitEffectLeftAngle;
@@ -1380,13 +1471,15 @@ public class PlayerCtroller : MonoBehaviour {
 
        	if(facingRight)
 		{
-			transform.Find("HitEffect").GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectRightAngle);
+			hitEffect.GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectRightAngle);
 		}
 		else
 		{
-			transform.Find("HitEffect").GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectLeftAngle);
+			hitEffect.GetComponent<VisualEffect>().SetVector3("HitEffectAngle", HitEffectLeftAngle);
 		}
-		transform.Find("HitEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
+
+		bloodEffect.GetComponent<VisualEffect>().SendEvent("OnPlay");
+		hitEffect.GetComponent<VisualEffect>().SendEvent("OnPlay");
 	}
 	void Bound()
 	{
@@ -1425,7 +1518,7 @@ public class PlayerCtroller : MonoBehaviour {
 		Vector3 UI_pos = new Vector3(WorldPos.x,WorldPos.y);
 		BloodUI = Instantiate(pf_BloodUI,UI_pos,Quaternion.identity,RealWorldUICanVas);
 		BloodBar = BloodUI.transform.GetChild(1).GetComponent<Image>();
-
+		
 		GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerCollectBlood") as GameObject, transform.position, Quaternion.identity);
 		CollectBegin = true;
 	}
@@ -1453,6 +1546,7 @@ public class PlayerCtroller : MonoBehaviour {
 			StartCoroutine(BloodCollectUI_Remove());
 			currentState = PlayerState.Normal;
 			currentBp.canActivate = false;
+			currentBp.showUI = false;
 			
 		}
 	}
@@ -1482,6 +1576,7 @@ public class PlayerCtroller : MonoBehaviour {
 				//採血動畫-->觸發startCollect
 				//以下測試用
 				StartCollect();
+				
 			}
 		}
 	}
@@ -1767,10 +1862,10 @@ public class PlayerCtroller : MonoBehaviour {
 				hitConfirm = true;
 				HitEffect();
 				GameObject sfx = Instantiate(Resources.Load("SoundPrefab/PlayerATK_Monster") as GameObject, transform.position, Quaternion.identity);
+				
 
 				foreach(Collider c in hitObjs)
 				{
-					transform.Find("BloodEffect").GetComponent<VisualEffect>().SendEvent("OnPlay");
 					print("Hit"+c.name+"!!!!");
 					StartCoroutine(c.GetComponent<tempGetHit>().HitTrigger(AttackDir));
 				}
@@ -1982,7 +2077,7 @@ public class PlayerCtroller : MonoBehaviour {
 
 		rb.velocity = FlyDir*flySpeed;
 		GasUse(GasUsingValue);
-		/*
+		
 		if(Input.GetButton("PS4-R1"))
 		{
 			rb.velocity = FlyDir*40;
@@ -1991,8 +2086,8 @@ public class PlayerCtroller : MonoBehaviour {
 		else
 		{
 			rb.velocity = FlyDir*flySpeed;
-			GasUse(GasUsingValue);
-		}*/
+			// GasUse(GasUsingValue);
+		}
 	}
 	IEnumerator HitTrigger()
     {
@@ -2042,15 +2137,16 @@ public class PlayerCtroller : MonoBehaviour {
 			//UI 關閉
 			emission.enabled = false;
    			Arrow.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
-
-			if(facingRight)
-			{
-				KnockDir = new Vector3(-Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
-			}
-			else
-			{
-				KnockDir = new Vector3(Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
-			}
+			
+			getKnockDir();
+			// if(facingRight)
+			// {
+			// 	KnockDir = new Vector3(-Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+			// }
+			// else
+			// {
+			// 	KnockDir = new Vector3(Mathf.Cos(45*Mathf.Deg2Rad),Mathf.Sin(45*Mathf.Deg2Rad),0);
+			// }
 
 			if(GetComponent<FixedJoint>()!=null)
 			{

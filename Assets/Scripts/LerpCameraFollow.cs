@@ -69,7 +69,7 @@ public class LerpCameraFollow : MonoBehaviour
     }
     void Update()
     {
-        cameraInput_Y = Input.GetAxis("PS4-R-Vertical");
+        //cameraInput_Y = Input.GetAxis("PS4-R-Vertical");
 
 		if(Input.GetAxis("PS4-R-Vertical")!=0)
 		{

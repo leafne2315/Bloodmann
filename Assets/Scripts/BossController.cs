@@ -267,7 +267,18 @@ public class BossController : MonoBehaviour{
 				foreach(Collider c in hitObjs)
 				{
 					print("Hit"+c.name+"!!!!");
-					Player.GetComponent<PlayerCtroller>().gettingHit();
+                    PlayerCtroller p = Player.GetComponent<PlayerCtroller>();
+
+                    if(transform.position.x>Player.transform.position.x)
+                    {
+                        p.getHitByRight = true;
+                    }
+                    else
+                    {
+                        p.getHitByRight = false;
+                    }
+                    p.gettingHit();
+					
 				}
 			}
 		}

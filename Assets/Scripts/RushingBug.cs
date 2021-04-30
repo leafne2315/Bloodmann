@@ -31,7 +31,7 @@ private Rigidbody rb;
     public Transform DetectPos;
     public LayerMask WhatIsPlayer;
     public bool PlayerDetect;
-    public Transform GroundCheck;
+    public Transform[] Button;
     public float GroundCheckRadius = 0.1f;
     public LayerMask WhatIsGround;
     public Vector3 CombatingVision;
@@ -70,15 +70,21 @@ private Rigidbody rb;
     private IEnumerator AttackCDCoroutine;
     public bool isSpiderSFXPlaying;
     public AudioSource spiderSFX;
+
+    [Header("Material")]
+    public Material rushingBugDieMaterial;
+    public GameObject rushingBugModel;
+    public float dissolveSpeed;
+    float dissolveOverTime;
     void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         
     }
     void Start()
     {
         MovingDir = transform.forward;
-        rb = GetComponent<Rigidbody>();
-
+        rushingBugDieMaterial.SetFloat("_Fade",-1);
         GetStabbedTime = Player.GetComponent<PlayerCtroller>().StabbingTime;
     }
     void FixedUpdate()
@@ -122,6 +128,7 @@ private Rigidbody rb;
         GetHitCheck();
         GetStabbedCheck();
         DieCheck();
+        GroundCheck();
         //print(PlayerDetect);
         //print(currentState);
 
@@ -172,7 +179,7 @@ private Rigidbody rb;
                 }
                 DetectingPlayer();
                 PatrolDir();
-                rb.velocity = MovingDir*patrolSpeed;
+                rb.velocity = MovingDir*patrolSpeed + new Vector3(0,rb.velocity.y,0);
                 if(patrolTimer<patrolTime)
                 {
                     patrolTimer+= Time.deltaTime;
@@ -258,12 +265,21 @@ private Rigidbody rb;
             break;
             case EnemyState.Attacking:
                 
-                isGrounded = Physics.CheckSphere(GroundCheck.position,GroundCheckRadius,WhatIsGround);
                 bool HitBox = Physics.CheckSphere(transform.position,BodyRadius,WhatIsPlayer);
 
                 if(HitBox)
                 {
-                    Player.GetComponent<PlayerCtroller>().gettingHit();
+                    PlayerCtroller p = Player.GetComponent<PlayerCtroller>();
+
+                    if(transform.position.x>Player.transform.position.x)
+                    {
+                        p.getHitByRight = true;
+                    }
+                    else
+                    {
+                        p.getHitByRight = false;
+                    }
+                    p.gettingHit();
                 }
 
                 if(isGrounded&&isOverFrame)
@@ -345,9 +361,11 @@ private Rigidbody rb;
                 }
                 else
                 {
-                    
+                    rushingBugModel.GetComponent<SkinnedMeshRenderer>().material = rushingBugDieMaterial;
+                    dissolveOverTime += Time.deltaTime *dissolveSpeed;
+                    rushingBugDieMaterial.SetFloat("_Fade",dissolveOverTime);  
                     transform.GetChild(2).GetComponent<RushEnemyUIController>().DestroyUI();
-                    Destroy(gameObject);
+                    Destroy(gameObject,1.5f);
                 }
 
             break;
@@ -356,7 +374,23 @@ private Rigidbody rb;
             break;
         }
     }
-    
+    void GroundCheck()
+    {
+        for(int i = 0;i<Button.Length;i++)
+        {
+            RaycastHit hit;
+            if(Physics.Raycast(Button[i].position,Vector3.down,out hit,0.2f,WhatIsGround))
+            {
+                isGrounded = true;
+                break;
+            }
+            else
+            {
+                isGrounded = false;
+            }
+            Debug.DrawRay(Button[i].position, Vector3.down *0.2f,Color.red);
+        }
+    }
     IEnumerator AfterFrame(int frameNum)
     {
         isOverFrame = false;
@@ -448,7 +482,7 @@ private Rigidbody rb;
         }
         else
         {
-            rb.velocity = MovingDir*movingSpeed;
+            rb.velocity = MovingDir*movingSpeed + new Vector3(0,rb.velocity.y,0);
         }
     }
     void FacingCheck()
@@ -501,13 +535,19 @@ private Rigidbody rb;
 
             if(!isAttacking)
             {
-                isSpiderSFXPlaying = false;
-                spiderSFX.Stop();
+                GetHitReset();
                 currentState = EnemyState.Repel;
-                Timer = 0;
+                
                 RushBugAni.SetTrigger("Repel");
             }
         }
+    }
+    void GetHitReset()
+    {
+        Timer = 0;
+        isSpiderSFXPlaying = false;
+        spiderSFX.Stop();
+        RushBugAni.ResetTrigger("Attack");
     }
     void GetStabbedCheck()
     {
@@ -522,12 +562,11 @@ private Rigidbody rb;
             {
                 RepelDir = Vector3.left;
             }
-            isSpiderSFXPlaying = false;
-            spiderSFX.Stop();
+            
             currentState = EnemyState.Repel;
             RushBugAni.SetTrigger("Repel");
             rb.velocity = Vector3.zero;
-            Timer = 0;
+            GetHitReset();
 
             
             StopCoroutinesExceptTiming();
@@ -558,9 +597,19 @@ private Rigidbody rb;
     {
         if(other.CompareTag("Player"))
         {
-            if(notDie)
+            if(notDie&&!isAttacking)
             {
-                other.GetComponent<PlayerCtroller>().gettingHit();
+                PlayerCtroller p = other.GetComponent<PlayerCtroller>();
+
+                if(transform.position.x>Player.transform.position.x)
+                {
+                    p.getHitByRight = true;
+                }
+                else
+                {
+                    p.getHitByRight = false;
+                }
+                p.gettingHit();
             }
         }
 

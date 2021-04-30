@@ -362,7 +362,17 @@ public class MovingEnemy : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            Player.GetComponent<PlayerCtroller>().gettingHit();
+            PlayerCtroller p = Player.GetComponent<PlayerCtroller>();
+
+            if(transform.position.x>Player.transform.position.x)
+            {
+                p.getHitByRight = true;
+            }
+            else
+            {
+                p.getHitByRight = false;
+            }
+            p.gettingHit();
         }
     }
 

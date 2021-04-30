@@ -12,7 +12,7 @@ public static class GameData
     public static bool FirstBlood;
     public static bool CanAttack = true;
     public static bool isDoorOpen;
-
+    public static bool isGameStart;
     public static void ResetBool()
     {
         DeadOnce = false;
@@ -21,5 +21,14 @@ public static class GameData
         CanRoll = false;
         FirstBlood = false;
         isDoorOpen = false;
+        isGameStart = false;
+    }
+    public static void OpenAllAbility()
+    {
+        CanFly = true;
+        CanRecover = true;
+        CanRoll = true;
+        CanAttack = true;
+        CanDash = true;
     }
 }

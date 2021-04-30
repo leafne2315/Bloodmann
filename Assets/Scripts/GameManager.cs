@@ -38,6 +38,11 @@ public class GameManager : MonoBehaviour
             SLmanager.ResetFile();
         }
 
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            GameData.OpenAllAbility();
+        }
+
 
         isGamePause = isMenuPause||isTeachPause;
 
@@ -61,14 +66,17 @@ public class GameManager : MonoBehaviour
     }
     void OnApplicationQuit()
     {
-        SLmanager.ResetFile();   
+        SLmanager.ResetFile();
+        PlayerPrefs.DeleteAll();
     }
 
     public void ReloadScene()
     {
         Scene scene = SceneManager.GetActiveScene(); 
         SceneManager.LoadScene(scene.name);
-    } 
+    }
+
+
 
     
 }

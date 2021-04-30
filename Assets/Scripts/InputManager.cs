@@ -147,6 +147,10 @@ public class InputManager : MonoBehaviour
         }
         
     }
+    void PriorityCheck()
+    {
+        
+    }
     IEnumerator InputAfter_PS4_R2()
     {
         for(int i = 0;i<1;i++)

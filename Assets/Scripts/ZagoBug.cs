@@ -43,10 +43,21 @@ public class ZagoBug : MonoBehaviour
     public Animator ZagoAni;
     public bool isZagoSFXPlaying;
     public AudioSource zagoBugSFX;
-    void Start()
+
+    [Header("Material")]
+    public Material zagoDieMaterial;
+    public GameObject zagoModel;
+    public float dissolveSpeed;
+    float dissolveOverTime;
+    void Awake()
     {
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
+        
+    }
+    void Start()
+    {
+        zagoDieMaterial.SetFloat("_Fade",-1);
     }
     
     void FixedUpdate()
@@ -126,8 +137,11 @@ public class ZagoBug : MonoBehaviour
                 }
                 else
                 {
+                    zagoModel.GetComponent<SkinnedMeshRenderer>().material = zagoDieMaterial;
+                    dissolveOverTime += Time.deltaTime *dissolveSpeed;
+                    zagoDieMaterial.SetFloat("_Fade",dissolveOverTime);
                     transform.GetChild(0).GetComponent<MovingEnemyHealthBar>().DestroyUI();
-                    Destroy(gameObject);
+                    Destroy(gameObject,1.5f);
                 }
                 
                 isZagoSFXPlaying = false;
@@ -278,14 +292,22 @@ public class ZagoBug : MonoBehaviour
         {
             if(notDie)
             {
-                Player.GetComponent<PlayerCtroller>().gettingHit();
+                PlayerCtroller p = Player.GetComponent<PlayerCtroller>();
+
+                if(transform.position.x>Player.transform.position.x)
+                {
+                    p.getHitByRight = true;
+                }
+                else
+                {
+                    p.getHitByRight = false;
+                }
+                p.gettingHit();
             }
         }
     }
     void OnDrawGizmos()
     {
-        
         Gizmos.color = Color.red;
-        
     }
 }
