@@ -682,7 +682,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2780891144355576173}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -125.8, y: 165.2, z: 2.6873784}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -768,8 +768,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1f2402d065af5d41a9e6036fc5189b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AttackPf: {fileID: 1091947607946344795, guid: 57743177ffe15ee4da8d525e009ed44f,
-    type: 3}
+  AttackPf: {fileID: 813183028180822298, guid: f137a5c1e71a88f469cdafc86977a1e8, type: 3}
   health: 5
   maxhealth: 5
   PlayerLastPos: {x: 0, y: 0, z: 0}
@@ -809,7 +808,7 @@ MonoBehaviour:
   repelTime: 0.15
   getHitDir: {x: 0, y: 0, z: 0}
   getHitForce: 5
-  dyingTime: 1.5
+  dyingTime: 2
   isFlyingBugSFXPlaying: 0
   flyingBugSFX: {fileID: 2780891144152871256}
 --- !u!114 &2780891144355576163

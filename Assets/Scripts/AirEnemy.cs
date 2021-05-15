@@ -65,6 +65,11 @@ public class AirEnemy : MonoBehaviour
     public float dyingTime;
     public bool isFlyingBugSFXPlaying;
     public AudioSource flyingBugSFX;
+    [Header("Material")]
+    public Material airEnemyDieMaterial;
+    public GameObject airEnemyModel;
+    public float dissolveSpeed;
+    float dissolveOverTime;
     //private GameObject newEnemyAttack;
     void Start()
     {
@@ -236,9 +241,12 @@ public class AirEnemy : MonoBehaviour
                 }
                 else
                 {
-                    
+                    airEnemyModel.GetComponent<SkinnedMeshRenderer>().material = airEnemyDieMaterial;
+                    dissolveOverTime += Time.deltaTime *dissolveSpeed;
+                    airEnemyDieMaterial.SetFloat("_Fade",dissolveOverTime);         
                     transform.GetChild(2).GetComponent<AirEnemyHealthBar>().DestroyUI();
-                    Destroy(gameObject);
+                    Destroy(gameObject,1.5f);
+                    
                 }
                 
             break;

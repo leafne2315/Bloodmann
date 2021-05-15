@@ -92,13 +92,13 @@ public class CoreUI : MonoBehaviour
                     {
                         cores[i].sprite = FirstCore;
                         cores[i].SetNativeSize();
-                        transform.GetChild(i).transform.localScale = originalScale;
+                        //transform.GetChild(i).transform.localScale = originalScale;
                     }
                     else
                     {
                         cores[i].sprite = fullCore;
                         cores[i].SetNativeSize();
-                        transform.GetChild(i).transform.localScale = originalScale;
+                        //transform.GetChild(i).transform.localScale = originalScale;
                     }
                 }
                 else
@@ -107,13 +107,13 @@ public class CoreUI : MonoBehaviour
                     {
                         cores[i].sprite = firstEmptyCore;
                         cores[i].SetNativeSize();
-                        transform.GetChild(i).transform.localScale = originalScale;
+                        //transform.GetChild(i).transform.localScale = originalScale;
                     }
                     else
                     {
                         cores[i].sprite = emptyCore;
                         cores[i].SetNativeSize();
-                        transform.GetChild(i).transform.localScale = originalScale;
+                        //transform.GetChild(i).transform.localScale = originalScale;
                     }
                     
                 }

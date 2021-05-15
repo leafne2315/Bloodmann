@@ -28,13 +28,18 @@ public class DropEnemyCtrller : MonoBehaviour
     public float dyingTime;
     public bool isSlimeSFXPlaying;
     public AudioSource slimeSFX;
+    [Header("Material")]
+    public Material dropEnemyDieMaterial;
+    public GameObject dropEnemyModel;
+    public float dissolveSpeed;
+    float dissolveOverTime;
     public enum EnemyState{OnWall,Fall, Moving,GetStabbed, Dead}
     // Start is called before the first frame update
     void Start()
     {
         tempGetHit = GetComponent<tempGetHit>();
         rb = GetComponent<Rigidbody>();
-
+        dropEnemyDieMaterial.SetFloat("_Fade",-1);
         
         //transform.eulerAngles = new Vector3(0,0,180);
     }
@@ -129,8 +134,11 @@ public class DropEnemyCtrller : MonoBehaviour
                 }
                 else
                 {
+                    dropEnemyModel.GetComponent<SkinnedMeshRenderer>().material = dropEnemyDieMaterial;
+                    dissolveOverTime += Time.deltaTime *dissolveSpeed;
+                    dropEnemyDieMaterial.SetFloat("_Fade",dissolveOverTime);
                     transform.GetChild(2).GetComponent<DropEnemyHealthBar>().DestroyUI();
-                    Destroy(gameObject);
+                    Destroy(gameObject,1.5f);
                 }
 
             break;

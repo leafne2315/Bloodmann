@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PreBossCntrller : MonoBehaviour
 {
@@ -8,7 +9,9 @@ public class PreBossCntrller : MonoBehaviour
     public bool isActivate;
     public bool isDone;
     public Animator BossAni;
-    public Camera MainCam;
+    public CinemachineVirtualCamera MainCam;
+    public CinemachineVirtualCamera TalkCam;
+    public CinemachineConfiner CameraRestrict;
     public Transform Mid;
     public GameObject Player;
     public GameObject Boss;
@@ -19,6 +22,7 @@ public class PreBossCntrller : MonoBehaviour
     public GameObject Dialog03;
     private LevelLoader LvLoader;
     private SavingAndLoad SLManager;
+    public GameObject CloseDoor;
     
     void Awake()
     {
@@ -37,13 +41,15 @@ public class PreBossCntrller : MonoBehaviour
         {
             isDone = true;
             Mid.position = (Player.transform.position + Boss.transform.position)/2;
-            MainCam.GetComponent<LerpCameraFollow>().Target = Mid;
+            Mid.position = new Vector3(Mid.position.x,Player.transform.position.y,Player.transform.position.z);
+            MainCam.m_Priority = 9;
             StartCoroutine(BossFightBegin());
             //
         }
     }
     IEnumerator BossFightBegin()
     {
+        /*
         print("startBoss");
         yield return new WaitForSeconds(1.5f);
         print("openUI");
@@ -55,14 +61,27 @@ public class PreBossCntrller : MonoBehaviour
         yield return new WaitForSeconds(4.5f);
         Destroy(Dialog02);
         Dialog03.GetComponent<TextMeshProStarter>().ActivateType();
-        BossAni.SetTrigger("ReadyForFight");
-        yield return new WaitForSeconds(7.0f);
+        */
+        
+        BossAni.SetTrigger("ReadyToFight");
+        
+        //yield return new WaitForSeconds(7.0f);
         Destroy(Dialog03);
         StartCoroutine(closeUIBack());
+        
         yield return new WaitForSeconds(3.0f);
+        /*轉場回開頭
         StartCoroutine(LvLoader.LoadLevelWithDelay(1,1.5f));
         SLManager.ResetFile();
         GameData.ResetBool();
+        */
+        Player.GetComponent<PlayerCtroller>().currentState = PlayerCtroller.PlayerState.Normal;
+        Boss.GetComponent<BossController>().isFighting = true;
+
+        MainCam.m_Priority = 11;
+        CameraRestrict.enabled = true;
+        CloseDoor.SetActive(true);
+        Destroy(gameObject);
     }
     IEnumerator closeUIBack()
     {

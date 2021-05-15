@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
 public class OpenDevice : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -14,18 +15,33 @@ public class OpenDevice : MonoBehaviour
     public bool canActivate = true;
     private LevelLoader LvLoader;
     private PlayerCtroller playerScript;
-    public Camera OriginCam;
-    public Camera camera2;
+    public CinemachineVirtualCamera OriginCam;
+    public CinemachineVirtualCamera camera2;
     public GameObject Canvas;
+    public GameObject CineCamera;
+    private CinemachineConfiner cc;
+    public PolygonCollider2D OriginConfider;
+    public PolygonCollider2D nextConfinder;
     void Awake()
     {
         LvLoader = GameObject.Find("LevelLoder").GetComponent<LevelLoader>();
         playerScript = GameObject.Find("Player").GetComponent<PlayerCtroller>();
+        cc = CineCamera.GetComponent<CinemachineConfiner>();
     } 
     void Start()
     {
         ActivateUI = Instantiate(ActiveUI_Pf,transform.position + Vector3.forward*-2 + Vector3.up*1,Quaternion.identity,RealWorldCanvas);
         ActivateUI.transform.GetComponent<Image>().CrossFadeAlpha(0,0,false);
+
+        if(GameData.isDoorOpen)
+        {
+            cc.m_BoundingShape2D = nextConfinder;
+            canActivate = false;
+        }
+        else
+        {
+            cc.m_BoundingShape2D = OriginConfider;
+        }
     }
 
     // Update is called once per frame
@@ -79,23 +95,22 @@ public class OpenDevice : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
         //相機喚回來
         ChangeBack();
+        //換Confider
+        cc.m_BoundingShape2D = nextConfinder;
         LvLoader.FadeIn();
         yield return new WaitForSeconds(1.0f);
         playerScript.currentState = PlayerCtroller.PlayerState.Normal;
         playerScript.canOpenDoor = false;
+
         Destroy(gameObject);
     }
 
     void changeCamTo2()
     {
-        OriginCam.enabled = false;
-        camera2.enabled = true;
-        Canvas.SetActive(false);
+        OriginCam.Priority = 9;
     }
     void ChangeBack()
     {
-        OriginCam.enabled = true;
-        camera2.enabled = false;
-        Canvas.SetActive(true);
+        OriginCam.Priority = 11;
     }
 }

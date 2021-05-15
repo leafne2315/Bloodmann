@@ -71,15 +71,14 @@ public class LerpCameraFollow : MonoBehaviour
     {
         //cameraInput_Y = Input.GetAxis("PS4-R-Vertical");
 
-		if(Input.GetAxis("PS4-R-Vertical")!=0)
-		{
-			isMovingCamera = true;
-		}
-		else
-		{
-			isMovingCamera = false;
-	
-    	}
+		// if(Input.GetAxis("PS4-R-Vertical")!=0)
+		// {
+		// 	isMovingCamera = true;
+		// }
+		// else
+		// {
+		// 	isMovingCamera = false;
+    	// }
 
         DoublePivot();
         FollowSpeed_Change();

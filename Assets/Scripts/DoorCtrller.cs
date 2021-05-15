@@ -14,7 +14,11 @@ public class DoorCtrller : MonoBehaviour
     private float timer;
     void Start()
     {
-        
+        if(GameData.isDoorOpen)
+        {
+            transform.position = transform.position + Dist*Vector3.up;
+        }
+
         speed = Dist/openTime;        
     }
 

@@ -49,7 +49,7 @@ public class AirEnemyHealthBar : MonoBehaviour
     }
     public void DestroyUI()
     {
-        Destroy(airEnemyHPBar.gameObject);
+        Destroy(airEnemyHPBar.gameObject,1.5f);
         print("Done");
     }
 }
