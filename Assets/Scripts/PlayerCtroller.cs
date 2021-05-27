@@ -513,7 +513,7 @@ public class PlayerCtroller : MonoBehaviour {
 					}
 					else
 					{
-						if(!Out_Of_Gas)
+						if(!Out_Of_Gas&&GameData.CanFly)
 						{
 							currentState = PlayerState.BugFly;
 							checkflyTimer = 0;
@@ -597,7 +597,7 @@ public class PlayerCtroller : MonoBehaviour {
 				}
 */
 
-				if(Input.GetButton("PS4-x")&&!Out_Of_Gas)
+				if(Input.GetButton("PS4-x")&&!Out_Of_Gas&&GameData.CanFly)
 				{
 					if(checkflyTimer<FlyCheckTime)
 					{
