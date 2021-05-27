@@ -15,6 +15,9 @@ public class BossController : MonoBehaviour{
     public bool isFighting;
     public Animator BossAni;
     public GameObject Canvas;
+    public bool notDie;
+    [Header("Data")]
+    public float hp;
     [Header("Detect Settings")]
     public bool isClose;
     public bool isFar;
@@ -47,6 +50,8 @@ public class BossController : MonoBehaviour{
     public float DownSpeed;
     public float AD_StateTime;
     [Header("DashAttack Settings")]
+    public Transform DA_hitPos;
+    public Vector3 DA_hitBox;
     public float DA_Speed;
     public float DA_Time;
     public float DA_Dir_Start;
@@ -146,17 +151,24 @@ public class BossController : MonoBehaviour{
                     {
                         int RandomNum = Random.Range(0,101);
                         print(RandomNum);
-                        if(RandomNum<=50)
+                        if(RandomNum<=30)
                         {
                             DA_Dir = MoveDir;
                             currentState = BossState.DashAttack;
                             BossAni.SetTrigger("DashAttack");
                         }
-                        else
+                        else if(RandomNum>30&&RandomNum<=60)
                         {
                             
                             currentState = BossState.AirDown;
                             BossAni.SetTrigger("AirDown");
+                        }
+                        else
+                        {
+                            currentState = BossState.ShootAir;
+                            timer = 0;
+                            ResetAniTrigger();
+                            BossAni.SetTrigger("AirShoot");
                         }
                     }
                     timer = 0;
@@ -252,6 +264,7 @@ public class BossController : MonoBehaviour{
                 {
                     rb.velocity = DA_Dir*DA_Speed;
                     //DA
+                    DashAttackHit();
                 }
                 else if(timer<DA_StateTime)
                 {
@@ -322,7 +335,7 @@ public class BossController : MonoBehaviour{
                             if(RandomNum<=70)//70%
                             {
                                 int RandomNum2 = Random.Range(0,101);
-                                if(RandomNum2<=50)//50%50%
+                                if(RandomNum2<=33)//50%50%
                                 {
                                     DA_Dir = MoveDir;
                                     currentState = BossState.DashAttack;
@@ -331,12 +344,19 @@ public class BossController : MonoBehaviour{
                                     timer = 0;
                                     break;
                                 }
-                                else
+                                else if(RandomNum2>33&&RandomNum2<=66)
                                 {
                                     currentState = BossState.AirDown;
                                     BossAni.SetTrigger("AirDown");
                                     timer = 0;
                                     break;
+                                }
+                                else
+                                {
+                                    currentState = BossState.ShootAir;
+                                    timer = 0;
+                                    ResetAniTrigger();
+                                    BossAni.SetTrigger("AirShoot");
                                 }
                             }
                         }
@@ -416,6 +436,63 @@ public class BossController : MonoBehaviour{
         else if(facingRight == true&&MoveDir.x<0)
         {
             Flip();
+        }
+
+        GetHitCheck();
+    }
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player"))
+        {
+            if(notDie)
+            {
+                PlayerCtroller p = other.GetComponent<PlayerCtroller>();
+
+                if(transform.position.x>Player.transform.position.x)
+                {
+                    p.getHitByRight = true;
+                }
+                else
+                {
+                    p.getHitByRight = false;
+                }
+                p.gettingHit();
+            }
+        }
+    }
+    void DashAttackHit()
+    {
+        Collider[] hitObjs = Physics.OverlapBox(DA_hitPos.position,DA_hitBox,Quaternion.identity,PlayerLayer);
+        
+        if(hitObjs.Length==0)
+        {
+            print("Miss");
+        }
+        else
+        {        
+            foreach(Collider c in hitObjs)
+            {
+                print("DA_Hit"+c.name+"!!!!");
+                PlayerCtroller p = Player.GetComponent<PlayerCtroller>();
+
+                if(transform.position.x>Player.transform.position.x)
+                {
+                    p.getHitByRight = true;
+                }
+                else
+                {
+                    p.getHitByRight = false;
+                }
+                p.gettingHit();
+                
+            }
+        }
+    }
+    void GetHitCheck()
+    {
+        if(GetComponent<tempGetHit>().isHit)
+        {
+            hp--;
         }
     }
     void Flip()
@@ -520,6 +597,53 @@ public class BossController : MonoBehaviour{
 			}
 		}
     }
+    void MoveChoice()
+    {
+        if(isClose)
+        {
+            int RandomNum = Random.Range(0,101);
+            print(RandomNum);
+
+            if(RandomNum<=40)
+            {
+                //-->Twice Attack
+                BossAni.SetTrigger("DoubleAttack");
+                currentState = BossState.TwiceAttack;
+                rb.velocity = Vector3.zero;
+            }
+            else if(RandomNum>40&&RandomNum<=70)
+            {
+                //-->Quick Back
+                BossAni.SetTrigger("QuickBack");
+                currentState = BossState.QuickBack;
+                rb.velocity = Vector3.zero;
+                BackDir = new Vector3(-MoveDir.x,0,0);
+            }
+            else
+            {
+                DA_Dir = MoveDir;
+                currentState = BossState.DashAttack;
+                BossAni.SetTrigger("DashAttack");
+            }
+        }
+        else
+        {
+            int RandomNum = Random.Range(0,101);
+            print(RandomNum);
+            if(RandomNum<=50)
+            {
+                DA_Dir = MoveDir;
+                currentState = BossState.DashAttack;
+                BossAni.SetTrigger("DashAttack");
+            }
+            else
+            {
+                
+                currentState = BossState.AirDown;
+                BossAni.SetTrigger("AirDown");
+            }
+        }
+    }
     void NextState()
     {
         bool isClose = Physics.CheckBox(transform.position,2*Vector3.one,Quaternion.identity,PlayerLayer);
@@ -575,5 +699,8 @@ public class BossController : MonoBehaviour{
             Gizmos.DrawWireCube(AimPos,2*ShootAir_HitBox);
 
         }
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(DA_hitPos.position,2*DA_hitBox);
     }
 }

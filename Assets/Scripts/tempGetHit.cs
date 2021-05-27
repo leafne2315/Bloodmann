@@ -13,7 +13,7 @@ public class tempGetHit : MonoBehaviour
     private Color OriginColor;
     void Start()
     {
-        OriginColor = GetComponent<Renderer>().material.color;
+        //OriginColor = GetComponent<Renderer>().material.color;
         rb = GetComponent<Rigidbody>();
     }
 
@@ -52,10 +52,10 @@ public class tempGetHit : MonoBehaviour
     {
         isHit = true;
         KnockDir = HitDir;
-        GetComponent<Renderer>().material.color = Color.red;
+        //GetComponent<Renderer>().material.color = Color.red;
 		yield return 0;
         isHit = false;
-        GetComponent<Renderer>().material.color = OriginColor;
+        //GetComponent<Renderer>().material.color = OriginColor;
     }
     
 }
