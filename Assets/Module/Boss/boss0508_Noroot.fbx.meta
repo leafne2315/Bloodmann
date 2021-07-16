@@ -191,7 +191,7 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+      additiveReferencePoseFrame: 21
     - serializedVersion: 16
       name: boss|attack_shoot
       takeName: boss|attack_shoot

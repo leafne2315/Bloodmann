@@ -11,7 +11,9 @@ public class ThrowingCurve : MonoBehaviour
     public int resolution = 10;
     public float g;
     float radianAngle;
+    
     public LayerMask WhatIsObstacle;
+    public Transform Player;
     void Awake()
     {
         Lr = GetComponent<LineRenderer>();
@@ -23,8 +25,10 @@ public class ThrowingCurve : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
         RenderCurve();
     }
+    
     void RenderCurve()
     {
         Lr.positionCount = resolution;
@@ -64,6 +68,7 @@ public class ThrowingCurve : MonoBehaviour
     {
         float x = pt * Tveclocity*Mathf.Cos(radianAngle);
         float y = x * Mathf.Tan(radianAngle)-((g*x*x)/(2*Tveclocity*Tveclocity*Mathf.Cos(radianAngle)*Mathf.Cos(radianAngle)));
+         
 
         return new Vector3(x,y) + transform.position;
     }
