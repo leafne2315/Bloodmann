@@ -53,6 +53,7 @@ public class PreBossCntrller : MonoBehaviour
         print("startBoss");
         yield return new WaitForSeconds(1.5f);
         print("openUI");
+        /*
         StartCoroutine(OpenUIBack());
         Dialog01.GetComponent<TextMeshProStarter>().ActivateType();
         yield return new WaitForSeconds(4.5f);
@@ -61,7 +62,7 @@ public class PreBossCntrller : MonoBehaviour
         yield return new WaitForSeconds(4.5f);
         Destroy(Dialog02);
         Dialog03.GetComponent<TextMeshProStarter>().ActivateType();
-        
+        */
         
         BossAni.SetTrigger("ReadyToFight");
         

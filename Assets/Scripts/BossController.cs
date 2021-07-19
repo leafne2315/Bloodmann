@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 public class BossController : MonoBehaviour{
     // Start is called before the first frame update
     public BossState currentState;
@@ -79,6 +80,11 @@ public class BossController : MonoBehaviour{
     private float RazerLength;
     public float RazerWidth;
     private float currentAngle;
+    public Transform shootPos;
+    private GameObject currentRazer;
+    public GameObject Razer_beforeVFX;
+    public GameObject Razer_VFX;
+    private bool isDamaging;
 
     [Header("QuickBack")]
     public float BackTime;
@@ -110,6 +116,7 @@ public class BossController : MonoBehaviour{
     {
         
         CheckRange();
+        
 
         if(Input.GetKeyDown(KeyCode.K))
         {
@@ -125,7 +132,7 @@ public class BossController : MonoBehaviour{
             currentState = BossState.Razer;
             rb.velocity = Vector3.zero;
             BossAni.SetTrigger("Razer");
-            getRazerInitialDir();
+            Razer_OnStart();
         }
 
         
@@ -135,7 +142,8 @@ public class BossController : MonoBehaviour{
             case BossState.Move:
 
                 getMoveDir();
-
+                facingCheck();
+                
                 if(canUseRazer)
                 {
                     if(isClose)
@@ -152,7 +160,7 @@ public class BossController : MonoBehaviour{
                     timer = 0;
                     ResetAniTrigger();
                     BossAni.SetTrigger("Razer");
-                    getRazerInitialDir();
+                    Razer_OnStart();
                     break;
                 }
                 
@@ -334,21 +342,27 @@ public class BossController : MonoBehaviour{
                     timer+=Time.deltaTime;
 
                     RaycastHit hit;
-                    if(Physics.Raycast(transform.position,RazerDir,out hit,Mathf.Infinity,RazerLayer))
+                    if(Physics.Raycast(shootPos.position,RazerDir,out hit,Mathf.Infinity,RazerLayer))
                     {
-                        Debug.DrawLine(transform.position,hit.point,Color.red);
-                        RazerLength = Vector3.Distance(hit.point,transform.position);
+                        Debug.DrawLine(shootPos.position,hit.point,Color.red);
+                        RazerLength = Vector3.Distance(hit.point,shootPos.position);
                     }
+
+                    Razer_beforeVFX.transform.position = shootPos.position;
+                    
+                    Razer_beforeVFX.transform.GetChild(0).GetComponent<VisualEffect>().SetFloat("Length",RazerLength);
+
+
                 }
                 else if(timer<Razer_startT+RazerDur)
                 {
                     timer+=Time.deltaTime;
 
                     RaycastHit hit;
-                    if(Physics.Raycast(transform.position,RazerDir,out hit,Mathf.Infinity,RazerLayer))
+                    if(Physics.Raycast(shootPos.position,RazerDir,out hit,Mathf.Infinity,RazerLayer))
                     {
-                        Debug.DrawLine(transform.position,hit.point,Color.red);
-                        RazerLength = Vector3.Distance(hit.point,transform.position);
+                        Debug.DrawLine(shootPos.position,hit.point,Color.red);
+                        RazerLength = Vector3.Distance(hit.point,shootPos.position);
                     }
 
                     
@@ -357,13 +371,13 @@ public class BossController : MonoBehaviour{
                     {
                         RazerDir = Quaternion.AngleAxis((-SweepAngle/RazerDur)*Time.deltaTime,Vector3.back)*RazerDir;
                         currentAngle = SweepAngle*(timer-Razer_startT)/RazerDur;
-                        print(currentAngle);
+                        
                     }
                     else
                     {
                         RazerDir = Quaternion.AngleAxis((SweepAngle/RazerDur)*Time.deltaTime,Vector3.back)*RazerDir;
                         currentAngle = 180-(SweepAngle*(timer-Razer_startT)/RazerDur);
-                        print(currentAngle);
+                        
                     }
                     //雷射判定
                     Vector3 hitbox = new Vector3(RazerLength/2,RazerWidth/2,RazerWidth/2);
@@ -395,12 +409,29 @@ public class BossController : MonoBehaviour{
                         }
                     }
                     //
-
+                    
+                    if(!isDamaging)
+                    {
+                        Razer_beforeVFX.transform.GetChild(0).GetComponent<VisualEffect>().Stop();
+                        Razer_beforeVFX.transform.GetChild(0).GetComponent<VisualEffect>().SetBool("Alive",false);
+                        Razer_VFX.transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
+                        isDamaging = true;
+                    }
+                     
+                    Razer_VFX.transform.GetChild(0).GetComponent<VisualEffect>().SetFloat("Length",RazerLength);
+                    Razer_VFX.transform.localRotation = Quaternion.Euler(0,0,currentAngle);
                 }
                 else if(timer<Razer_StateT)
                 {
                     //stop razer wait for end state
                     timer+=Time.deltaTime;
+
+                    if(isDamaging)
+                    {
+                        Razer_VFX.transform.GetChild(0).GetComponent<VisualEffect>().SetBool("Alive",false);
+                        Razer_VFX.transform.GetChild(0).GetComponent<VisualEffect>().Stop();
+                        isDamaging = false;
+                    }
                 }
                 else
                 {
@@ -437,7 +468,7 @@ public class BossController : MonoBehaviour{
                         timer = 0;
                         ResetAniTrigger();
                         BossAni.SetTrigger("Razer");
-                        getRazerInitialDir();
+                        Razer_OnStart();
                         break;
                     }
 
@@ -569,14 +600,7 @@ public class BossController : MonoBehaviour{
 
         }
 
-        if(facingRight==false&&MoveDir.x>0)
-        {
-            Flip();
-        }
-        else if(facingRight == true&&MoveDir.x<0)
-        {
-            Flip();
-        }
+       
 
         GetHitCheck();
     }
@@ -600,6 +624,17 @@ public class BossController : MonoBehaviour{
             }
         }
     }
+    void facingCheck()
+    {
+        if(facingRight==false&&MoveDir.x>0)
+        {
+            Flip();
+        }
+        else if(facingRight == true&&MoveDir.x<0)
+        {
+            Flip();
+        }
+    }
     void getRazerInitialDir()
     {
         if(Player.transform.position.x<transform.position.x)
@@ -610,6 +645,18 @@ public class BossController : MonoBehaviour{
         {
             RazerDir = Vector3.right;
         }
+    }
+    void Razer_OnStart()
+    {
+        Razer_beforeVFX.transform.position = shootPos.position;
+        Razer_VFX.transform.position = shootPos.position;
+        getRazerInitialDir();
+
+        Razer_beforeVFX.transform.GetChild(0).GetComponent<VisualEffect>().SetBool("Alive",true);
+        Razer_VFX.transform.GetChild(0).GetComponent<VisualEffect>().SetBool("Alive",true);
+        
+        Razer_beforeVFX.transform.localScale = transform.localScale;
+        Razer_beforeVFX.transform.GetChild(0).GetComponent<VisualEffect>().SendEvent("OnPlay");
     }
     void DashAttackHit()
     {

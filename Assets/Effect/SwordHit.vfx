@@ -2437,10 +2437,9 @@ VisualEffectResource:
         - m_ExpressionIndex: 21
           m_Value: {fileID: 10300, guid: 0000000000000000f000000000000000, type: 0}
         - m_ExpressionIndex: 36
-          m_Value: {fileID: 2800000, guid: c0ef2bfd1a6a2a24c8401db2a5623890, type: 3}
+          m_Value: {fileID: 0}
         - m_ExpressionIndex: 31
-          m_Value: {fileID: 2534964839176971238, guid: 766f68ce646f15e47992a973ec6ba7e2,
-            type: 3}
+          m_Value: {fileID: 0}
       m_Bool:
         m_Array: []
     m_ExposedExpressions: []
