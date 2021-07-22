@@ -368,6 +368,10 @@ public class PlayerCtroller : MonoBehaviour {
 					Vector3 scale = new Vector3(1,1,1);
 					transform.localScale = scale;
 				}
+				if(isInvincible)
+				{
+					isInvincible = false;
+				}
 
 				if(Timer<RunTime)
 				{

@@ -50,6 +50,10 @@ public class BossController : MonoBehaviour{
     public float Height; 
     public float DownSpeed;
     public float AD_StateTime;
+    private bool isAirDownDamage;
+    public Vector3 AirD_hitBox;
+    public GameObject AD_VFX;
+
     [Header("DashAttack Settings")]
     public Transform DA_hitPos;
     public Vector3 DA_hitBox;
@@ -81,7 +85,6 @@ public class BossController : MonoBehaviour{
     public float RazerWidth;
     private float currentAngle;
     public Transform shootPos;
-    private GameObject currentRazer;
     public GameObject Razer_beforeVFX;
     public GameObject Razer_VFX;
     private bool isDamaging;
@@ -302,7 +305,14 @@ public class BossController : MonoBehaviour{
                     currentState = BossState.Move;
                     BossAni.SetTrigger("BackToWalk");
                     //next state
+                    isAirDownDamage = false;
                 }
+
+                if(isAirDownDamage)
+                {
+                    AirDownHit();
+                }
+
 
             break;
 
@@ -600,8 +610,6 @@ public class BossController : MonoBehaviour{
 
         }
 
-       
-
         GetHitCheck();
     }
     void OnTriggerEnter(Collider other)
@@ -623,6 +631,15 @@ public class BossController : MonoBehaviour{
                 p.gettingHit();
             }
         }
+    }
+    public void AirDownDamageSwitch()
+    {
+        isAirDownDamage = !isAirDownDamage;
+    }
+    void AD_EffectShow()
+    {
+        AD_VFX.transform.position = new Vector3(transform.position.x,AD_VFX.transform.position.y,AD_VFX.transform.position.z);
+        AD_VFX.GetComponent<VisualEffect>().SendEvent("OnPlay");
     }
     void facingCheck()
     {
@@ -686,6 +703,35 @@ public class BossController : MonoBehaviour{
             }
         }
     }
+    void AirDownHit()
+    {
+        Collider[] hitObjs = Physics.OverlapBox(transform.position,DA_hitBox,Quaternion.identity,PlayerLayer);
+
+        if(hitObjs.Length==0)
+        {
+            print("Miss");
+        }
+        else
+        {        
+            foreach(Collider c in hitObjs)
+            {
+                print("DA_Hit"+c.name+"!!!!");
+                PlayerCtroller p = Player.GetComponent<PlayerCtroller>();
+
+                if(transform.position.x>Player.transform.position.x)
+                {
+                    p.getHitByRight = true;
+                }
+                else
+                {
+                    p.getHitByRight = false;
+                }
+                p.gettingHit();
+                
+            }
+        }
+    }
+    
     void GetHitCheck()
     {
         if(GetComponent<tempGetHit>().isHit)
@@ -906,10 +952,13 @@ public class BossController : MonoBehaviour{
             
             Vector3 AimPos = currentAim.GetComponent<AimController>().pos3D; 
             Gizmos.DrawWireCube(AimPos,2*ShootAir_HitBox);
-
         }
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(DA_hitPos.position,2*DA_hitBox);
+        
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(transform.position, 2*AirD_hitBox);
+        
     }
 }
