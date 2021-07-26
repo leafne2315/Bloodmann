@@ -41,6 +41,8 @@ public class BossController : MonoBehaviour{
     public float TA_StateTime;
     public bool hitConfirm;
     public Transform HitPos;
+    public GameObject FirstHit;
+    public GameObject SecondHit;
 
     [Header("AirDown Settings")]
     public float WaitToJump;
@@ -636,10 +638,18 @@ public class BossController : MonoBehaviour{
     {
         isAirDownDamage = !isAirDownDamage;
     }
-    void AD_EffectShow()
+    public void AD_EffectShow()
     {
         AD_VFX.transform.position = new Vector3(transform.position.x,AD_VFX.transform.position.y,AD_VFX.transform.position.z);
         AD_VFX.GetComponent<VisualEffect>().SendEvent("OnPlay");
+    }
+    public void FirstHit_Effect()
+    {
+        FirstHit.GetComponent<VisualEffect>().SendEvent("OnPlay");
+    }
+    public void SecondHit_Effect()
+    {
+        SecondHit.GetComponent<VisualEffect>().SendEvent("OnPlay");
     }
     void facingCheck()
     {
