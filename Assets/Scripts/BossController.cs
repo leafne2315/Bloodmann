@@ -64,6 +64,10 @@ public class BossController : MonoBehaviour{
     public float DA_Dir_Start;
     private Vector3 DA_Dir;
     public float DA_StateTime;
+    public GameObject DaFTX_Pf;
+    public Transform DAFTX_GeneratePos;
+    public VisualEffect currentDaFTX;
+
     [Header("ShootAir")]
     public float StartAim;
     private bool isAiming;
@@ -73,6 +77,7 @@ public class BossController : MonoBehaviour{
     public float SA_StateTime;
     public GameObject AimUIPf;
     private GameObject currentAim;
+    public GameObject ShootFTX;
     public Vector3 ShootAir_HitBox;
     [Header("Razer Settings")]
     public Vector3 RazerDir;
@@ -157,6 +162,7 @@ public class BossController : MonoBehaviour{
                         currentState = BossState.QuickBack;
                         rb.velocity = Vector3.zero;
                         BackDir = new Vector3(-MoveDir.x,0,0);
+                        timer = 0;
                         break;
                     }
 
@@ -330,6 +336,18 @@ public class BossController : MonoBehaviour{
                     rb.velocity = DA_Dir*DA_Speed;
                     //DA
                     DashAttackHit();
+
+
+                    currentDaFTX = Instantiate(DaFTX_Pf,DAFTX_GeneratePos.position,Quaternion.identity).GetComponent<VisualEffect>();
+
+                    Vector3 a = currentDaFTX.GetVector3("VelocityA");
+                    currentDaFTX.SetVector3("VelocityA",a*transform.localScale.x);
+                    Vector3 b = currentDaFTX.GetVector3("VelocityB");
+                    currentDaFTX.SetVector3("VelocityB",b*transform.localScale.x);
+
+                    Destroy(currentDaFTX.gameObject,3.0f);
+                    // DaFTX.SetVector3("Custom Space",transform.localScale);
+                    // DaFTX.SendEvent("OnPlay");
                 }
                 else if(timer<DA_StateTime)
                 {
@@ -759,6 +777,8 @@ public class BossController : MonoBehaviour{
     void ShootAttack()
     {
         Vector3 ShotPos = currentAim.GetComponent<AimController>().pos3D;
+        ShootFTX.transform.position = ShotPos;
+        ShootFTX.GetComponent<VisualEffect>().SendEvent("OnPlay");
 		
         Collider[] hitObjs = Physics.OverlapBox(ShotPos,ShootAir_HitBox,Quaternion.identity,PlayerLayer);
         
