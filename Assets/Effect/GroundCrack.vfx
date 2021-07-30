@@ -1001,8 +1001,8 @@ VisualEffectResource:
       attributes.position, attributes.velocity);\n\t\t\t\tAttributeFromCurve_45ABB90F(
       /*inout */attributes.size, attributes.age, attributes.lifetime, Size_b);\n\t\t\t\t{\n\t\t\t\t   
       SetAttribute_D5151958( /*inout */attributes.scaleX,  /*inout */attributes.scaleY, 
-      /*inout */attributes.scaleZ,  /*inout */attributes.seed, float3(0.100000001,
-      1.20000005, 1.5), float3(0.5, 1.60000002, 1.5));\n\t\t\t\t}\n\t\t\t\t{\n\t\t\t\t   
+      /*inout */attributes.scaleZ,  /*inout */attributes.seed, float3(0.0799999982,
+      0.800000012, 1.20000005), float3(0.300000012, 1.20000005, 1.20000005));\n\t\t\t\t}\n\t\t\t\t{\n\t\t\t\t   
       SetAttribute_FDD06EC7( /*inout */attributes.color, float3(23.9686279, 0.87843138,
       0));\n\t\t\t\t}\n\t\t\t\tAttributeFromCurve_80EE2EEB( /*inout */attributes.color, 
       /*inout */attributes.alpha, attributes.age, attributes.lifetime, Color_e);\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t#if
@@ -1220,8 +1220,8 @@ VisualEffectResource:
       attributes.position, attributes.velocity);\n\t\t\t\tAttributeFromCurve_45ABB90F(
       /*inout */attributes.size, attributes.age, attributes.lifetime, Size_b);\n\t\t\t\t{\n\t\t\t\t   
       SetAttribute_D5151958( /*inout */attributes.scaleX,  /*inout */attributes.scaleY, 
-      /*inout */attributes.scaleZ,  /*inout */attributes.seed, float3(0.100000001,
-      1.20000005, 1.5), float3(0.5, 1.60000002, 1.5));\n\t\t\t\t}\n\t\t\t\t{\n\t\t\t\t   
+      /*inout */attributes.scaleZ,  /*inout */attributes.seed, float3(0.0799999982,
+      0.800000012, 1.20000005), float3(0.300000012, 1.20000005, 1.20000005));\n\t\t\t\t}\n\t\t\t\t{\n\t\t\t\t   
       SetAttribute_FDD06EC7( /*inout */attributes.color, float3(23.9686279, 0.87843138,
       0));\n\t\t\t\t}\n\t\t\t\tAttributeFromCurve_80EE2EEB( /*inout */attributes.color, 
       /*inout */attributes.alpha, attributes.age, attributes.lifetime, Color_e);\n\t\t\t\t\n\n\t\t\t\t\n\t\t\t#if
@@ -1520,9 +1520,9 @@ VisualEffectResource:
         - m_ExpressionIndex: 5
           m_Value: {x: 23.968628, y: 0.8784314, z: 0}
         - m_ExpressionIndex: 6
-          m_Value: {x: 0.5, y: 1.6, z: 1.5}
+          m_Value: {x: 0.3, y: 1.2, z: 1.2}
         - m_ExpressionIndex: 7
-          m_Value: {x: 0.1, y: 1.2, z: 1.5}
+          m_Value: {x: 0.08, y: 0.8, z: 1.2}
         - m_ExpressionIndex: 11
           m_Value: {x: 2, y: 8.5, z: 2}
         - m_ExpressionIndex: 12
@@ -3397,7 +3397,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":0.10000000149011612,"y":1.2000000476837159,"z":1.5}'
+      m_SerializableObject: '{"x":0.07999999821186066,"y":0.800000011920929,"z":1.2000000476837159}'
     m_Space: 2147483647
   m_Property:
     name: A
@@ -3533,7 +3533,7 @@ MonoBehaviour:
       m_Type:
         m_SerializableType: UnityEngine.Vector3, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
-      m_SerializableObject: '{"x":0.5,"y":1.600000023841858,"z":1.5}'
+      m_SerializableObject: '{"x":0.30000001192092898,"y":1.2000000476837159,"z":1.2000000476837159}'
     m_Space: 2147483647
   m_Property:
     name: B
