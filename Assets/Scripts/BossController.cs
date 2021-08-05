@@ -19,6 +19,8 @@ public class BossController : MonoBehaviour{
     public bool notDie;
     [Header("Data")]
     public float hp;
+    public Image hp_image;
+
     [Header("Detect Settings")]
     public bool isClose;
     public bool isFar;
@@ -122,6 +124,11 @@ public class BossController : MonoBehaviour{
     }
 
     // Update is called once per frame
+    void OnGUI() 
+    { 
+        hp_image.fillAmount = hp/25.0f;
+        print(hp_image.fillAmount);
+    }
     void Update()
     {
         

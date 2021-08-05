@@ -13,6 +13,7 @@ public static class GameData
     public static bool CanAttack = true;
     public static bool isDoorOpen;
     public static bool isGameStart;
+    public static bool BossEnter;
     public static void ResetBool()
     {
         DeadOnce = false;

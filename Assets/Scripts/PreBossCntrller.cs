@@ -23,6 +23,7 @@ public class PreBossCntrller : MonoBehaviour
     private LevelLoader LvLoader;
     private SavingAndLoad SLManager;
     public GameObject CloseDoor;
+    public GameObject BossUI;
     
     void Awake()
     {
@@ -53,24 +54,33 @@ public class PreBossCntrller : MonoBehaviour
         print("startBoss");
         yield return new WaitForSeconds(1.5f);
         print("openUI");
-        /*
-        StartCoroutine(OpenUIBack());
-        Dialog01.GetComponent<TextMeshProStarter>().ActivateType();
-        yield return new WaitForSeconds(4.5f);
-        Destroy(Dialog01);
-        Dialog02.GetComponent<TextMeshProStarter>().ActivateType();
-        yield return new WaitForSeconds(4.5f);
-        Destroy(Dialog02);
-        Dialog03.GetComponent<TextMeshProStarter>().ActivateType();
-        */
+        if(!GameData.BossEnter)
+        {
+            GameData.BossEnter = true;
+            StartCoroutine(OpenUIBack());
+            Dialog01.GetComponent<TextMeshProStarter>().ActivateType();
+            yield return new WaitForSeconds(4.5f);
+            Destroy(Dialog01);
+            Dialog02.GetComponent<TextMeshProStarter>().ActivateType();
+            yield return new WaitForSeconds(4.5f);
+            Destroy(Dialog02);
+            Dialog03.GetComponent<TextMeshProStarter>().ActivateType();
+            BossAni.SetTrigger("ReadyToFight");
         
-        BossAni.SetTrigger("ReadyToFight");
+            yield return new WaitForSeconds(7.0f);
+            Destroy(Dialog03);
+            StartCoroutine(closeUIBack());
+        }
+        else
+        {
+            BossAni.SetTrigger("ReadyToFight");
+        }
         
-        yield return new WaitForSeconds(7.0f);
-        Destroy(Dialog03);
-        StartCoroutine(closeUIBack());
         
-        yield return new WaitForSeconds(3.0f);
+        
+        
+        
+        yield return new WaitForSeconds(2.0f);
         /*轉場回開頭
         StartCoroutine(LvLoader.LoadLevelWithDelay(1,1.5f));
         SLManager.ResetFile();
@@ -78,6 +88,7 @@ public class PreBossCntrller : MonoBehaviour
         */
         Player.GetComponent<PlayerCtroller>().currentState = PlayerCtroller.PlayerState.Normal;
         Boss.GetComponent<BossController>().isFighting = true;
+        BossUI.SetActive(true);
 
         MainCam.m_Priority = 11;
         CameraRestrict.enabled = true;
